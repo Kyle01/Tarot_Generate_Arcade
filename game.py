@@ -9,11 +9,15 @@ DEFAULT_FONT_SIZE = 16
 
 INTRO_TEXT = "Ah, welcome, traveler! I am Mama Nyah, and the spirits have brought you to me for a reason. Sit, relax, and let us see what the universe whispers for you. But first, tell me—what is your intention? What does your heart seek to know, heal, or discover? Speak it, and we will find the truth together."
 CATEGORIES = ["Love Life", "Professional Development"]
+STAGE = ['INTRO', 'DRAW']
+
 class MyGame(arcade.Window):
     """ Main application class. """
 
     def __init__(self):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+        self.stage = STAGE[0]
+        self.intension = None
 
         arcade.set_background_color(arcade.color.IMPERIAL_PURPLE)
 
@@ -25,6 +29,10 @@ class MyGame(arcade.Window):
         """ Render the screen. """
         # Clear the screen
         self.clear()
+
+        if self.stage == STAGE[1]:
+            return
+        
         arcade.draw_text(INTRO_TEXT,
                          0,
                          SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 1.5,
@@ -72,8 +80,13 @@ class MyGame(arcade.Window):
                          width=300,
                          align="center")
 
-    def on_mouse_press(self, x, y, button, key_modifiers):
-        """ Called when the user presses a mouse button. """
+    def on_mouse_press(self, x, y, _button, _key_modifiers):
+        if self.stage == STAGE[0] and x > 100 and x < 450 and y > 100 and y < 200:
+            self.set_intension(CATEGORIES[0])
+            return 
+        if self.stage == STAGE[0] and x > 100 and x < 450 and y > 100 and y < 200:
+            self.set_intension(CATEGORIES[1])
+            return
         pass
 
     def on_mouse_release(self, x: float, y: float, button: int,
@@ -84,6 +97,10 @@ class MyGame(arcade.Window):
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
         """ User moves mouse """
         pass
+
+    def set_intension(self, text):
+        self.intension = text
+        self.stage = STAGE[1]
 
 
 def main():
