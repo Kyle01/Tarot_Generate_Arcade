@@ -1,4 +1,5 @@
 import arcade
+import random
 
 # Screen title and size
 SCREEN_WIDTH = 1024
