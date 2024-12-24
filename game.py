@@ -1,5 +1,6 @@
 import arcade
 import random
+from deck import TarotDeck
 
 # Screen title and size
 SCREEN_WIDTH = 1024
@@ -19,6 +20,7 @@ class MyGame(arcade.Window):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
         self.stage = STAGE[0]
         self.intension = None
+        self.drawn_cards = None
 
         arcade.set_background_color(arcade.color.IMPERIAL_PURPLE)
 
@@ -32,54 +34,70 @@ class MyGame(arcade.Window):
         self.clear()
 
         if self.stage == STAGE[1]:
-            return
-        
-        arcade.draw_text(INTRO_TEXT,
-                         0,
-                         SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 1.5,
-                         arcade.color.WHITE,
-                         DEFAULT_FONT_SIZE,
-                         width=SCREEN_WIDTH,
-                         multiline=True,
-                         align="center")
-        
-        arcade.draw_lrtb_rectangle_filled(100, 
-                                          450, 
-                                          200, 
-                                          100,
-                                          arcade.color.IMPERIAL_BLUE)
-        arcade.draw_lrtb_rectangle_filled(125, 
-                                          425, 
-                                          175, 
-                                          125,
-                                      arcade.color.INCHWORM)
-        
-        arcade.draw_text(CATEGORIES[0],
-                         125,
-                         145,
-                         arcade.color.BLACK,
-                         DEFAULT_FONT_SIZE,
-                         width=250,
-                         align="center")
-        
-        arcade.draw_lrtb_rectangle_filled(600, 
-                                          950, 
-                                          200, 
-                                          100,
-                                          arcade.color.IMPERIAL_BLUE)
-        arcade.draw_lrtb_rectangle_filled(625, 
-                                          925, 
-                                          175, 
-                                          125,
-                                      arcade.color.INCHWORM)
-        
-        arcade.draw_text(CATEGORIES[1],
-                         625,
-                         145,
-                         arcade.color.BLACK,
-                         DEFAULT_FONT_SIZE,
-                         width=300,
-                         align="center")
+            arcade.draw_text("Cards:",
+                            0,
+                            SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 1.5,
+                            arcade.color.WHITE,
+                            DEFAULT_FONT_SIZE,
+                            width=500,
+                            align="center")
+            
+            for i, card in enumerate(self.drawn_cards):
+                arcade.draw_text(f"{i+1}:{str(card)}",
+                            200,
+                            (i + 1) * 200,
+                            arcade.color.WHITE,
+                            DEFAULT_FONT_SIZE,
+                            width=300,
+                            align="left")
+
+        else: 
+            arcade.draw_text(INTRO_TEXT,
+                            0,
+                            SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 1.5,
+                            arcade.color.WHITE,
+                            DEFAULT_FONT_SIZE,
+                            width=SCREEN_WIDTH,
+                            multiline=True,
+                            align="center")
+            
+            arcade.draw_lrtb_rectangle_filled(100, 
+                                            450, 
+                                            200, 
+                                            100,
+                                            arcade.color.IMPERIAL_BLUE)
+            arcade.draw_lrtb_rectangle_filled(125, 
+                                            425, 
+                                            175, 
+                                            125,
+                                        arcade.color.INCHWORM)
+            
+            arcade.draw_text(CATEGORIES[0],
+                            125,
+                            145,
+                            arcade.color.BLACK,
+                            DEFAULT_FONT_SIZE,
+                            width=250,
+                            align="center")
+            
+            arcade.draw_lrtb_rectangle_filled(600, 
+                                            950, 
+                                            200, 
+                                            100,
+                                            arcade.color.IMPERIAL_BLUE)
+            arcade.draw_lrtb_rectangle_filled(625, 
+                                            925, 
+                                            175, 
+                                            125,
+                                        arcade.color.INCHWORM)
+            
+            arcade.draw_text(CATEGORIES[1],
+                            625,
+                            145,
+                            arcade.color.BLACK,
+                            DEFAULT_FONT_SIZE,
+                            width=300,
+                            align="center")
 
     def on_mouse_press(self, x, y, _button, _key_modifiers):
         if self.stage == STAGE[0] and x > 100 and x < 450 and y > 100 and y < 200:
@@ -102,6 +120,9 @@ class MyGame(arcade.Window):
     def set_intension(self, text):
         self.intension = text
         self.stage = STAGE[1]
+        deck = TarotDeck()
+        deck.shuffle()
+        self.drawn_cards = deck.draw(3)
 
 
 def main():
