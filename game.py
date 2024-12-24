@@ -1,23 +1,21 @@
 import arcade
-import random
 from deck import TarotDeck
 
 # Screen title and size
 SCREEN_WIDTH = 1024
 SCREEN_HEIGHT = 768
-SCREEN_TITLE = "My first Game"
 DEFAULT_LINE_HEIGHT = 24
 DEFAULT_FONT_SIZE = 16
 
 INTRO_TEXT = "Ah, welcome, traveler! I am Mama Nyah, and the spirits have brought you to me for a reason. Sit, relax, and let us see what the universe whispers for you. But first, tell me—what is your intention? What does your heart seek to know, heal, or discover? Speak it, and we will find the truth together."
 CATEGORIES = ["Love Life", "Professional Development"]
-STAGE = ['INTRO', 'DRAW']
+STAGE = ['INTRO', 'PENDING', 'DRAWN']
 
 class MyGame(arcade.Window):
     """ Main application class. """
 
     def __init__(self):
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Voodoo Tarot GPT")
         self.stage = STAGE[0]
         self.intension = None
         self.drawn_cards = None
@@ -33,22 +31,30 @@ class MyGame(arcade.Window):
         # Clear the screen
         self.clear()
 
-        if self.stage == STAGE[1]:
+        if self.stage == STAGE[2]:
             arcade.draw_text("Cards:",
-                            0,
+                            100,
                             SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 1.5,
                             arcade.color.WHITE,
                             DEFAULT_FONT_SIZE,
                             width=500,
-                            align="center")
+                            align="left")
             
             for i, card in enumerate(self.drawn_cards):
                 arcade.draw_text(f"{i+1}:{str(card)}",
-                            200,
-                            (i + 1) * 200,
+                            100,
+                            SCREEN_HEIGHT - (i + 1) * 75,
                             arcade.color.WHITE,
                             DEFAULT_FONT_SIZE,
                             width=300,
+                            align="left")
+
+            arcade.draw_text("Fortune:",
+                            100,
+                            400,
+                            arcade.color.WHITE,
+                            DEFAULT_FONT_SIZE,
+                            width=500,
                             align="left")
 
         else: 
@@ -103,23 +109,14 @@ class MyGame(arcade.Window):
         if self.stage == STAGE[0] and x > 100 and x < 450 and y > 100 and y < 200:
             self.set_intension(CATEGORIES[0])
             return 
-        if self.stage == STAGE[0] and x > 100 and x < 450 and y > 100 and y < 200:
+        if self.stage == STAGE[0] and x > 600 and x < 950 and y > 100 and y < 200:
             self.set_intension(CATEGORIES[1])
             return
         pass
 
-    def on_mouse_release(self, x: float, y: float, button: int,
-                         modifiers: int):
-        """ Called when the user presses a mouse button. """
-        pass
-
-    def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
-        """ User moves mouse """
-        pass
-
     def set_intension(self, text):
         self.intension = text
-        self.stage = STAGE[1]
+        self.stage = STAGE[2]
         deck = TarotDeck()
         deck.shuffle()
         self.drawn_cards = deck.draw(3)
