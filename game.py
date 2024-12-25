@@ -1,5 +1,6 @@
 import arcade
 from deck import TarotDeck
+from tarot_bot import TarotBot
 
 # Screen title and size
 SCREEN_WIDTH = 1024
@@ -16,9 +17,11 @@ class MyGame(arcade.Window):
 
     def __init__(self):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Voodoo Tarot GPT")
+        self.tarot_bot = TarotBot()
         self.stage = STAGE[0]
-        self.intension = None
+        self.intention = None
         self.drawn_cards = None
+        self.fortune = None
 
         arcade.set_background_color(arcade.color.IMPERIAL_PURPLE)
 
@@ -39,19 +42,21 @@ class MyGame(arcade.Window):
 
     def on_mouse_press(self, x, y, _button, _key_modifiers):
         if self.stage == STAGE[0] and x > 100 and x < 450 and y > 100 and y < 200:
-            self.set_intension(CATEGORIES[0])
+            self.set_intention(CATEGORIES[0])
             return 
         if self.stage == STAGE[0] and x > 600 and x < 950 and y > 100 and y < 200:
-            self.set_intension(CATEGORIES[1])
+            self.set_intention(CATEGORIES[1])
             return
         pass
 
-    def set_intension(self, text):
-        self.intension = text
+    def set_intention(self, intention_text):
+        self.intention = intention_text
         self.stage = STAGE[2]
         deck = TarotDeck()
         deck.shuffle()
-        self.drawn_cards = deck.draw(3)
+        drawn_cards = deck.draw(3)
+        self.drawn_cards = drawn_cards
+        self.fortune = self.tarot_bot.fortune(drawn_cards, intention_text)
 
     def __draw_intro_stage(self):
         arcade.draw_text(INTRO_TEXT,
@@ -125,6 +130,15 @@ class MyGame(arcade.Window):
                         arcade.color.WHITE,
                         DEFAULT_FONT_SIZE,
                         width=500,
+                        align="left")
+        
+        arcade.draw_text(self.fortune,
+                        100,
+                        350,
+                        arcade.color.WHITE,
+                        DEFAULT_FONT_SIZE / 1.5,
+                        multiline=True,
+                        width=SCREEN_WIDTH - 100,
                         align="left")
 
 
