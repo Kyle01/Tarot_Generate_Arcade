@@ -31,10 +31,10 @@ class MyGame(arcade.Window):
         # Clear the screen
         self.clear()
 
-        if self.stage == STAGE[2]:
-            self.__draw_drawn_stage()
-        else: 
+        if self.stage == STAGE[0]:
             self.__draw_intro_stage()
+        else: 
+            self.__draw_drawn_stage()
             
 
     def on_mouse_press(self, x, y, _button, _key_modifiers):
