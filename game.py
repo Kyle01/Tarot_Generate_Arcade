@@ -14,8 +14,7 @@ CATEGORIES = ["Love Life", "Professional Development"]
 
 class GameState(Enum):
     INTRO = 1,
-    PENDING = 2,
-    DRAWN = 3
+    DRAWN = 2
 
 class TarotGame(arcade.Window):
     """ Main application class. """
