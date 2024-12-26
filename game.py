@@ -1,6 +1,7 @@
 import arcade
 from deck import TarotDeck
 from tarot_bot import TarotBot
+from enum import Enum
 
 # Screen title and size
 SCREEN_WIDTH = 1024
@@ -10,15 +11,19 @@ DEFAULT_FONT_SIZE = 16
 
 INTRO_TEXT = "Ah, welcome, traveler! I am Mama Nyah, and the spirits have brought you to me for a reason. Sit, relax, and let us see what the universe whispers for you. But first, tell me—what is your intention? What does your heart seek to know, heal, or discover? Speak it, and we will find the truth together."
 CATEGORIES = ["Love Life", "Professional Development"]
-STAGE = ['INTRO', 'PENDING', 'DRAWN']
 
-class MyGame(arcade.Window):
+class GameState(Enum):
+    INTRO = 1,
+    PENDING = 2,
+    DRAWN = 3
+
+class TarotGame(arcade.Window):
     """ Main application class. """
 
     def __init__(self):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Voodoo Tarot GPT")
         self.tarot_bot = TarotBot()
-        self.stage = STAGE[0]
+        self.stage = GameState.INTRO
         self.intention = None
         self.drawn_cards = None
         self.fortune = None
@@ -34,24 +39,24 @@ class MyGame(arcade.Window):
         # Clear the screen
         self.clear()
 
-        if self.stage == STAGE[0]:
+        if self.stage == GameState.INTRO:
             self.__draw_intro_stage()
         else: 
             self.__draw_drawn_stage()
             
 
     def on_mouse_press(self, x, y, _button, _key_modifiers):
-        if self.stage == STAGE[0] and x > 100 and x < 450 and y > 100 and y < 200:
+        if self.stage == GameState.INTRO and x > 100 and x < 450 and y > 100 and y < 200:
             self.set_intention(CATEGORIES[0])
             return 
-        if self.stage == STAGE[0] and x > 600 and x < 950 and y > 100 and y < 200:
+        if self.stage == GameState.INTRO and x > 600 and x < 950 and y > 100 and y < 200:
             self.set_intention(CATEGORIES[1])
             return
         pass
 
     def set_intention(self, intention_text):
         self.intention = intention_text
-        self.stage = STAGE[2]
+        self.stage = GameState.DRAWN
         deck = TarotDeck()
         deck.shuffle()
         drawn_cards = deck.draw(3)
@@ -144,7 +149,7 @@ class MyGame(arcade.Window):
 
 def main():
     """ Main function """
-    window = MyGame()
+    window = TarotGame()
     window.setup()
     arcade.run()
 

@@ -6,3 +6,4 @@ Tarot Card Arcade game using python arcade and chatgpt
 2. Create a virtual environment using `$ python -m venv .venv`
 3. Start virtual environment using `$ source .venv/bin/activate`
 4. Install the packages using `$ pip install -r requirements.txt`
+5. Start Tarot game by running `$ python game.py`
