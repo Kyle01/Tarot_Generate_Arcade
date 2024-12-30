@@ -1,4 +1,5 @@
 import arcade
+import threading
 from deck import TarotDeck
 from tarot_bot import TarotBot
 from enum import Enum
@@ -14,7 +15,8 @@ CATEGORIES = ["Love Life", "Professional Development"]
 
 class GameState(Enum):
     INTRO = 1,
-    DRAWN = 2
+    DRAWN = 2,
+    LOADING = 3
 
 class TarotGame(arcade.Window):
     """ Main application class. """
@@ -26,6 +28,7 @@ class TarotGame(arcade.Window):
         self.intention = None
         self.drawn_cards = None
         self.fortune = None
+        
 
         arcade.set_background_color(arcade.color.IMPERIAL_PURPLE)
 
@@ -36,12 +39,15 @@ class TarotGame(arcade.Window):
     def on_draw(self):
         """ Render the screen. """
         # Clear the screen
+    
         self.clear()
 
         if self.stage == GameState.INTRO:
             self.__draw_intro_stage()
-        else: 
+        elif self.stage == GameState.DRAWN:
             self.__draw_drawn_stage()
+        elif self.stage == GameState.LOADING:
+            self.__draw_loading_stage()
             
 
     def on_mouse_press(self, x, y, _button, _key_modifiers):
@@ -54,13 +60,40 @@ class TarotGame(arcade.Window):
         pass
 
     def set_intention(self, intention_text):
+        """ Set the intention and transition to the loading screen. """
         self.intention = intention_text
-        self.stage = GameState.DRAWN
-        deck = TarotDeck()
-        deck.shuffle()
-        drawn_cards = deck.draw(3)
-        self.drawn_cards = drawn_cards
-        self.fortune = self.tarot_bot.fortune(drawn_cards, intention_text)
+        self.stage = GameState.LOADING
+        self.loading_progress = 0.0
+        self.api_call_complete = False  # track api call
+
+        # git the deck rdy for Drawn stage
+        self.deck = TarotDeck()
+        self.deck.shuffle()
+        self.drawn_cards = self.deck.draw(3)
+
+        # start api call as thread
+        
+        def api_call():
+            self.fortune = self.tarot_bot.fortune(self.drawn_cards, self.intention)
+            self.api_call_complete = True
+
+        threading.Thread(target=api_call).start()
+
+
+    def on_update(self, delta_time):
+        """ Update the game state. """
+        if self.stage == GameState.LOADING:
+            if not self.api_call_complete:
+                # load progress bar with api is called
+                self.loading_progress += delta_time / 5  # adjust speed
+                self.loading_progress = min(self.loading_progress, 0.95)  # cap at 95%
+            else:
+                # finish progress bar if api is done loading first
+                self.loading_progress += delta_time / 2  
+                if self.loading_progress >= 1.0:
+                    self.loading_progress = 1.0
+                    self.stage = GameState.DRAWN
+
 
     def __draw_intro_stage(self):
         arcade.draw_text(INTRO_TEXT,
@@ -144,6 +177,53 @@ class TarotGame(arcade.Window):
                         multiline=True,
                         width=SCREEN_WIDTH - 100,
                         align="left")
+
+
+    def __draw_loading_stage(self):
+        """ Render the loading screen. """
+       
+        arcade.draw_text(
+            "Loading, please wait...",
+            SCREEN_WIDTH // 2,
+            SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 2,
+            arcade.color.WHITE,
+            DEFAULT_FONT_SIZE,
+            width=SCREEN_WIDTH,
+            align="center",
+            anchor_x="center"
+        )
+        
+    
+        arcade.draw_lrtb_rectangle_filled(
+            200, 
+            800, 
+            300, 
+            250, 
+            arcade.color.IMPERIAL_BLUE
+        )
+        
+        
+        progress_width = 200 + (self.loading_progress * 600)  # Scales from 200 to 800
+        arcade.draw_lrtb_rectangle_filled(
+            200, 
+            progress_width, 
+            300, 
+            250, 
+            arcade.color.INCHWORM
+        )
+        
+       
+        arcade.draw_text(
+            "Please hold on while we prepare your reading...",
+            SCREEN_WIDTH // 2,
+            200,
+            arcade.color.WHITE,
+            DEFAULT_FONT_SIZE / 1.5,
+            width=SCREEN_WIDTH - 200,
+            align="center",
+            anchor_x="center"
+        )
+
 
 
 def main():
