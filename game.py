@@ -66,7 +66,7 @@ class TarotGame(arcade.Window):
         self.loading_progress = 0.0
         self.api_call_complete = False  # track api call
 
-        # git the deck rdy for Drawn stage
+        # get the deck rdy for Drawn stage
         self.deck = TarotDeck()
         self.deck.shuffle()
         self.drawn_cards = self.deck.draw(3)
@@ -153,13 +153,7 @@ class TarotGame(arcade.Window):
                 align="left")
             
         for i, card in enumerate(self.drawn_cards):
-            arcade.draw_text(f"{i+1}:{str(card)}",
-                        100,
-                        SCREEN_HEIGHT - (i + 1) * 75,
-                        arcade.color.WHITE,
-                        DEFAULT_FONT_SIZE,
-                        width=300,
-                        align="left")
+            card.paint(150 + (i * 300), 550)
 
         arcade.draw_text("Fortune:",
                         100,
