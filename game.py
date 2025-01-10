@@ -65,15 +65,19 @@ class TarotGame(arcade.Window):
 
         elif self.stage == GameState.SPREAD:
            
-            for card in self.deck.cards:
+            for card in reversed(self.deck.cards):
                 if card.is_clicked(x, y):
                     if card not in self.selected_cards:  
                         self.selected_cards.append(card)
+                    
+                    print(f"Selected topmost card: {card.name}")
 
-                    # transition to the loading stage when 3 cards are selected -- this should change
-                    if len(self.selected_cards) == 3:
-                        self.drawn_cards = self.selected_cards
-                        self.start_loading()
+                    break
+                    
+            # transition to the loading stage when 3 cards are selected -- this should change
+            if len(self.selected_cards) == 3:
+                self.drawn_cards = self.selected_cards
+                self.start_loading()
 
     def set_intention(self, intention_text):
         """ Set the intention and transition to the spread stage. """
