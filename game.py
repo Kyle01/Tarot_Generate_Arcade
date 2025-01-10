@@ -13,7 +13,7 @@ DEFAULT_FONT_SIZE = 16
 INTRO_TEXT = "Ah, welcome, traveler! I am Mama Nyah, and the spirits have brought you to me for a reason. Sit, relax, and let us see what the universe whispers for you. But first, tell me—what is your intention? What does your heart seek to know, heal, or discover? Speak it, and we will find the truth together."
 CATEGORIES = ["Love Life", "Professional Development"]
 
-class GameState(Enum):
+class GameState(Enum): #UPDATE THIS TO BE IN CORRECT ORDER 
     INTRO = 1,
     DRAWN = 2,
     LOADING = 3,
