@@ -16,7 +16,8 @@ CATEGORIES = ["Love Life", "Professional Development"]
 class GameState(Enum):
     INTRO = 1,
     DRAWN = 2,
-    LOADING = 3
+    LOADING = 3,
+    SPREAD = 4
 
 class TarotGame(arcade.Window):
     """ Main application class. """
@@ -28,6 +29,7 @@ class TarotGame(arcade.Window):
         self.intention = None
         self.drawn_cards = None
         self.fortune = None
+        self.hovered_card = None
         
 
         arcade.set_background_color(arcade.color.IMPERIAL_PURPLE)
@@ -48,37 +50,67 @@ class TarotGame(arcade.Window):
             self.__draw_drawn_stage()
         elif self.stage == GameState.LOADING:
             self.__draw_loading_stage()
+        elif self.stage == GameState.SPREAD:
+            self.__draw_spread_stage()
             
 
     def on_mouse_press(self, x, y, _button, _key_modifiers):
-        if self.stage == GameState.INTRO and x > 100 and x < 450 and y > 100 and y < 200:
-            self.set_intention(CATEGORIES[0])
-            return 
-        if self.stage == GameState.INTRO and x > 600 and x < 950 and y > 100 and y < 200:
-            self.set_intention(CATEGORIES[1])
-            return
-        pass
+        if self.stage == GameState.INTRO:
+        
+            if 100 < x < 450 and 100 < y < 200:
+                self.set_intention(CATEGORIES[0])
+                return
+            if 600 < x < 950 and 100 < y < 200:
+                self.set_intention(CATEGORIES[1])
+                return
+
+        elif self.stage == GameState.SPREAD:
+           
+            for card in reversed(self.deck.cards):
+                if card.is_clicked(x, y):
+                    if card not in self.selected_cards:  
+                        self.selected_cards.append(card)
+                    
+                    print(f"Selected topmost card: {card.name}")
+
+                    break
+                    
+            # transition to the loading stage when 3 cards are selected -- this should change
+            if len(self.selected_cards) == 3:
+                self.drawn_cards = self.selected_cards
+                self.start_loading()
+    def on_mouse_motion(self, x, y, dx, dy):
+        """ Handle mouse movement to track hovered card. """
+        self.hovered_card = None  
+
+        if self.stage == GameState.SPREAD:
+            # do reverse for topmost card
+            for card in reversed(self.deck.cards):
+                if card.is_clicked(x, y): 
+                    self.hovered_card = card
+                    break
+
 
     def set_intention(self, intention_text):
-        """ Set the intention and transition to the loading screen. """
+        """ Set the intention and transition to the spread stage. """
         self.intention = intention_text
+        self.stage = GameState.SPREAD
+        self.selected_cards = []  # reset selected cards for spread
+        self.deck = TarotDeck()  # prepare deck
+        self.deck.shuffle()
+
+
+    def start_loading(self):
         self.stage = GameState.LOADING
         self.loading_progress = 0.0
-        self.api_call_complete = False  # track api call
+        self.api_call_complete = False
 
-        # get the deck rdy for Drawn stage
-        self.deck = TarotDeck()
-        self.deck.shuffle()
-        self.drawn_cards = self.deck.draw(3)
-
-        # start api call as thread
         
         def api_call():
             self.fortune = self.tarot_bot.fortune(self.drawn_cards, self.intention)
             self.api_call_complete = True
 
         threading.Thread(target=api_call).start()
-
 
     def on_update(self, delta_time):
         """ Update the game state. """
@@ -153,7 +185,7 @@ class TarotGame(arcade.Window):
                 align="left")
             
         for i, card in enumerate(self.drawn_cards):
-            card.paint(150 + (i * 300), 550)
+            card.paint(150 + (i * 300), 550, show_front = True)
 
         arcade.draw_text("Fortune:",
                         100,
@@ -218,6 +250,39 @@ class TarotGame(arcade.Window):
             anchor_x="center"
         )
 
+    def __draw_spread_stage(self):
+        """ Render the card spread stage with the backs of the cards. """
+        arcade.draw_text(
+            "Choose 3 Cards:",
+            SCREEN_WIDTH // 2,
+            SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 2,
+            arcade.color.WHITE,
+            DEFAULT_FONT_SIZE,
+            width=SCREEN_WIDTH,
+            align="center",
+            anchor_x="center"
+        )
+
+        # spread cards here
+        card_spacing = (SCREEN_WIDTH - 300) // len(self.deck.cards)  # dynamic spacing
+        for i, card in enumerate(self.deck.cards):  
+            x = 150 + (i * card_spacing)  
+            y = SCREEN_HEIGHT // 2
+            card.paint(x, y, show_front=False, is_hovered=(card == self.hovered_card))  
+
+        
+        arcade.draw_text(
+            "Click on cards to select them.",
+            SCREEN_WIDTH // 2,
+            100,
+            arcade.color.WHITE,
+            DEFAULT_FONT_SIZE / 1.5,
+            width=SCREEN_WIDTH,
+            align="center",
+            anchor_x="center"
+        )
+
+        
 
 
 def main():
