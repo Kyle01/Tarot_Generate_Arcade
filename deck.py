@@ -20,9 +20,14 @@ class Card:
     def reverse(self):
         self.position = positions[1]
 
-    def paint(self, x, y, show_front):
+    def paint(self, x, y, show_front, is_hovered = False):
         self.x = x
         self.y = y
+
+        if is_hovered:
+            y += 20
+            arcade.draw_rectangle_outline(x, y, self.width * 1.8, self.height * 1.8, arcade.color.LIGHT_BLUE, 5)
+
         texture_file = f"./assets/copyright/{self.file_name}" if show_front else "./assets/copyright/backing_diamond.png"
         texture = arcade.load_texture(texture_file)
         if self.position == positions[0]:
@@ -36,10 +41,8 @@ class Card:
         half_height = (self.height * 1.8) // 2
         clicked = (self.x - half_width < mouse_x < self.x + half_width and
                 self.y - half_height < mouse_y < self.y + half_height)
-        if clicked:
-            print(f"Card clicked: {self.name} at ({self.x}, {self.y})")
-        else:
-            print(f"Missed card: {self.name} at ({self.x}, {self.y})")
+        
+        
 
         return clicked
 

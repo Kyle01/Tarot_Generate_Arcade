@@ -29,6 +29,7 @@ class TarotGame(arcade.Window):
         self.intention = None
         self.drawn_cards = None
         self.fortune = None
+        self.hovered_card = None
         
 
         arcade.set_background_color(arcade.color.IMPERIAL_PURPLE)
@@ -78,13 +79,24 @@ class TarotGame(arcade.Window):
             if len(self.selected_cards) == 3:
                 self.drawn_cards = self.selected_cards
                 self.start_loading()
+    def on_mouse_motion(self, x, y, dx, dy):
+        """ Handle mouse movement to track hovered card. """
+        self.hovered_card = None  
+
+        if self.stage == GameState.SPREAD:
+            # do reverse for topmost card
+            for card in reversed(self.deck.cards):
+                if card.is_clicked(x, y): 
+                    self.hovered_card = card
+                    break
+
 
     def set_intention(self, intention_text):
         """ Set the intention and transition to the spread stage. """
         self.intention = intention_text
         self.stage = GameState.SPREAD
-        self.selected_cards = []  # Reset selected cards for the new spread
-        self.deck = TarotDeck()  # Prepare the deck for the spread
+        self.selected_cards = []  # reset selected cards for spread
+        self.deck = TarotDeck()  # prepare deck
         self.deck.shuffle()
 
 
@@ -93,7 +105,7 @@ class TarotGame(arcade.Window):
         self.loading_progress = 0.0
         self.api_call_complete = False
 
-        # Start the API call in a background thread
+        
         def api_call():
             self.fortune = self.tarot_bot.fortune(self.drawn_cards, self.intention)
             self.api_call_complete = True
@@ -251,14 +263,14 @@ class TarotGame(arcade.Window):
             anchor_x="center"
         )
 
-        # Spread the card backs evenly across the screen
-        card_spacing = (SCREEN_WIDTH - 300) // len(self.deck.cards)  # Adjust spacing dynamically
-        for i, card in enumerate(self.deck.cards):  # Assuming `self.deck.cards` holds the cards
-            x = 150 + (i * card_spacing)  # Adjust horizontal position
+        # spread cards here
+        card_spacing = (SCREEN_WIDTH - 300) // len(self.deck.cards)  # dynamic spacing
+        for i, card in enumerate(self.deck.cards):  
+            x = 150 + (i * card_spacing)  
             y = SCREEN_HEIGHT // 2
-            card.paint(x, y, show_front=False)  
+            card.paint(x, y, show_front=False, is_hovered=(card == self.hovered_card))  
 
-        # Instructions for the player
+        
         arcade.draw_text(
             "Click on cards to select them.",
             SCREEN_WIDTH // 2,
