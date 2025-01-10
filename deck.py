@@ -49,7 +49,7 @@ class TarotDeck:
             Card("Judgement", "major20_judgement.png"),
             Card("The World", "major21_world.png"),
         ]
-
+        self.card_back = Card("Card Back", "backing_diamond.png")
     def __str__(self):
         returned_str = ""
         for card in self.cards:

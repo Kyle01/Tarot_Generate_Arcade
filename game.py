@@ -16,7 +16,8 @@ CATEGORIES = ["Love Life", "Professional Development"]
 class GameState(Enum):
     INTRO = 1,
     DRAWN = 2,
-    LOADING = 3
+    LOADING = 3,
+    SPREAD = 4
 
 class TarotGame(arcade.Window):
     """ Main application class. """
@@ -48,6 +49,8 @@ class TarotGame(arcade.Window):
             self.__draw_drawn_stage()
         elif self.stage == GameState.LOADING:
             self.__draw_loading_stage()
+        elif self.stage == GameState.SPREAD:
+            self.__draw_spread_stage()
             
 
     def on_mouse_press(self, x, y, _button, _key_modifiers):
@@ -57,7 +60,16 @@ class TarotGame(arcade.Window):
         if self.stage == GameState.INTRO and x > 600 and x < 950 and y > 100 and y < 200:
             self.set_intention(CATEGORIES[1])
             return
-        pass
+        if self.stage == GameState.SPREAD:
+            for card in self.deck.cards:
+                if card.is_clicked(x, y):  # Assuming `is_clicked` checks bounds
+                    if card not in self.selected_cards:  # Prevent duplicate selections
+                        self.selected_cards.append(card)
+
+                    # Transition to the drawn stage when 3 cards are selected
+                    if len(self.selected_cards) == 3:
+                        self.drawn_cards = self.selected_cards
+                        self.stage = GameState.Loading
 
     def set_intention(self, intention_text):
         """ Set the intention and transition to the loading screen. """
@@ -66,7 +78,7 @@ class TarotGame(arcade.Window):
         self.loading_progress = 0.0
         self.api_call_complete = False  # track api call
 
-        # get the deck rdy for Drawn stage
+        # get the deck rdy for Drawn stage This should go away with card select screen
         self.deck = TarotDeck()
         self.deck.shuffle()
         self.drawn_cards = self.deck.draw(3)
@@ -78,6 +90,8 @@ class TarotGame(arcade.Window):
             self.api_call_complete = True
 
         threading.Thread(target=api_call).start()
+
+    def start_loading()
 
 
     def on_update(self, delta_time):
@@ -218,6 +232,41 @@ class TarotGame(arcade.Window):
             anchor_x="center"
         )
 
+    def __draw_spread_stage(self):
+        """ Render the card spread stage with the backs of the cards. """
+        arcade.draw_text(
+            "Choose 3 Cards:",
+            SCREEN_WIDTH // 2,
+            SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 2,
+            arcade.color.WHITE,
+            DEFAULT_FONT_SIZE,
+            width=SCREEN_WIDTH,
+            align="center",
+            anchor_x="center"
+        )
+
+        # Spread the card backs evenly across the screen
+        card_spacing = (SCREEN_WIDTH - 300) // len(self.deck.cards)  # Adjust spacing dynamically
+        for i, card in enumerate(self.deck.cards):  # Assuming `self.deck.cards` holds the cards
+            x = 150 + (i * card_spacing)  # Adjust horizontal position
+            y = SCREEN_HEIGHT // 2
+
+            # Draw the card back instead of the front
+            self.card_back.paint(x, y)  # Render the card back (assumes card_back has a `paint` method)
+
+        # Instructions for the player
+        arcade.draw_text(
+            "Click on cards to select them.",
+            SCREEN_WIDTH // 2,
+            100,
+            arcade.color.WHITE,
+            DEFAULT_FONT_SIZE / 1.5,
+            width=SCREEN_WIDTH,
+            align="center",
+            anchor_x="center"
+        )
+
+        
 
 
 def main():
