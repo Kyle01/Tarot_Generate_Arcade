@@ -8,6 +8,11 @@ class Card:
         self.name = name 
         self.file_name = file_name
         self.position = positions[0]
+        texture = arcade.load_texture(f"./assets/copyright/{self.file_name}")
+        self.width = texture.width
+        self.height = texture.height
+        self.x = 0
+        self.y = 0
 
     def __str__(self):
         return f"{self.name} - {self.position}"
@@ -15,12 +20,28 @@ class Card:
     def reverse(self):
         self.position = positions[1]
 
-    def paint(self, x, y):
-        texture = arcade.load_texture(f"./assets/copyright/{self.file_name}")
+    def paint(self, x, y, show_front):
+        self.x = x
+        self.y = y
+        texture_file = f"./assets/copyright/{self.file_name}" if show_front else "./assets/copyright/backing_diamond.png"
+        texture = arcade.load_texture(texture_file)
         if self.position == positions[0]:
             arcade.draw_scaled_texture_rectangle(x, y, texture, 1.8, 0)
         else:
             arcade.draw_scaled_texture_rectangle(x, y, texture, 1.8, 180)
+
+    def is_clicked(self, mouse_x, mouse_y):
+        """ Check if the card is clicked based on mouse coordinates. """
+        half_width = (self.width * 1.8) // 2
+        half_height = (self.height * 1.8) // 2
+        clicked = (self.x - half_width < mouse_x < self.x + half_width and
+                self.y - half_height < mouse_y < self.y + half_height)
+        if clicked:
+            print(f"Card clicked: {self.name} at ({self.x}, {self.y})")
+        else:
+            print(f"Missed card: {self.name} at ({self.x}, {self.y})")
+
+        return clicked
 
 
 class TarotDeck:

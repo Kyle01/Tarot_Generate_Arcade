@@ -54,45 +54,47 @@ class TarotGame(arcade.Window):
             
 
     def on_mouse_press(self, x, y, _button, _key_modifiers):
-        if self.stage == GameState.INTRO and x > 100 and x < 450 and y > 100 and y < 200:
-            self.set_intention(CATEGORIES[0])
-            return 
-        if self.stage == GameState.INTRO and x > 600 and x < 950 and y > 100 and y < 200:
-            self.set_intention(CATEGORIES[1])
-            return
-        if self.stage == GameState.SPREAD:
+        if self.stage == GameState.INTRO:
+        
+            if 100 < x < 450 and 100 < y < 200:
+                self.set_intention(CATEGORIES[0])
+                return
+            if 600 < x < 950 and 100 < y < 200:
+                self.set_intention(CATEGORIES[1])
+                return
+
+        elif self.stage == GameState.SPREAD:
+           
             for card in self.deck.cards:
-                if card.is_clicked(x, y):  # Assuming `is_clicked` checks bounds
-                    if card not in self.selected_cards:  # Prevent duplicate selections
+                if card.is_clicked(x, y):
+                    if card not in self.selected_cards:  
                         self.selected_cards.append(card)
 
-                    # Transition to the drawn stage when 3 cards are selected
+                    # transition to the loading stage when 3 cards are selected -- this should change
                     if len(self.selected_cards) == 3:
                         self.drawn_cards = self.selected_cards
-                        self.stage = GameState.Loading
+                        self.start_loading()
 
     def set_intention(self, intention_text):
-        """ Set the intention and transition to the loading screen. """
+        """ Set the intention and transition to the spread stage. """
         self.intention = intention_text
+        self.stage = GameState.SPREAD
+        self.selected_cards = []  # Reset selected cards for the new spread
+        self.deck = TarotDeck()  # Prepare the deck for the spread
+        self.deck.shuffle()
+
+
+    def start_loading(self):
         self.stage = GameState.LOADING
         self.loading_progress = 0.0
-        self.api_call_complete = False  # track api call
+        self.api_call_complete = False
 
-        # get the deck rdy for Drawn stage This should go away with card select screen
-        self.deck = TarotDeck()
-        self.deck.shuffle()
-        self.drawn_cards = self.deck.draw(3)
-
-        # start api call as thread
-        
+        # Start the API call in a background thread
         def api_call():
             self.fortune = self.tarot_bot.fortune(self.drawn_cards, self.intention)
             self.api_call_complete = True
 
         threading.Thread(target=api_call).start()
-
-    def start_loading()
-
 
     def on_update(self, delta_time):
         """ Update the game state. """
@@ -167,7 +169,7 @@ class TarotGame(arcade.Window):
                 align="left")
             
         for i, card in enumerate(self.drawn_cards):
-            card.paint(150 + (i * 300), 550)
+            card.paint(150 + (i * 300), 550, show_front = True)
 
         arcade.draw_text("Fortune:",
                         100,
@@ -250,9 +252,7 @@ class TarotGame(arcade.Window):
         for i, card in enumerate(self.deck.cards):  # Assuming `self.deck.cards` holds the cards
             x = 150 + (i * card_spacing)  # Adjust horizontal position
             y = SCREEN_HEIGHT // 2
-
-            # Draw the card back instead of the front
-            self.card_back.paint(x, y)  # Render the card back (assumes card_back has a `paint` method)
+            card.paint(x, y, show_front=False)  
 
         # Instructions for the player
         arcade.draw_text(
