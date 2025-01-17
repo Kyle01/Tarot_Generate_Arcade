@@ -5,13 +5,20 @@ from tarot_bot import TarotBot
 from enum import Enum
 
 # Screen title and size
-SCREEN_WIDTH = 1024
-SCREEN_HEIGHT = 768
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 960
 DEFAULT_LINE_HEIGHT = 24
 DEFAULT_FONT_SIZE = 16
 
-INTRO_TEXT = "Ah, welcome, traveler! I am Mama Nyah, and the spirits have brought you to me for a reason. Sit, relax, and let us see what the universe whispers for you. But first, tell me—what is your intention? What does your heart seek to know, heal, or discover? Speak it, and we will find the truth together."
-CATEGORIES = ["Love Life", "Professional Development"]
+INTRO_TEXT = (
+    "Ah, welcome, traveler!\n\n"
+    "I am Mama Nyah, and the spirits have brought you to me for a reason.\n\n"
+    "Sit, relax, and let us see what the universe whispers for you.\n\n"
+    "But first, tell me—what is your intention? What does your heart seek to know, heal, or discover?\n\n"
+    "Speak it, and we will find the truth together."
+)
+
+CATEGORIES = ["Love Life", "Professional Development", "Family and Friends", "Health", "Personal Growth", "Gain Clarity"]
 
 class GameState(Enum):
     INTRO = 1,
@@ -30,8 +37,10 @@ class TarotGame(arcade.Window):
         self.drawn_cards = None
         self.fortune = None
         self.hovered_card = None
+        self.hovered_button = None  # Track which button is hovered
+        self.clicked_button = None  # Track which button is clicked
         
-
+        self.background_image = arcade.load_texture("assets\original\TableClothbigger.png")
         arcade.set_background_color(arcade.color.IMPERIAL_PURPLE)
 
     def setup(self):
@@ -44,6 +53,8 @@ class TarotGame(arcade.Window):
     
         self.clear()
 
+        arcade.draw_lrwh_rectangle_textured(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, self.background_image)
+
         if self.stage == GameState.INTRO:
             self.__draw_intro_stage()
         elif self.stage == GameState.DRAWN:
@@ -55,15 +66,25 @@ class TarotGame(arcade.Window):
             
 
     def on_mouse_press(self, x, y, _button, _key_modifiers):
-        if self.stage == GameState.INTRO:
         
-            if 100 < x < 450 and 100 < y < 200:
-                self.set_intention(CATEGORIES[0])
-                return
-            if 600 < x < 950 and 100 < y < 200:
-                self.set_intention(CATEGORIES[1])
-                return
+        if self.stage == GameState.INTRO:
+            # Button positions
+            button_positions = [
+                (275, 300),  # Button 0
+                (650, 300),  # Button 1
+                (1025, 300),  # Button 2
+                (275, 150),  # Button 3
+                (650, 150),  # Button 4
+                (1025, 150)  # Button 5
+            ]
 
+            # Check if a button is clicked
+            for i, (bx, by) in enumerate(button_positions):
+                if bx - 175 <= x <= bx + 175 and by - 100 <= y <= by + 100:  # Button bounds
+                    self.clicked_button = f"button_{i}"
+                    self.set_intention(CATEGORIES[i])  # Set intention based on button index
+                    return
+            
         elif self.stage == GameState.SPREAD:
            
             for card in reversed(self.deck.cards):
@@ -82,6 +103,23 @@ class TarotGame(arcade.Window):
     def on_mouse_motion(self, x, y, dx, dy):
         """ Handle mouse movement to track hovered card. """
         self.hovered_card = None  
+
+        self.hovered_button = None
+
+        if self.stage == GameState.INTRO:
+            # Loop through button positions and detect hover
+            for i, (bx, by) in enumerate([
+                (275, 300),  # Button 0
+                (650, 300),  # Button 1
+                (1025, 300),  # Button 2
+                (275, 150),  # Button 3
+                (650, 150),  # Button 4
+                (1025, 150)  # Button 5
+            ]):
+                # Check if the mouse is within the button's bounds
+                if bx - 175 <= x <= bx + 175 and by - 100 <= y <= by + 100:
+                    self.hovered_button = f"button_{i}"
+                    break
 
         if self.stage == GameState.SPREAD:
             # do reverse for topmost card
@@ -128,52 +166,51 @@ class TarotGame(arcade.Window):
 
 
     def __draw_intro_stage(self):
-        arcade.draw_text(INTRO_TEXT,
-                            0,
-                            SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 1.5,
-                            arcade.color.WHITE,
-                            DEFAULT_FONT_SIZE,
-                            width=SCREEN_WIDTH,
-                            multiline=True,
-                            align="center")
-            
-        arcade.draw_lrtb_rectangle_filled(100, 
-                                        450, 
-                                        200, 
-                                        100,
-                                        arcade.color.IMPERIAL_BLUE)
-        arcade.draw_lrtb_rectangle_filled(125, 
-                                        425, 
-                                        175, 
-                                        125,
-                                    arcade.color.INCHWORM)
-        
-        arcade.draw_text(CATEGORIES[0],
-                        125,
-                        145,
-                        arcade.color.BLACK,
-                        DEFAULT_FONT_SIZE,
-                        width=250,
-                        align="center")
-        
-        arcade.draw_lrtb_rectangle_filled(600, 
-                                        950, 
-                                        200, 
-                                        100,
-                                        arcade.color.IMPERIAL_BLUE)
-        arcade.draw_lrtb_rectangle_filled(625, 
-                                        925, 
-                                        175, 
-                                        125,
-                                    arcade.color.INCHWORM)
-        
-        arcade.draw_text(CATEGORIES[1],
-                        625,
-                        145,
-                        arcade.color.BLACK,
-                        DEFAULT_FONT_SIZE,
-                        width=300,
-                        align="center")
+        # Load textures
+        self.button_texture = arcade.load_texture("assets/original/Purple Button Big.png")
+        self.button_pressed_texture = arcade.load_texture("assets/original/Purple Button Pressed Big.png")
+
+        # Intro text
+        arcade.draw_text(
+            INTRO_TEXT,
+            0,
+            SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 5,
+            arcade.color.WHITE,
+            DEFAULT_FONT_SIZE,
+            width=SCREEN_WIDTH,
+            multiline=True,
+            align="center",
+            font_name="Old School Adventures"
+        )
+
+        # Button positions
+        button_positions = [
+            (275, 300),  # Button 0
+            (650, 300),  # Button 1
+            (1025, 300),  # Button 2
+            (275, 150),  # Button 3
+            (650, 150),    # Button 4
+            (1025, 150)     # Button 5
+        ]
+
+        # Loop through categories and draw buttons
+        for i, (x, y) in enumerate(button_positions):
+            button_texture = (
+                self.button_pressed_texture if self.hovered_button == f"button_{i}" else self.button_texture
+            )
+            arcade.draw_texture_rectangle(x, y, 350, 200, button_texture)
+
+            arcade.draw_text(
+                CATEGORIES[i],
+                x - 125,  # Center text
+                y,   # Position text slightly below center
+                arcade.color.WHITE,
+                DEFAULT_FONT_SIZE,
+                width=250,
+                align="center",
+                font_name="Old School Adventures"
+            )
+
 
     def __draw_drawn_stage(self):
         arcade.draw_text("Cards:",
