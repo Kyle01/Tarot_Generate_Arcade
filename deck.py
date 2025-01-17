@@ -20,13 +20,16 @@ class Card:
     def reverse(self):
         self.position = positions[1]
 
-    def paint(self, x, y, show_front, is_hovered = False):
+    def paint(self, x, y, show_front, is_hovered = False, scale =1.0):
         self.x = x
         self.y = y
 
+        width = self.width * scale
+        height = self.height * scale
+
         if is_hovered:
             y += 20
-            arcade.draw_rectangle_outline(x, y, self.width * 1.8, self.height * 1.8, arcade.color.LIGHT_BLUE, 5)
+            arcade.draw_rectangle_outline(x, y, width * 1.8, height * 1.8, arcade.color.LIGHT_BLUE, 5)
 
         texture_file = f"./assets/copyright/{self.file_name}" if show_front else "./assets/copyright/backing_diamond.png"
         texture = arcade.load_texture(texture_file)

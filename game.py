@@ -39,7 +39,9 @@ class TarotGame(arcade.Window):
         self.hovered_card = None
         self.hovered_button = None  # Track which button is hovered
         self.clicked_button = None  # Track which button is clicked
-        
+        self.current_revealed_card = None
+        self.reveal_active= False
+        self.start_reading_button_active = False
         self.background_image = arcade.load_texture("assets\original\TableClothbigger.png")
         arcade.set_background_color(arcade.color.IMPERIAL_PURPLE)
 
@@ -91,11 +93,25 @@ class TarotGame(arcade.Window):
                 if card.is_clicked(x, y):
                     if card not in self.selected_cards:  
                         self.selected_cards.append(card)
+                        self.deck.cards.remove(card)
+                        self.reveal_card(card)
                     
                     print(f"Selected topmost card: {card.name}")
 
                     break
-                    
+            if self.reveal_active:
+                if SCREEN_WIDTH // 2 - 75 <= x <= SCREEN_WIDTH // 2 + 75 and 50 <= y <= 100:
+                    self.reveal_active_active = False  # Dismiss popup
+                    self.current_revealed_card = None  # Clear the current popup card
+                    if len(self.selected_cards) == 3:
+                        self.start_reading_button_active = True  # Show "Begin Reading"
+                    return
+            if self.start_reading_button_active:
+                if SCREEN_WIDTH // 2 - 75 <= x <= SCREEN_WIDTH // 2 + 75 and 50 <= y <= 100:
+                    self.stage = GameState.LOADING  # Proceed to the next stage
+                    self.start_reading_button_active = False
+                    return
+
             # transition to the loading stage when 3 cards are selected -- this should change
             if len(self.selected_cards) == 3:
                 self.drawn_cards = self.selected_cards
@@ -123,10 +139,19 @@ class TarotGame(arcade.Window):
 
         if self.stage == GameState.SPREAD:
             # do reverse for topmost card
+
             for card in reversed(self.deck.cards):
                 if card.is_clicked(x, y): 
                     self.hovered_card = card
                     break
+           
+        # Check if hovering over "Pull Next Card" button
+            if self.reveal_active and SCREEN_WIDTH // 2 - 175 <= x <= SCREEN_WIDTH // 2 + 175 and 25 <= y <= 125:
+                self.hovered_button = "pull_next"
+
+            # Check if hovering over "Begin Reading" button
+            elif self.start_reading_button_active and SCREEN_WIDTH // 2 - 175 <= x <= SCREEN_WIDTH // 2 + 175 and 25 <= y <= 125:
+                self.hovered_button = "begin_reading"
 
 
     def set_intention(self, intention_text):
@@ -137,6 +162,9 @@ class TarotGame(arcade.Window):
         self.deck = TarotDeck()  # prepare deck
         self.deck.shuffle()
 
+    def reveal_card(self, card):
+        self.current_revealed_card = card
+        self.reveal_active= True
 
     def start_loading(self):
         self.stage = GameState.LOADING
@@ -289,6 +317,7 @@ class TarotGame(arcade.Window):
 
     def __draw_spread_stage(self):
         """ Render the card spread stage with the backs of the cards. """
+        # Draw instruction text
         arcade.draw_text(
             "Choose 3 Cards:",
             SCREEN_WIDTH // 2,
@@ -300,14 +329,56 @@ class TarotGame(arcade.Window):
             anchor_x="center"
         )
 
-        # spread cards here
-        card_spacing = (SCREEN_WIDTH - 300) // len(self.deck.cards)  # dynamic spacing
-        for i, card in enumerate(self.deck.cards):  
-            x = 150 + (i * card_spacing)  
+        # Draw the cards
+        card_spacing = (SCREEN_WIDTH - 300) // len(self.deck.cards)  # Dynamic spacing
+        for i, card in enumerate(self.deck.cards):
+            x = 150 + (i * card_spacing)
             y = SCREEN_HEIGHT // 2
-            card.paint(x, y, show_front=False, is_hovered=(card == self.hovered_card))  
+            card.paint(x, y, show_front=False, is_hovered=(card == self.hovered_card))
 
-        
+        # Draw previously selected cards in the left corner
+        for i, card in enumerate(self.selected_cards):
+            x = 75
+            y = SCREEN_HEIGHT - 150 - (i * 220)  # Spaced out vertically
+            card.paint(x, y, show_front=True)
+
+        # Draw "Pull Next Card" button
+        if self.reveal_active:
+            button_texture = (
+                self.button_pressed_texture if self.hovered_button == "pull_next" else self.button_texture
+            )
+            arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, 75, 350, 100, button_texture)
+
+            arcade.draw_text(
+                "Pull Next Card",
+                SCREEN_WIDTH // 2 - 125,
+                60,
+                arcade.color.WHITE,
+                DEFAULT_FONT_SIZE,
+                width=250,
+                align="center",
+                font_name="Old School Adventures"
+            )
+
+        # Draw "Begin Reading" button if ready
+        if self.start_reading_button_active:
+            button_texture = (
+                self.button_pressed_texture if self.hovered_button == "begin_reading" else self.button_texture
+            )
+            arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, 75, 350, 100, button_texture)
+
+            arcade.draw_text(
+                "Begin Reading",
+                SCREEN_WIDTH // 2 - 125,
+                60,
+                arcade.color.WHITE,
+                DEFAULT_FONT_SIZE,
+                width=250,
+                align="center",
+                font_name="Old School Adventures"
+            )
+
+
         arcade.draw_text(
             "Click on cards to select them.",
             SCREEN_WIDTH // 2,
@@ -318,6 +389,8 @@ class TarotGame(arcade.Window):
             align="center",
             anchor_x="center"
         )
+
+
 
         
 
