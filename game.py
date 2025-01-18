@@ -294,7 +294,8 @@ class TarotGame(arcade.Window):
 
     def __draw_loading_stage(self):
         """ Render the loading screen. """
-       
+
+        # Draw Loading Text
         arcade.draw_text(
             "Loading, please wait...",
             SCREEN_WIDTH // 2,
@@ -303,29 +304,65 @@ class TarotGame(arcade.Window):
             DEFAULT_FONT_SIZE,
             width=SCREEN_WIDTH,
             align="center",
-            anchor_x="center"
+            anchor_x="center",
+            font_name="Old School Adventures"
         )
-        
-    
-        arcade.draw_lrtb_rectangle_filled(
-            200, 
-            800, 
-            300, 
-            250, 
-            arcade.color.IMPERIAL_BLUE
+
+        # Progress bar dimensions
+        bar_x = 300  # Starting x position of the bar
+        bar_y = 275  # y position of the bar
+        bar_height = 300  # Height of the progress bar
+        total_bar_width = 700  # Total width of the progress bar background
+        progress_width = self.loading_progress * total_bar_width  # Dynamic width of the stretchable section
+
+        # Load textures
+        background_texture = arcade.load_texture("assets/original/pBarBackground.png")
+        stretch_texture = arcade.load_texture("assets/original/pBarStretch.png")
+        front_texture = arcade.load_texture("assets/original/pBarFront.png")
+        end_texture = arcade.load_texture("assets/original/pBarEnd.png")
+
+        # Draw the static background
+        arcade.draw_texture_rectangle(
+            bar_x + total_bar_width // 2,  # Centered horizontally
+            bar_y + bar_height // 2,  # Centered vertically
+            total_bar_width,  # Full width
+            bar_height,  # Full height
+            background_texture
         )
-        
-        
-        progress_width = 200 + (self.loading_progress * 600)  # Scales from 200 to 800
-        arcade.draw_lrtb_rectangle_filled(
-            200, 
-            progress_width, 
-            300, 
-            250, 
-            arcade.color.INCHWORM
-        )
-        
-       
+
+        # Draw the stretchable section of the progress bar
+        current_x = bar_x  # Start position for the stretchable section
+        while current_x < bar_x + progress_width - 25:  # Leave space for the front cap
+            arcade.draw_texture_rectangle(
+                current_x + 25,  # Centered segment
+                bar_y + bar_height // 2,
+                50,  # Width of each segment
+                bar_height,
+                stretch_texture
+            )
+            current_x += 50  # Move to the next segment
+
+        # Draw the front cap of the progress bar
+        if progress_width > 0:
+            arcade.draw_texture_rectangle(
+                bar_x + progress_width,  # At the end of the progress bar
+                bar_y + bar_height // 2,
+                50,  # Width of the front cap
+                bar_height,
+                front_texture
+            )
+
+        # Draw the right end cap only if the progress bar is full
+        if self.loading_progress >= 1.0:
+            arcade.draw_texture_rectangle(
+                bar_x + total_bar_width,  # At the far right edge
+                bar_y + bar_height // 2,
+                50,  # Width of the end cap
+                bar_height,
+                end_texture
+            )
+
+        # Draw Additional Text
         arcade.draw_text(
             "Please hold on while we prepare your reading...",
             SCREEN_WIDTH // 2,
@@ -334,8 +371,16 @@ class TarotGame(arcade.Window):
             DEFAULT_FONT_SIZE / 1.5,
             width=SCREEN_WIDTH - 200,
             align="center",
-            anchor_x="center"
+            anchor_x="center",
+            font_name="Old School Adventures"
         )
+
+        # Draw the selected cards
+        for i, card in enumerate(self.drawn_cards):
+            x = 350 + (i * 275)  # Spaced out horizontally
+            y = 575  # Fixed y-coordinate
+            card.paint(x, y, show_front=True, is_small=True)
+
 
     def __draw_spread_stage(self):
         """ Render the card spread stage with the backs of the cards. """
