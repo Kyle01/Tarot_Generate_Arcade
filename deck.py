@@ -14,29 +14,33 @@ class Card:
         self.x = 0
         self.y = 0
 
+
+
     def __str__(self):
         return f"{self.name} - {self.position}"
 
     def reverse(self):
         self.position = positions[1]
 
-    def paint(self, x, y, show_front, is_hovered = False, scale =1.0):
+    def paint(self, x, y, show_front, is_hovered = False, scale =1.8, is_small = False):
         self.x = x
         self.y = y
-
+        if is_small:
+           scale /= 2
+    
         width = self.width * scale
         height = self.height * scale
 
         if is_hovered:
             y += 20
-            arcade.draw_rectangle_outline(x, y, width * 1.8, height * 1.8, arcade.color.LIGHT_BLUE, 5)
+            arcade.draw_rectangle_outline(x, y, width, height, arcade.color.LIGHT_BLUE, 5)
 
-        texture_file = f"./assets/copyright/{self.file_name}" if show_front else "./assets/copyright/backing_diamond.png"
+        texture_file = f"./assets/copyright/{self.file_name}" if show_front else "./assets/copyright/backing_diamond_2x.png"
         texture = arcade.load_texture(texture_file)
         if self.position == positions[0]:
-            arcade.draw_scaled_texture_rectangle(x, y, texture, 1.8, 0)
+            arcade.draw_scaled_texture_rectangle(x, y, texture, scale, 0)
         else:
-            arcade.draw_scaled_texture_rectangle(x, y, texture, 1.8, 180)
+            arcade.draw_scaled_texture_rectangle(x, y, texture, scale, 180)
 
     def is_clicked(self, mouse_x, mouse_y):
         """ Check if the card is clicked based on mouse coordinates. """
@@ -132,7 +136,7 @@ class TarotDeck:
             Card("Queen of Wands", "wandsQ.png"),
             Card("King of Wands", "wandsK.png")
         ]
-        self.card_back = Card("Card Back", "backing_diamond.png")
+        self.card_back = Card("Card Back", "backing_diamond_2x.png")
     def __str__(self):
         returned_str = ""
         for card in self.cards:

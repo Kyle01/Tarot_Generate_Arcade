@@ -333,7 +333,7 @@ class TarotGame(arcade.Window):
         """ Render the card spread stage with the backs of the cards. """
         if self.reveal_active and self.current_revealed_card:
             # Draw the revealed card in the center
-            self.current_revealed_card.paint(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, show_front=True, scale=2.0)
+            self.current_revealed_card.paint(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, show_front=True, scale=1.8, is_small=False)
 
             if len(self.selected_cards) < 3:
                     button_texture = (
@@ -378,13 +378,13 @@ class TarotGame(arcade.Window):
         for i, card in enumerate(self.deck.cards):
             x = 150 + (i * card_spacing)
             y = SCREEN_HEIGHT // 2
-            card.paint(x, y, show_front=False, is_hovered=(card == self.hovered_card))
+            card.paint(x, y, show_front=False, is_hovered=(card == self.hovered_card), is_small=True)
 
         # Draw previously selected cards in the left corner
         for i, card in enumerate(self.selected_cards):
-            x = 75
-            y = SCREEN_HEIGHT - 150 - (i * 220)  # Spaced out vertically
-            card.paint(x, y, show_front=True)
+            x = 300 + (i * 200)  # Spaced out horizontally with 150 pixels between cards
+            y = 200  # Fixed y-coordinate for all cards
+            card.paint(x, y, show_front=True, is_small=True)
 
        
 
