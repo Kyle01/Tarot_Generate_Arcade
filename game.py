@@ -1,5 +1,6 @@
 import arcade
 import threading
+import pyglet
 from deck import TarotDeck
 from tarot_bot import TarotBot
 from enum import Enum
@@ -9,6 +10,8 @@ SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 960
 DEFAULT_LINE_HEIGHT = 24
 DEFAULT_FONT_SIZE = 16
+FONT_PATH = r"assets\fonts\OldSchoolAdventures-42j9.ttf"
+
 
 INTRO_TEXT = (
     "Ah, welcome, traveler!\n\n"
@@ -44,6 +47,11 @@ class TarotGame(arcade.Window):
         self.start_reading_button_active = False
         self.background_image = arcade.load_texture("assets\original\TableClothbigger.png")
         arcade.set_background_color(arcade.color.IMPERIAL_PURPLE)
+       
+      
+        pyglet.font.add_file(FONT_PATH)  # Load the font file
+           
+
 
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
