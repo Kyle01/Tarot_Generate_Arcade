@@ -24,11 +24,15 @@ INTRO_TEXT = (
 CATEGORIES = ["Love Life", "Professional Development", "Family and Friends", "Health", "Personal Growth", "Gain Clarity"]
 
 class GameState(Enum):
-    INTRO = 1,
-    READING = 2,
-    LOADING = 3,
-    SPREAD = 4
-
+    TITLE =1
+    INTRO = 2
+    SPREAD = 3
+    LOADING = 4
+    READING_INTRO = 5
+    READING_CARD_1 = 6
+    READING_CARD_2 = 7
+    READING_CARD_3 = 8
+    READING_SUMMARY = 9
 class TarotGame(arcade.Window):
     """ Main application class. """
 
@@ -69,18 +73,25 @@ class TarotGame(arcade.Window):
 
         if self.stage == GameState.INTRO:
             self.__draw_intro_stage()
-        elif self.stage == GameState.READING:
-            self.__draw_reading_stage()
-        elif self.stage == GameState.LOADING:
-            self.__draw_loading_stage()
         elif self.stage == GameState.SPREAD:
             self.__draw_spread_stage()
+        elif self.stage == GameState.LOADING:
+            self.__draw_loading_stage()
+        elif self.stage in {
+            GameState.READING_INTRO,
+            GameState.READING_CARD_1,
+            GameState.READING_CARD_2,
+            GameState.READING_CARD_3,
+            GameState.READING_SUMMARY,
+        }:
+            self.__draw_reading_stage()  # Centralized logic for all reading sub-stages
             
 
     def on_mouse_press(self, x, y, _button, _key_modifiers):
         
-        if self.stage == GameState.INTRO:
-            # Button positions
+        
+
+        def mouse_press_intro(x, y):
             button_positions = [
                 (275, 300),  # Button 0
                 (650, 300),  # Button 1
@@ -97,8 +108,7 @@ class TarotGame(arcade.Window):
                     self.set_intention(CATEGORIES[i])  # Set intention based on button index
                     return
             
-        elif self.stage == GameState.SPREAD:
-           
+        def mouse_press_spread(x,y):
             if self.reveal_active:
                 if SCREEN_WIDTH // 2 - 175 <= x <= SCREEN_WIDTH // 2 + 175 and 25 <= y <= 125:
                     # Dismiss popup and place the revealed card in the corner
@@ -118,7 +128,7 @@ class TarotGame(arcade.Window):
             #     self.stage = GameState.LOADING  # Proceed to the next stage
             #     self.start_reading_button_active = False
             #     return
-            
+        
             if not self.reveal_active:
                 for card in reversed(self.deck.cards):
                     if card.is_clicked(x, y):
@@ -126,7 +136,59 @@ class TarotGame(arcade.Window):
                         self.reveal_card(card) 
                         # Trigger popup for selected card
                         return
+        def mouse_press_reading_intro(x,y):
+            # "Next Stage" button position
+            next_button_x = SCREEN_WIDTH // 2
+            next_button_y = 25
+            button_width = 175
+            button_height = 100
 
+            # Check if "Next Stage" button is clicked
+            if next_button_x <= x <= next_button_x + button_width and next_button_y <= y <= next_button_y + button_height:
+                self.advance_reading_stage()
+                return
+        
+        def mouse_press_reading_cards(x,y):
+            next_button_x = SCREEN_WIDTH // 2
+            next_button_y = 25
+            button_width = 175
+            button_height = 100
+
+            # Check if "Next Stage" button is clicked
+            if next_button_x <= x <= next_button_x + button_width and next_button_y <= y <= next_button_y + button_height:
+                self.advance_reading_stage()
+                return
+        
+        def mouse_press_reading_summary(x,y):
+            return
+
+        if self.stage == GameState.INTRO:
+            mouse_press_intro(x,y)
+        elif self.stage == GameState.SPREAD:
+            mouse_press_spread(x,y)
+        elif self.stage == GameState.READING_INTRO:
+            mouse_press_reading_intro(x,y)
+        elif self.stage in {
+            GameState.READING_CARD_1,
+            GameState.READING_CARD_2,
+            GameState.READING_CARD_3,
+        }:
+            mouse_press_reading_cards(x,y)
+        elif self.stage == GameState.READING_SUMMARY:
+            mouse_press_reading_summary(x,y)
+            
+    def advance_reading_stage(self):
+        """ Advance to the next reading stage. """
+        if self.stage == GameState.READING_INTRO:
+            self.stage = GameState.READING_CARD_1
+        elif self.stage == GameState.READING_CARD_1:
+            self.stage = GameState.READING_CARD_2
+        elif self.stage == GameState.READING_CARD_2:
+            self.stage = GameState.READING_CARD_3
+        elif self.stage == GameState.READING_CARD_3:
+            self.stage = GameState.READING_SUMMARY
+        elif self.stage == GameState.READING_SUMMARY:
+            print("Reading complete.")  # Placeholder for post-reading action
             
 
             
@@ -219,7 +281,7 @@ class TarotGame(arcade.Window):
                 self.loading_progress += delta_time / 2  
                 if self.loading_progress >= 1.0:
                     self.loading_progress = 1.0
-                    self.stage = GameState.READING
+                    self.stage = GameState.READING_INTRO
 
 
     def __draw_intro_stage(self):
@@ -270,33 +332,100 @@ class TarotGame(arcade.Window):
 
 
     def __draw_reading_stage(self):
-        arcade.draw_text("Cards:",
-                100,
-                SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 1.5,
-                arcade.color.WHITE,
-                DEFAULT_FONT_SIZE,
-                width=500,
-                align="left")
-            
-        for i, card in enumerate(self.drawn_cards):
-            card.paint(150 + (i * 300), 550, show_front = True)
 
-        arcade.draw_text("Fortune:",
-                        100,
-                        400,
-                        arcade.color.WHITE,
-                        DEFAULT_FONT_SIZE,
-                        width=500,
-                        align="left")
+
+        if self.stage == GameState.READING_INTRO:
+            self._draw_reading_intro()  # Stage 1: Show all cards and intro
+
+        elif self.stage == GameState.READING_CARD_1:
+            self._draw_reading_card(1)  # Stage 2: Show card 1
+
+        elif self.stage == GameState.READING_CARD_2:
+            self._draw_reading_card(2)  # Stage 3: Show card 2
+
+        elif self.stage == GameState.READING_CARD_3:
+            self._draw_reading_card(3)  # Stage 4: Show card 3
+
+        elif self.stage == GameState.READING_SUMMARY:
+            self._draw_reading_summary()  # Stage 5: Show all cards and summary
+
+    def _draw_reading_intro(self):
+        """ Render the intro stage with all cards shown. """
+        # Placeholder logic
+        arcade.draw_text(
+            "Welcome to your reading. Here are your cards:",
+            SCREEN_WIDTH // 2,
+            SCREEN_HEIGHT - 50,
+            arcade.color.WHITE,
+            font_size=24,
+            anchor_x="center"
+        )
+
+        arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, 100, 350, 200, self.button_texture)
+
+        for i, card in enumerate(self.drawn_cards):
+            x = 350 + (i * 275)
+            y = 400
+            card.paint(x, y, show_front=True)
+
+    def _draw_reading_card(self, card_index):
+        """ Render a single card stage. """
+        # Placeholder logic for displaying one card
+        arcade.draw_text(
+            f"Focusing on card {card_index}:",
+            SCREEN_WIDTH // 2,
+            SCREEN_HEIGHT - 50,
+            arcade.color.WHITE,
+            font_size=24,
+            anchor_x="center"
+        )
+        card = self.drawn_cards[card_index - 1]  # Cards are 0-indexed
+        card.paint(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, show_front=True)
+
+    def _draw_reading_summary(self):
+        """ Render the summary stage with all cards and a summary. """
+        # Placeholder logic
+        arcade.draw_text(
+            "Your reading is complete. Here's a summary:",
+            SCREEN_WIDTH // 2,
+            SCREEN_HEIGHT - 50,
+            arcade.color.WHITE,
+            font_size=24,
+            anchor_x="center"
+        )
+        for i, card in enumerate(self.drawn_cards):
+            x = 350 + (i * 275)
+            y = 400
+            card.paint(x, y, show_front=True)
+
+
+        # arcade.draw_text("Cards:",
+        #         100,
+        #         SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 1.5,
+        #         arcade.color.WHITE,
+        #         DEFAULT_FONT_SIZE,
+        #         width=500,
+        #         align="left")
+            
+        # for i, card in enumerate(self.drawn_cards):
+        #     card.paint(150 + (i * 300), 550, show_front = True)
+
+        # arcade.draw_text("Fortune:",
+        #                 100,
+        #                 400,
+        #                 arcade.color.WHITE,
+        #                 DEFAULT_FONT_SIZE,
+        #                 width=500,
+        #                 align="left")
         
-        arcade.draw_text(self.fortune,
-                        100,
-                        350,
-                        arcade.color.WHITE,
-                        DEFAULT_FONT_SIZE / 1.5,
-                        multiline=True,
-                        width=SCREEN_WIDTH - 100,
-                        align="left")
+        # arcade.draw_text(self.fortune,
+        #                 100,
+        #                 350,
+        #                 arcade.color.WHITE,
+        #                 DEFAULT_FONT_SIZE / 1.5,
+        #                 multiline=True,
+        #                 width=SCREEN_WIDTH - 100,
+        #                 align="left")
 
 
     def __draw_loading_stage(self):
