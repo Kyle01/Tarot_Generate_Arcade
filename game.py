@@ -25,7 +25,7 @@ CATEGORIES = ["Love Life", "Professional Development", "Family and Friends", "He
 
 class GameState(Enum):
     INTRO = 1,
-    DRAWN = 2,
+    READING = 2,
     LOADING = 3,
     SPREAD = 4
 
@@ -69,8 +69,8 @@ class TarotGame(arcade.Window):
 
         if self.stage == GameState.INTRO:
             self.__draw_intro_stage()
-        elif self.stage == GameState.DRAWN:
-            self.__draw_drawn_stage()
+        elif self.stage == GameState.READING:
+            self.__draw_reading_stage()
         elif self.stage == GameState.LOADING:
             self.__draw_loading_stage()
         elif self.stage == GameState.SPREAD:
@@ -219,7 +219,7 @@ class TarotGame(arcade.Window):
                 self.loading_progress += delta_time / 2  
                 if self.loading_progress >= 1.0:
                     self.loading_progress = 1.0
-                    self.stage = GameState.DRAWN
+                    self.stage = GameState.READING
 
 
     def __draw_intro_stage(self):
@@ -269,7 +269,7 @@ class TarotGame(arcade.Window):
             )
 
 
-    def __draw_drawn_stage(self):
+    def __draw_reading_stage(self):
         arcade.draw_text("Cards:",
                 100,
                 SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 1.5,
@@ -306,9 +306,9 @@ class TarotGame(arcade.Window):
         arcade.draw_text(
             "Loading, please wait...",
             SCREEN_WIDTH // 2,
-            SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 2,
+            SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 4,
             arcade.color.WHITE,
-            DEFAULT_FONT_SIZE,
+            DEFAULT_FONT_SIZE * 1.5,
             width=SCREEN_WIDTH,
             align="center",
             anchor_x="center",
@@ -393,7 +393,7 @@ class TarotGame(arcade.Window):
             SCREEN_WIDTH // 2,
             200,
             arcade.color.WHITE,
-            DEFAULT_FONT_SIZE / 1.5,
+            DEFAULT_FONT_SIZE,
             width=SCREEN_WIDTH - 200,
             align="center",
             anchor_x="center",
@@ -424,12 +424,12 @@ class TarotGame(arcade.Window):
                     )
                     button_text = "Begin Reading"
 
-            arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, 75, 350, 200, button_texture)
+            arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, 100, 350, 200, button_texture)
 
             arcade.draw_text(
                     button_text,
                     SCREEN_WIDTH // 2 - 125,
-                    60,
+                    85,
                     arcade.color.WHITE,
                     DEFAULT_FONT_SIZE,
                     width=250,
