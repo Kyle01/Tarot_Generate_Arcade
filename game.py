@@ -46,6 +46,8 @@ class TarotGame(arcade.Window):
         self.reveal_active= False
         self.start_reading_button_active = False
         self.background_image = arcade.load_texture("assets\original\TableClothbigger.png")
+        self.frame_timer = 0
+        self.frame_rate = 0.4
         arcade.set_background_color(arcade.color.IMPERIAL_PURPLE)
        
       
@@ -203,6 +205,11 @@ class TarotGame(arcade.Window):
     def on_update(self, delta_time):
         """ Update the game state. """
         if self.stage == GameState.LOADING:
+            self.frame_timer += delta_time
+
+            if self.frame_timer >self.frame_rate *4:
+                self.frame_timer -= self.frame_rate *4
+
             if not self.api_call_complete:
                 # load progress bar with api is called
                 self.loading_progress += delta_time / 5  # adjust speed
@@ -309,11 +316,25 @@ class TarotGame(arcade.Window):
         )
 
         # Progress bar dimensions
-        bar_x = 300  # Starting x position of the bar
-        bar_y = 275  # y position of the bar
-        bar_height = 300  # Height of the progress bar
-        total_bar_width = 700  # Total width of the progress bar background
-        progress_width = self.loading_progress * total_bar_width  # Dynamic width of the stretchable section
+        bar_x = 100  # Starting x position of the bar
+        bar_y = 300  # y position of the bar
+        bar_height = 65  # Height of the progress bar
+        cap_width = 35
+        total_bar_width = 1050  # Total width of the progress bar background
+        progress_width = self.loading_progress * (total_bar_width-50)  # Dynamic width of the stretchable section
+        frame_width = 3296 //4
+        frame_height = 68
+
+
+        progress_bar_sprites = arcade.load_spritesheet(
+                "assets\original\pBarBackgroundSpriteSheet.png",  # Path to the sprite sheet
+                sprite_width=frame_width,  # Width of each frame
+                sprite_height=frame_height,  # Height of each frame
+                columns=4,  # Number of columns in the sprite sheet
+                count=4  # Total number of frames
+            )
+        
+        frame_index = int(self.frame_timer // self.frame_rate) % 4 
 
         # Load textures
         background_texture = arcade.load_texture("assets/original/pBarBackground.png")
@@ -321,6 +342,13 @@ class TarotGame(arcade.Window):
         front_texture = arcade.load_texture("assets/original/pBarFront.png")
         end_texture = arcade.load_texture("assets/original/pBarEnd.png")
 
+        arcade.draw_texture_rectangle(
+            bar_x + total_bar_width // 2,  # Centered at the current progress width
+            bar_y + bar_height // 2,
+            total_bar_width,  # Dynamic width
+            bar_height,
+            progress_bar_sprites[frame_index]  # Use the correct frame
+        )
         # Draw the static background
         arcade.draw_texture_rectangle(
             bar_x + total_bar_width // 2,  # Centered horizontally
@@ -330,37 +358,34 @@ class TarotGame(arcade.Window):
             background_texture
         )
 
+        progress_width = self.loading_progress * (total_bar_width - 50)  # Dynamic width
+
+        arcade.draw_texture_rectangle(
+            bar_x+25,  # At the end of the progress bar
+            bar_y + bar_height // 4 + 15,
+            cap_width,  # Width of the front cap
+            bar_height -10,
+            front_texture
+        )
+        arcade.draw_texture_rectangle(
+            bar_x + progress_width + cap_width / 2,  # Position at the end of the progress
+            bar_y + bar_height // 2,
+            cap_width,  # Width of the end cap
+            bar_height-10,
+            end_texture)
+
         # Draw the stretchable section of the progress bar
         current_x = bar_x  # Start position for the stretchable section
-        while current_x < bar_x + progress_width - 25:  # Leave space for the front cap
+        while current_x +25 < bar_x + progress_width:  # Leave space for the front cap
             arcade.draw_texture_rectangle(
-                current_x + 25,  # Centered segment
+                current_x+cap_width,  # Centered segment
                 bar_y + bar_height // 2,
-                50,  # Width of each segment
-                bar_height,
+                15,  # Width of each segment
+                bar_height-10,
                 stretch_texture
             )
-            current_x += 50  # Move to the next segment
+            current_x += 10  # Move to the next segment
 
-        # Draw the front cap of the progress bar
-        if progress_width > 0:
-            arcade.draw_texture_rectangle(
-                bar_x + progress_width,  # At the end of the progress bar
-                bar_y + bar_height // 2,
-                50,  # Width of the front cap
-                bar_height,
-                front_texture
-            )
-
-        # Draw the right end cap only if the progress bar is full
-        if self.loading_progress >= 1.0:
-            arcade.draw_texture_rectangle(
-                bar_x + total_bar_width,  # At the far right edge
-                bar_y + bar_height // 2,
-                50,  # Width of the end cap
-                bar_height,
-                end_texture
-            )
 
         # Draw Additional Text
         arcade.draw_text(
@@ -379,7 +404,7 @@ class TarotGame(arcade.Window):
         for i, card in enumerate(self.drawn_cards):
             x = 350 + (i * 275)  # Spaced out horizontally
             y = 575  # Fixed y-coordinate
-            card.paint(x, y, show_front=True, is_small=True)
+            card.paint(x, y, show_front=True,scale=2.2, is_small=True)
 
 
     def __draw_spread_stage(self):
