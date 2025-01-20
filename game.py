@@ -57,7 +57,13 @@ class TarotGame(arcade.Window):
       
         pyglet.font.add_file(FONT_PATH)  # Load the font file
            
-
+        self.button_clickbox_width = 175
+        self.button_clickbox_height = 150
+        self.x_middle_button = SCREEN_WIDTH // 2
+        self.x_left_button = SCREEN_WIDTH // 4
+        self.x_right_button = SCREEN_WIDTH * .75
+        self.y_bottom_button = 25
+        
 
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
@@ -103,31 +109,28 @@ class TarotGame(arcade.Window):
 
             # Check if a button is clicked
             for i, (bx, by) in enumerate(button_positions):
-                if bx - 175 <= x <= bx + 175 and by - 100 <= y <= by + 100:  # Button bounds
+                if bx - self.button_clickbox_width <= x <= bx + self.button_clickbox_width and by <= y <= by + self.button_clickbox_height:  # Button bounds
                     self.clicked_button = f"button_{i}"
                     self.set_intention(CATEGORIES[i])  # Set intention based on button index
                     return
             
         def mouse_press_spread(x,y):
             if self.reveal_active:
-                if SCREEN_WIDTH // 2 - 175 <= x <= SCREEN_WIDTH // 2 + 175 and 25 <= y <= 125:
+                if self.x_middle_button - self.button_clickbox_width <= x <= self.x_middle_button + self.button_clickbox_width and self.y_bottom_button  <= y <= self.y_bottom_button  + self.button_clickbox_height:
                     # Dismiss popup and place the revealed card in the corner
                     self.reveal_active = False
     
                     self.current_revealed_card = None
-                    if len(self.selected_cards) == 3:
+                    if len(self.selected_cards) == 2:
                         self.start_reading_button_active = True
+                        print(f"is start reading active: {self.start_reading_button_active}")
                     if len(self.selected_cards) == 3:
                         self.drawn_cards = self.selected_cards
                         self.start_loading()
                         self.start_reading_button_active = False
+                        print(f"is start reading active: {self.start_reading_button_active}")
                     return
                     
-
-            # if self.start_reading_button_active and SCREEN_WIDTH // 2 - 175 <= x <= SCREEN_WIDTH // 2 + 175 and 25 <= y <= 125:
-            #     self.stage = GameState.LOADING  # Proceed to the next stage
-            #     self.start_reading_button_active = False
-            #     return
         
             if not self.reveal_active:
                 for card in reversed(self.deck.cards):
@@ -136,31 +139,29 @@ class TarotGame(arcade.Window):
                         self.reveal_card(card) 
                         # Trigger popup for selected card
                         return
+                    
         def mouse_press_reading_intro(x,y):
-            # "Next Stage" button position
-            next_button_x = SCREEN_WIDTH // 2
-            next_button_y = 25
-            button_width = 175
-            button_height = 100
-
-            # Check if "Next Stage" button is clicked
-            if next_button_x <= x <= next_button_x + button_width and next_button_y <= y <= next_button_y + button_height:
+            
+            if self.x_middle_button-self.button_clickbox_width <= x <= self.x_middle_button + self.button_clickbox_width and self.y_bottom_button <= y <= self.y_bottom_button + self.button_clickbox_height:
                 self.advance_reading_stage()
                 return
+            
+
         
         def mouse_press_reading_cards(x,y):
-            next_button_x = SCREEN_WIDTH // 2
-            next_button_y = 25
-            button_width = 175
-            button_height = 100
-
-            # Check if "Next Stage" button is clicked
-            if next_button_x <= x <= next_button_x + button_width and next_button_y <= y <= next_button_y + button_height:
+                        
+            if self.x_right_button-self.button_clickbox_width <= x <= self.x_right_button + self.button_clickbox_width and self.y_bottom_button  <= y <= self.y_bottom_button + self.button_clickbox_height:
                 self.advance_reading_stage()
+                return
+            if self.x_left_button - self.button_clickbox_width <= x <= self.x_left_button + self.button_clickbox_width and self.y_bottom_button <= y <= self.y_bottom_button +self.button_clickbox_height:
+                self.previous_reading_stage()
                 return
         
         def mouse_press_reading_summary(x,y):
-            return
+          
+            if self.x_middle_button - self.button_clickbox_width <= x <= self.x_middle_button + self.button_clickbox_width and self.y_bottom_button  <= y <= self.y_bottom_button +self.button_clickbox_height:
+                self.previous_reading_stage()
+                return
 
         if self.stage == GameState.INTRO:
             mouse_press_intro(x,y)
@@ -176,7 +177,7 @@ class TarotGame(arcade.Window):
             mouse_press_reading_cards(x,y)
         elif self.stage == GameState.READING_SUMMARY:
             mouse_press_reading_summary(x,y)
-            
+
     def advance_reading_stage(self):
         """ Advance to the next reading stage. """
         if self.stage == GameState.READING_INTRO:
@@ -189,7 +190,18 @@ class TarotGame(arcade.Window):
             self.stage = GameState.READING_SUMMARY
         elif self.stage == GameState.READING_SUMMARY:
             print("Reading complete.")  # Placeholder for post-reading action
-            
+
+    def previous_reading_stage(self):
+        """Return to previous reading stage"""
+        if self.stage == GameState.READING_CARD_1:
+            self.stage = GameState.READING_INTRO
+        elif self.stage == GameState.READING_CARD_2:
+            self.stage = GameState.READING_CARD_1
+        elif self.stage == GameState.READING_CARD_3:
+            self.stage = GameState.READING_CARD_2
+        elif self.stage == GameState.READING_SUMMARY:
+            self.stage = GameState.READING_CARD_3
+        
 
             
     def on_mouse_motion(self, x, y, dx, dy):
@@ -209,21 +221,34 @@ class TarotGame(arcade.Window):
                 (1025, 150)  # Button 5
             ]):
                 # Check if the mouse is within the button's bounds
-                if bx - 175 <= x <= bx + 175 and by - 100 <= y <= by + 100:
+                if bx - self.button_clickbox_width <= x <= bx + self.button_clickbox_width and by - 100 <= y <= by + 100:
                     self.hovered_button = f"button_{i}"
                     break
 
         if self.stage == GameState.SPREAD:
             # do reverse for topmost card
 
-            if self.reveal_active:
-                self.hovered_card = None
-                self.hovered_button = "pull_next" if SCREEN_WIDTH // 2 - 175 <= x <= SCREEN_WIDTH // 2 + 175 and 25 <= y <= 125 else None
-                return
-            
-            elif self.start_reading_button_active and SCREEN_WIDTH // 2 - 175 <= x <= SCREEN_WIDTH // 2 + 175 and 25 <= y <= 125:
-                self.hovered_button = "begin_reading"
+            if self.stage == GameState.SPREAD:
+    # Hover logic for topmost card
+                if self.reveal_active and not self.start_reading_button_active:
+                    self.hovered_card = None  # Ensure no card is hovered when revealing
+                    if self.x_middle_button - self.button_clickbox_width <= x <= self.x_middle_button + self.button_clickbox_width and \
+                    self.y_bottom_button <= y <= self.y_bottom_button + self.button_clickbox_height:
+                        self.hovered_button = "pull_next"
+                        # print(f"what is hovered: {self.hovered_button}")
+                    else:
+                        self.hovered_button = None  # Reset hover state if not within bounds
+                    return
+                elif self.reveal_active and self.start_reading_button_active:
+                    self.hovered_card = None
+                    if self.x_middle_button - self.button_clickbox_width <= x <= self.x_middle_button + self.button_clickbox_width and \
+                    self.y_bottom_button <= y <= self.y_bottom_button + self.button_clickbox_height:
+                        self.hovered_button = "begin_reading"
+                        # print(f"what is hovered: {self.hovered_button}")
 
+                    else:
+                        self.hovered_button = None  # Reset hover state if not within bounds
+                    return
             # Normal hover behavior
             self.hovered_card = None
             self.hovered_button = None
@@ -361,7 +386,23 @@ class TarotGame(arcade.Window):
             anchor_x="center"
         )
 
-        arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, 100, 350, 200, self.button_texture)
+        arcade.draw_texture_rectangle(
+            self.x_middle_button,
+            100,
+            350,
+            200,
+            self.button_texture)
+        
+        arcade.draw_text(
+                    "Next Card",
+                    self.x_middle_button - 125,
+                    85,
+                    arcade.color.WHITE,
+                    DEFAULT_FONT_SIZE,
+                    width=250,
+                    align="center",
+                    font_name="Old School Adventures"
+                )
 
         for i, card in enumerate(self.drawn_cards):
             x = 350 + (i * 275)
@@ -382,6 +423,42 @@ class TarotGame(arcade.Window):
         card = self.drawn_cards[card_index - 1]  # Cards are 0-indexed
         card.paint(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, show_front=True)
 
+        arcade.draw_texture_rectangle(
+            self.x_right_button,
+            100,
+            350,
+            200,
+            self.button_texture)
+        
+        arcade.draw_text(
+                    "Next Card",
+                    self.x_right_button - 125,
+                    85,
+                    arcade.color.WHITE,
+                    DEFAULT_FONT_SIZE,
+                    width=250,
+                    align="center",
+                    font_name="Old School Adventures"
+                )
+        
+        arcade.draw_texture_rectangle(
+            self.x_left_button,
+            100,
+            350,
+            200,
+            self.button_texture)
+        
+        arcade.draw_text(
+                    "Previous",
+                    self.x_left_button - 125,
+                    85,
+                    arcade.color.WHITE,
+                    DEFAULT_FONT_SIZE,
+                    width=250,
+                    align="center",
+                    font_name="Old School Adventures"
+                )
+
     def _draw_reading_summary(self):
         """ Render the summary stage with all cards and a summary. """
         # Placeholder logic
@@ -393,6 +470,29 @@ class TarotGame(arcade.Window):
             font_size=24,
             anchor_x="center"
         )
+
+        arcade.draw_texture_rectangle(
+            self.x_middle_button,
+            100,
+            350,
+            200,
+            self.button_texture)
+        
+        arcade.draw_text(
+                    "Previous",
+                    self.x_middle_button - 125,
+                    85,
+                    arcade.color.WHITE,
+                    DEFAULT_FONT_SIZE,
+                    width=250,
+                    align="center",
+                    font_name="Old School Adventures"
+                )
+
+        for i, card in enumerate(self.drawn_cards):
+            x = 350 + (i * 275)
+            y = 400
+            card.paint(x, y, show_front=True)
         for i, card in enumerate(self.drawn_cards):
             x = 350 + (i * 275)
             y = 400
@@ -542,22 +642,26 @@ class TarotGame(arcade.Window):
             # Draw the revealed card in the center
             self.current_revealed_card.paint(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, show_front=True, scale=1.8, is_small=False)
 
-            if len(self.selected_cards) < 3:
+            if len(self.selected_cards) <= 2:
+                    # print(f"what is hovered: {self.hovered_button}")
+                   
                     button_texture = (
                         self.button_pressed_texture if self.hovered_button == "pull_next" else self.button_texture
                     )
                     button_text = "Pull Next Card"
             else:
+                    # print(f"what is hovered: {self.hovered_button}")
+                    
                     button_texture = (
                         self.button_pressed_texture if self.hovered_button == "begin_reading" else self.button_texture
                     )
                     button_text = "Begin Reading"
 
-            arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, 100, 350, 200, button_texture)
+            arcade.draw_texture_rectangle(self.x_middle_button, 100, 350, 200, button_texture)
 
             arcade.draw_text(
                     button_text,
-                    SCREEN_WIDTH // 2 - 125,
+                    self.x_middle_button - 125,
                     85,
                     arcade.color.WHITE,
                     DEFAULT_FONT_SIZE,
