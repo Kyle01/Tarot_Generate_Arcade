@@ -1,6 +1,7 @@
 import arcade
 import threading
 import pyglet
+import textwrap
 from deck import TarotDeck
 from tarot_bot import TarotBot
 from enum import Enum
@@ -313,8 +314,23 @@ class TarotGame(arcade.Window):
         
         def api_call():
             self.fortune = self.tarot_bot.fortune(self.drawn_cards, self.intention)
-            self.api_call_complete = True
+            print(f"Raw fortune text:\n{self.fortune}")  # Debug the raw fortune
 
+            self.api_call_complete = True
+            paragraphs = self.fortune.split('\n')  # Split the fortune into paragraphs
+            print(f"Split paragraphs:\n{paragraphs}")  # Debug the split paragraphs
+
+            # Handle wrapping logic
+            default_width = 40
+            last_paragraph_width = 55
+            last_index = len(paragraphs) -1
+            wrapped_paragraphs = [
+                textwrap.fill(p.strip(), width=last_paragraph_width if i == last_index else default_width)
+                for i, p in enumerate(paragraphs) if p.strip()
+            ]
+
+            self.fortune = wrapped_paragraphs
+            print("\n\n".join(wrapped_paragraphs))
         threading.Thread(target=api_call).start()
 
     def on_update(self, delta_time):
@@ -405,14 +421,31 @@ class TarotGame(arcade.Window):
     def _draw_reading_intro(self):
         """ Render the intro stage with all cards shown. """
         # Placeholder logic
-        arcade.draw_text(
-            "Welcome to your reading. Here are your cards:",
-            SCREEN_WIDTH // 2,
-            SCREEN_HEIGHT - 50,
-            arcade.color.WHITE,
-            font_size=24,
-            anchor_x="center"
-        )
+        self.line_spacing= 50
+        for i, line in enumerate(self.fortune[0].split('\n')):
+                arcade.draw_text(
+                    line,
+                    SCREEN_WIDTH //2 ,
+                    SCREEN_HEIGHT // 2 - (i * self.line_spacing),
+                    arcade.color.WHITE,
+                    font_size=18,
+                    anchor_x="center",
+                    anchor_y="top",
+                    width=SCREEN_WIDTH * 0.8,
+                    align="center",
+                    font_name="Old School Adventures"
+            )
+
+
+        # arcade.draw_text(
+        #     self.fortune[0],
+        #     SCREEN_WIDTH // 2,
+        #     SCREEN_HEIGHT//2,
+        #     arcade.color.WHITE,
+        #     font_size=24,
+        #     anchor_x="center",
+        #     font_name="Old School Adventures"
+        # )
 
         button_texture = (
                         self.button_pressed_texture if self.hovered_button == "next_card" else self.button_texture
@@ -439,22 +472,29 @@ class TarotGame(arcade.Window):
 
         for i, card in enumerate(self.drawn_cards):
             x = 350 + (i * 275)
-            y = 400
-            card.paint(x, y, show_front=True)
+            y = 700
+            card.paint(x, y, show_front=True, scale = 2.2, is_small = True)
 
     def _draw_reading_card(self, card_index):
         """ Render a single card stage. """
         # Placeholder logic for displaying one card
-        arcade.draw_text(
-            f"Focusing on card {card_index}:",
-            SCREEN_WIDTH // 2,
-            SCREEN_HEIGHT - 50,
-            arcade.color.WHITE,
-            font_size=24,
-            anchor_x="center"
-        )
+        
+        paragraph = self.fortune[card_index]
+        for i, line in enumerate(paragraph.split('\n')):
+            arcade.draw_text(
+                line,
+                SCREEN_WIDTH * .7 ,  # Left-aligned starting position
+                SCREEN_HEIGHT * .8 - (i * self.line_spacing),
+                arcade.color.WHITE,
+                font_size=18,
+                anchor_x="center",
+                anchor_y="top",
+                width=SCREEN_WIDTH * 0.6,  # Define width for wrapping
+                align="center",
+                font_name="Old School Adventures"
+            )
         card = self.drawn_cards[card_index - 1]  # Cards are 0-indexed
-        card.paint(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, show_front=True)
+        card.paint(SCREEN_WIDTH // 4, SCREEN_HEIGHT // 2, show_front=True)
 
         next_button_texture = (
                         self.button_pressed_texture if self.hovered_button == "next_card" else self.button_texture
@@ -502,14 +542,20 @@ class TarotGame(arcade.Window):
     def _draw_reading_summary(self):
         """ Render the summary stage with all cards and a summary. """
         # Placeholder logic
-        arcade.draw_text(
-            "Your reading is complete. Here's a summary:",
-            SCREEN_WIDTH // 2,
-            SCREEN_HEIGHT - 50,
-            arcade.color.WHITE,
-            font_size=24,
-            anchor_x="center"
-        )
+        
+        for i, line in enumerate(self.fortune[4].split('\n')):
+                arcade.draw_text(
+                    line,
+                    SCREEN_WIDTH //2 ,
+                    SCREEN_HEIGHT // 2 +50 - (i * self.line_spacing),
+                    arcade.color.WHITE,
+                    font_size=18,
+                    anchor_x="center",
+                    anchor_y="top",
+                    width=SCREEN_WIDTH * 0.8,
+                    align="center",
+                    font_name="Old School Adventures"
+            )
 
         previous_button_texture = (
                         self.button_pressed_texture if self.hovered_button == "previous_card" else self.button_texture
@@ -534,12 +580,9 @@ class TarotGame(arcade.Window):
 
         for i, card in enumerate(self.drawn_cards):
             x = 350 + (i * 275)
-            y = 400
-            card.paint(x, y, show_front=True)
-        for i, card in enumerate(self.drawn_cards):
-            x = 350 + (i * 275)
-            y = 400
-            card.paint(x, y, show_front=True)
+            y = 700
+            card.paint(x, y, show_front=True, scale = 2.2, is_small = True)
+        
 
 
         # arcade.draw_text("Cards:",

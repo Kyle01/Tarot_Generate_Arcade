@@ -1,13 +1,15 @@
-  if len(self.selected_cards) >1 and self.selected_cards[1]:
-
-                x = 300 
-                y = 200  
-                self.selected_cards[0].paint(x, y, show_front=True, is_small=True)
-            
-            if len(self.selected_cards) > 2 and self.selected_cards[2]:
-
-                x=975
-                y=200
-                self.selected_cards[1].paint(x,y,show_front=True, is_small = True)
-
-            return  # Stop drawing the rest of the stage while reveal is active
+ 
+for x in [1,2,3]:
+            paragraph = self.fortune[x]
+            for i, line in enumerate(paragraph.split('\n')):
+                arcade.draw_text(
+                    line,
+                    SCREEN_WIDTH * .2,
+                    SCREEN_HEIGHT // 2 - 50 - (i * line_spacing),
+                    arcade.color.WHITE,
+                    font_size=14,
+                    anchor_x="left",
+                    anchor_y="top",
+                    align="center",
+                    font_name="Old School Adventures"
+            )
