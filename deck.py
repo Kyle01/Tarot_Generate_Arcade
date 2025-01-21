@@ -44,8 +44,8 @@ class Card:
 
     def is_clicked(self, mouse_x, mouse_y):
         """ Check if the card is clicked based on mouse coordinates. """
-        half_width = (self.width * 1.8) // 2
-        half_height = (self.height * 1.8) // 2
+        half_width = (self.width * 1) // 2
+        half_height = (self.height * 1) // 2
         clicked = (self.x - half_width < mouse_x < self.x + half_width and
                 self.y - half_height < mouse_y < self.y + half_height)
         
