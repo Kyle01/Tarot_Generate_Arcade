@@ -2,6 +2,7 @@ import arcade
 import threading
 import pyglet
 import textwrap
+from pathlib import Path
 from deck import TarotDeck
 from tarot_bot import TarotBot
 from enum import Enum
@@ -11,7 +12,7 @@ SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 960
 DEFAULT_LINE_HEIGHT = 24
 DEFAULT_FONT_SIZE = 16
-FONT_PATH = r"assets\fonts\OldSchoolAdventures-42j9.ttf"
+FONT_PATH = r"assets/fonts/OldSchoolAdventures-42j9.ttf"
 
 
 INTRO_TEXT = (
@@ -50,7 +51,7 @@ class TarotGame(arcade.Window):
         self.current_revealed_card = None
         self.reveal_active= False
         self.start_reading_button_active = False
-        self.background_image = arcade.load_texture("assets\original\TableClothbigger.png")
+        self.background_image = arcade.load_texture("assets/original/TableClothbigger.png")
         self.outside_image = arcade.set_background_color(arcade.color.IMPERIAL_PURPLE) ## replace with cover art
         self.frame_timer = 0
         self.frame_rate = 0.4
@@ -792,7 +793,7 @@ class TarotGame(arcade.Window):
 
 
         progress_bar_sprites = arcade.load_spritesheet(
-                "assets\original\pBarBackgroundSpriteSheet.png",  # Path to the sprite sheet
+                "assets/original/pBarBackgroundSpriteSheet.png",  # Path to the sprite sheet
                 sprite_width=frame_width,  # Width of each frame
                 sprite_height=frame_height,  # Height of each frame
                 columns=4,  # Number of columns in the sprite sheet
