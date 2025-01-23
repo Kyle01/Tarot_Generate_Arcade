@@ -711,7 +711,7 @@ class TarotGame(arcade.Window):
             outside_button_texture)
         
         arcade.draw_text(
-                    "Exit",
+                    "Say Goodbye",
                     self.x_right_button - 25,
                     95,
                     arcade.color.WHITE,
