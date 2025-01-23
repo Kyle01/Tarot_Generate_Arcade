@@ -382,23 +382,10 @@ class TarotGame(arcade.Window):
         
         def api_call():
             self.fortune = self.tarot_bot.fortune(self.drawn_cards, self.intention)
-            # print(f"Raw fortune text:\n{self.fortune}")  # Debug the raw fortune
 
             self.api_call_complete = True
-            paragraphs = self.fortune.split('\n')  # Split the fortune into paragraphs
-            # print(f"Split paragraphs:\n{paragraphs}")  # Debug the split paragraphs
-
-            # Handle wrapping logic
-            default_width = 40
-            last_paragraph_width = 55
-            last_index = len(paragraphs) -1
-            wrapped_paragraphs = [
-                textwrap.fill(p.strip(), width=last_paragraph_width if i == last_index else default_width)
-                for i, p in enumerate(paragraphs) if p.strip()
-            ]
-
-            self.fortune = wrapped_paragraphs
-            # print("\n\n".join(wrapped_paragraphs))
+           
+            self.fortune = self.tarot_bot.wrap_fortune_paragraphs(self.fortune)
         threading.Thread(target=api_call).start()
 
     def on_update(self, delta_time):
