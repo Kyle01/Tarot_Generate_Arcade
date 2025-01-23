@@ -164,12 +164,12 @@ class TarotGame(arcade.Window):
                     self.current_revealed_card = None
                     if len(self.selected_cards) == 2:
                         self.start_reading_button_active = True
-                        print(f"is start reading active: {self.start_reading_button_active}")
+                        
                     if len(self.selected_cards) == 3:
                         self.drawn_cards = self.selected_cards
                         self.start_loading()
                         self.start_reading_button_active = False
-                        print(f"is start reading active: {self.start_reading_button_active}")
+                       
                     return
                     
         
@@ -382,11 +382,11 @@ class TarotGame(arcade.Window):
         
         def api_call():
             self.fortune = self.tarot_bot.fortune(self.drawn_cards, self.intention)
-            print(f"Raw fortune text:\n{self.fortune}")  # Debug the raw fortune
+            # print(f"Raw fortune text:\n{self.fortune}")  # Debug the raw fortune
 
             self.api_call_complete = True
             paragraphs = self.fortune.split('\n')  # Split the fortune into paragraphs
-            print(f"Split paragraphs:\n{paragraphs}")  # Debug the split paragraphs
+            # print(f"Split paragraphs:\n{paragraphs}")  # Debug the split paragraphs
 
             # Handle wrapping logic
             default_width = 40
@@ -398,7 +398,7 @@ class TarotGame(arcade.Window):
             ]
 
             self.fortune = wrapped_paragraphs
-            print("\n\n".join(wrapped_paragraphs))
+            # print("\n\n".join(wrapped_paragraphs))
         threading.Thread(target=api_call).start()
 
     def on_update(self, delta_time):
@@ -546,7 +546,7 @@ class TarotGame(arcade.Window):
                     font_name="Old School Adventures"
             )
 
-
+        
         # arcade.draw_text(
         #     self.fortune[0],
         #     SCREEN_WIDTH // 2,

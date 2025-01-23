@@ -38,4 +38,33 @@ class TarotBot:
                 }
             ],
         )
+
+        def token_usage(): 
+            """Token cost calculator based on prices for 4.o mini"""
+            input_rate = .15 / 1000000
+            cached_input_rate = .075 / 1000000
+            output_rate = .6 / 1000000
+
+            cached_input_cost = resp.usage.prompt_tokens_details.cached_tokens * cached_input_rate
+            input_cost = (resp.usage.prompt_tokens - resp.usage.prompt_tokens_details.cached_tokens) * input_rate
+            output_cost = resp.usage.completion_tokens * output_rate
+            total_cost = cached_input_cost + input_cost + output_cost
+
+            print("\nToken Usage:")
+            print(f"Prompt tokens: {resp.usage.prompt_tokens}")
+            print(f"Cached Prompt tokens: {resp.usage.prompt_tokens_details.cached_tokens}")
+            print(f"Completion tokens: {resp.usage.completion_tokens}")
+            print(f"Total tokens: {resp.usage.total_tokens}")
+            print("\n Token Cost:")
+            print(f"Prompt tokens: {input_cost}")
+            print(f"Cached Prompt tokens: {cached_input_cost}")
+            print(f"Completion tokens: {output_cost}")
+            print(f"Total tokens: {total_cost}")
+
+        
+        
+
+    ## 
+
+        token_usage()
         return resp.choices[0].message.content
