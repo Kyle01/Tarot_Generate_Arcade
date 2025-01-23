@@ -547,16 +547,6 @@ class TarotGame(arcade.Window):
             )
 
         
-        # arcade.draw_text(
-        #     self.fortune[0],
-        #     SCREEN_WIDTH // 2,
-        #     SCREEN_HEIGHT//2,
-        #     arcade.color.WHITE,
-        #     font_size=24,
-        #     anchor_x="center",
-        #     font_name="Old School Adventures"
-        # )
-
         button_texture = (
                         self.button_pressed_texture if self.hovered_button == "next_card" else self.button_texture
                     )
@@ -570,7 +560,7 @@ class TarotGame(arcade.Window):
             button_texture)
         
         arcade.draw_text(
-                    "Next Card",
+                    "View Past Card",
                     self.x_middle_button - 125,
                     95,
                     arcade.color.WHITE,
@@ -613,6 +603,26 @@ class TarotGame(arcade.Window):
                         self.button_pressed_texture if self.hovered_button == "previous_card" else self.button_texture
                     )
 
+        previous_button_copy = None
+        next_button_copy = None
+        next_button_copy_y = 120
+        previous_button_copy_y =95
+        if card_index == 1:
+            next_button_copy_y = 110
+            next_button_copy = "View Present Card"
+            previous_button_copy_y = 95
+            previous_button_copy = "Go Back"
+        elif card_index == 2:
+            next_button_copy_y = 110
+            next_button_copy = "View Future Card"
+            previous_button_copy_y = 105
+            previous_button_copy = "Return to Past Card"
+        elif card_index == 3:
+            next_button_copy_y = 95
+            next_button_copy = "View Summary"
+            previous_button_copy_y = 110
+            previous_button_copy = "Return to Present Card"
+
         arcade.draw_texture_rectangle(
             self.x_right_button,
             100,
@@ -621,9 +631,9 @@ class TarotGame(arcade.Window):
             previous_button_texture)
         
         arcade.draw_text(
-                    "Next Card",
+                    next_button_copy,
                     self.x_right_button - 125,
-                    95,
+                    next_button_copy_y,
                     arcade.color.WHITE,
                     DEFAULT_FONT_SIZE,
                     width=250,
@@ -639,9 +649,9 @@ class TarotGame(arcade.Window):
             next_button_texture)
         
         arcade.draw_text(
-                    "Previous",
+                    previous_button_copy,
                     self.x_left_button - 125,
-                    95,
+                    previous_button_copy_y,
                     arcade.color.WHITE,
                     DEFAULT_FONT_SIZE,
                     width=250,
@@ -701,7 +711,7 @@ class TarotGame(arcade.Window):
             outside_button_texture)
         
         arcade.draw_text(
-                    "Go Outside",
+                    "Exit",
                     self.x_right_button - 25,
                     95,
                     arcade.color.WHITE,
@@ -719,9 +729,9 @@ class TarotGame(arcade.Window):
             previous_button_texture)
         
         arcade.draw_text(
-                    "Previous",
+                    "Return to Future Card",
                     self.x_left_button - 225,
-                    95,
+                    110,
                     arcade.color.WHITE,
                     DEFAULT_FONT_SIZE,
                     width=250,
@@ -734,36 +744,6 @@ class TarotGame(arcade.Window):
             y = 700
             card.paint(x, y, show_front=True, scale = 2.2, is_small = True)
         
-
-
-        # arcade.draw_text("Cards:",
-        #         100,
-        #         SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 1.5,
-        #         arcade.color.WHITE,
-        #         DEFAULT_FONT_SIZE,
-        #         width=500,
-        #         align="left")
-            
-        # for i, card in enumerate(self.drawn_cards):
-        #     card.paint(150 + (i * 300), 550, show_front = True)
-
-        # arcade.draw_text("Fortune:",
-        #                 100,
-        #                 400,
-        #                 arcade.color.WHITE,
-        #                 DEFAULT_FONT_SIZE,
-        #                 width=500,
-        #                 align="left")
-        
-        # arcade.draw_text(self.fortune,
-        #                 100,
-        #                 350,
-        #                 arcade.color.WHITE,
-        #                 DEFAULT_FONT_SIZE / 1.5,
-        #                 multiline=True,
-        #                 width=SCREEN_WIDTH - 100,
-        #                 align="left")
-
 
     def __draw_loading_stage(self):
         """ Render the loading screen. """
