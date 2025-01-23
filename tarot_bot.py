@@ -61,10 +61,14 @@ class TarotBot:
             print(f"Completion tokens: {output_cost}")
             print(f"Total tokens: {total_cost}")
 
-        
+        ## there are 22,778,496 possible readings
+        ## Each reading costs somewhere between  $.0002 and $.0003
+        ## thats a projected range of $4,555.70 to $6,833.55 if we did every possible reading in the backend
+        ## We would need to come up 200-300 $ / 1 million full readings, or 20-30$ / 100k readings
+        ## We could just put a cap on the amount of readings/tokens we can spend and then have an animation where the house is on fire or in a storm lol
         
 
-    ## 
+    
 
         token_usage()
         return resp.choices[0].message.content
