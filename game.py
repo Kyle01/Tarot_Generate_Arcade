@@ -6,13 +6,14 @@ from pathlib import Path
 from deck import TarotDeck
 from tarot_bot import TarotBot
 from enum import Enum
+from ui.base_ui import UI
 
 # Screen title and size
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 960
-DEFAULT_LINE_HEIGHT = 24
-DEFAULT_FONT_SIZE = 16
-FONT_PATH = r"assets/fonts/OldSchoolAdventures-42j9.ttf"
+# SCREEN_WIDTH = 1280
+# SCREEN_HEIGHT = 960
+# DEFAULT_LINE_HEIGHT = 24
+# DEFAULT_FONT_SIZE = 16
+# FONT_PATH = r"assets/fonts/OldSchoolAdventures-42j9.ttf"
 
 
 INTRO_TEXT = (
@@ -42,6 +43,10 @@ class TarotGame(arcade.Window):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Voodoo Tarot GPT")
         self.tarot_bot = TarotBot()
         self.stage = GameState.OUTSIDE
+        self.ui= UI(self)
+
+
+
         self.intention = None
         self.drawn_cards = None
         self.fortune = None
@@ -51,26 +56,26 @@ class TarotGame(arcade.Window):
         self.current_revealed_card = None
         self.reveal_active= False
         self.start_reading_button_active = False
-        self.background_image = arcade.load_texture("assets/original/TableClothbigger.png")
-        self.outside_image = arcade.set_background_color(arcade.color.IMPERIAL_PURPLE) ## replace with cover art
         self.frame_timer = 0
         self.frame_rate = 0.4
-        self.button_texture = arcade.load_texture("assets/original/Purple Button Big.png")
-        self.button_pressed_texture = arcade.load_texture("assets/original/Purple Button Pressed Big.png")
-        arcade.set_background_color(arcade.color.IMPERIAL_PURPLE)
        
       
-        pyglet.font.add_file(FONT_PATH)  # Load the font file
+        # arcade.set_background_color(arcade.color.IMPERIAL_PURPLE)
+        # self.button_pressed_texture = arcade.load_texture("assets/original/Purple Button Pressed Big.png")
+        # self.button_texture = arcade.load_texture("assets/original/Purple Button Big.png")
+        # self.background_image = arcade.load_texture("assets/original/TableClothbigger.png")
+        # self.outside_image = arcade.set_background_color(arcade.color.IMPERIAL_PURPLE) ## replace with cover art
+        # pyglet.font.add_file(FONT_PATH)  # Load the font file
            
-        self.button_clickbox_width = 175
-        self.button_clickbox_height = 150
-        self.x_middle_button = SCREEN_WIDTH // 2
-        self.x_left_button = SCREEN_WIDTH // 4
-        self.x_right_button = SCREEN_WIDTH * .75
-        self.y_bottom_button = 25
+        # self.button_clickbox_width = 175
+        # self.button_clickbox_height = 150
+        # self.x_middle_button = SCREEN_WIDTH // 2
+        # self.x_left_button = SCREEN_WIDTH // 4
+        # self.x_right_button = SCREEN_WIDTH * .75
+        # self.y_bottom_button = 25
         
 
-    def setup(self):
+    def setup(self): ## CAN THIS DIE?
         """ Set up the game here. Call this function to restart the game. """
         pass
 
@@ -90,43 +95,33 @@ class TarotGame(arcade.Window):
         # Clear the screen
     
         self.clear()
-        if self.stage != GameState.OUTSIDE:
-            arcade.draw_lrwh_rectangle_textured(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, self.background_image)
-        if self.stage == GameState.OUTSIDE:
-            arcade.set_background_color(arcade.color.IMPERIAL_PURPLE)
-            # arcade.draw_lrwh_rectangle_textured(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, self.outside_image)  --keep this for later
-            self.__draw_outside_stage()
-        elif self.stage == GameState.INTRO:
-            self.__draw_intro_stage()
-        elif self.stage == GameState.SPREAD:
-            self.__draw_spread_stage()
-        elif self.stage == GameState.LOADING:
-            self.__draw_loading_stage()
-        elif self.stage in {
-            GameState.READING_INTRO,
-            GameState.READING_CARD_1,
-            GameState.READING_CARD_2,
-            GameState.READING_CARD_3,
-            GameState.READING_SUMMARY,
-        }:
-            self.__draw_reading_stage()  # Centralized logic for all reading sub-stages
+
+        self.ui.draw(self.stage)
+
+
+        # if self.stage != GameState.OUTSIDE:
+        #     arcade.draw_lrwh_rectangle_textured(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, self.background_image)
+        # if self.stage == GameState.OUTSIDE:
+        #     arcade.set_background_color(arcade.color.IMPERIAL_PURPLE)
+        #     # arcade.draw_lrwh_rectangle_textured(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, self.outside_image)  --keep this for later
+        #     self.__draw_outside_stage()
+        # elif self.stage == GameState.INTRO:
+        #     self.__draw_intro_stage()
+        # elif self.stage == GameState.SPREAD:
+        #     self.__draw_spread_stage()
+        # elif self.stage == GameState.LOADING:
+        #     self.__draw_loading_stage()
+        # elif self.stage in {
+        #     GameState.READING_INTRO,
+        #     GameState.READING_CARD_1,
+        #     GameState.READING_CARD_2,
+        #     GameState.READING_CARD_3,
+        #     GameState.READING_SUMMARY,
+        # }:
+        #     self.__draw_reading_stage()  # Centralized logic for all reading sub-stages
             
 
-        '''For Debugging Hittboxes'''
-        # hitbox_x = self.x_right_button + 200
-        # hitbox_y = self.y_bottom_button - 50 + (self.button_clickbox_height // 4)  # Center the y-coordinate
-        # hitbox_width = self.button_clickbox_width
-        # hitbox_height = self.button_clickbox_height // 2
-
-        # 
-        # arcade.draw_rectangle_outline(
-        #     center_x=hitbox_x,
-        #     center_y=hitbox_y,
-        #     width=hitbox_width,
-        #     height=hitbox_height,
-        #     color=arcade.color.RED,  # Red color for visibility
-        #     border_width=2
-        # )
+       
     def on_mouse_press(self, x, y, _button, _key_modifiers):
         
         
