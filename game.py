@@ -287,7 +287,6 @@ class TarotGame(arcade.Window):
                 if self.x_middle_button - self.button_clickbox_width <= x <= self.x_middle_button + self.button_clickbox_width and \
                 self.y_bottom_button <= y <= self.y_bottom_button + self.button_clickbox_height:
                     self.hovered_button = "pull_next"
-                    # print(f"what is hovered: {self.hovered_button}")
                 else:
                     self.hovered_button = None  # Reset hover state if not within bounds
                 return
@@ -296,7 +295,6 @@ class TarotGame(arcade.Window):
                 if self.x_middle_button - self.button_clickbox_width <= x <= self.x_middle_button + self.button_clickbox_width and \
                 self.y_bottom_button <= y <= self.y_bottom_button + self.button_clickbox_height:
                     self.hovered_button = "begin_reading"
-                    # print(f"what is hovered: {self.hovered_button}")
 
                 else:
                     self.hovered_button = None  # Reset hover state if not within bounds
@@ -412,8 +410,6 @@ class TarotGame(arcade.Window):
                     self.stage = GameState.READING_INTRO
 
     def __draw_reading_stage(self):
-
-
         if self.stage == GameState.READING_INTRO:
             self._draw_reading_intro()  # Stage 1: Show all cards and intro
 
@@ -447,21 +443,9 @@ class TarotGame(arcade.Window):
                     font_name="Old School Adventures"
             )
 
-
-        # arcade.draw_text(
-        #     self.fortune[0],
-        #     SCREEN_WIDTH // 2,
-        #     SCREEN_HEIGHT//2,
-        #     arcade.color.WHITE,
-        #     font_size=24,
-        #     anchor_x="center",
-        #     font_name="Old School Adventures"
-        # )
-
         button_texture = (
                         self.button_pressed_texture if self.hovered_button == "next_card" else self.button_texture
                     )
-
 
         arcade.draw_texture_rectangle(
             self.x_middle_button,
