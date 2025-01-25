@@ -294,3 +294,197 @@ def draw_loading_stage(game):
         x = 350 + (i * 275)  # Spaced out horizontally
         y = 575  # Fixed y-coordinate
         card.paint(x, y, show_front=True,scale=2.2, is_small=True)
+
+def draw_reading_intro(game):
+    """ Render the intro stage with all cards shown. """
+    # Placeholder logic
+    game.line_spacing= 50
+    for i, line in enumerate(game.fortune[0].split('\n')):
+            arcade.draw_text(
+                line,
+                SCREEN_WIDTH //2 ,
+                SCREEN_HEIGHT // 2 - (i * game.line_spacing),
+                arcade.color.WHITE,
+                font_size=18,
+                anchor_x="center",
+                anchor_y="top",
+                width=SCREEN_WIDTH * 0.8,
+                align="center",
+                font_name="Old School Adventures"
+        )
+
+    button_texture = (
+                    game.button_pressed_texture if game.hovered_button == "next_card" else game.button_texture
+                )
+
+    arcade.draw_texture_rectangle(
+        game.x_middle_button,
+        100,
+        350,
+        200,
+        button_texture)
+    
+    arcade.draw_text(
+                "Next Card",
+                game.x_middle_button - 125,
+                95,
+                arcade.color.WHITE,
+                DEFAULT_FONT_SIZE,
+                width=250,
+                align="center",
+                font_name="Old School Adventures"
+            )
+
+    for i, card in enumerate(game.drawn_cards):
+        x = 350 + (i * 275)
+        y = 700
+        card.paint(x, y, show_front=True, scale = 2.2, is_small = True)
+
+def draw_reading_card(game, card_index):
+        """ Render a single card stage. """
+        # Placeholder logic for displaying one card
+        
+        paragraph = game.fortune[card_index]
+        for i, line in enumerate(paragraph.split('\n')):
+            arcade.draw_text(
+                line,
+                SCREEN_WIDTH * .7 ,  # Left-aligned starting position
+                SCREEN_HEIGHT * .75 - (i * game.line_spacing),
+                arcade.color.WHITE,
+                font_size=18,
+                anchor_x="center",
+                anchor_y="top",
+                width=SCREEN_WIDTH * 0.6,  # Define width for wrapping
+                align="center",
+                font_name="Old School Adventures"
+            )
+        card = game.drawn_cards[card_index - 1]  # Cards are 0-indexed
+        card.paint(SCREEN_WIDTH // 4, SCREEN_HEIGHT // 2, show_front=True)
+
+        next_button_texture = (
+                        game.button_pressed_texture if game.hovered_button == "next_card" else game.button_texture
+                    )
+        previous_button_texture = (
+                        game.button_pressed_texture if game.hovered_button == "previous_card" else game.button_texture
+                    )
+
+        arcade.draw_texture_rectangle(
+            game.x_right_button,
+            100,
+            350,
+            200,
+            previous_button_texture)
+        
+        arcade.draw_text(
+                    "Next Card",
+                    game.x_right_button - 125,
+                    95,
+                    arcade.color.WHITE,
+                    DEFAULT_FONT_SIZE,
+                    width=250,
+                    align="center",
+                    font_name="Old School Adventures"
+                )
+        
+        arcade.draw_texture_rectangle(
+            game.x_left_button,
+            100,
+            350,
+            200,
+            next_button_texture)
+        
+        arcade.draw_text(
+                    "Previous",
+                    game.x_left_button - 125,
+                    95,
+                    arcade.color.WHITE,
+                    DEFAULT_FONT_SIZE,
+                    width=250,
+                    align="center",
+                    font_name="Old School Adventures"
+                )
+
+def draw_reading_summary(game):
+        """ Render the summary stage with all cards and a summary. """
+        # Placeholder logic
+        
+        for i, line in enumerate(game.fortune[4].split('\n')):
+                arcade.draw_text(
+                    line,
+                    SCREEN_WIDTH //2 ,
+                    SCREEN_HEIGHT // 2 +25 - (i * game.line_spacing),
+                    arcade.color.WHITE,
+                    font_size=18,
+                    anchor_x="center",
+                    anchor_y="top",
+                    width=SCREEN_WIDTH * 0.8,
+                    align="center",
+                    font_name="Old School Adventures"
+            )
+
+        previous_button_texture = (
+                        game.button_pressed_texture if game.hovered_button == "previous_card" else game.button_texture
+                    )
+        outside_button_texture =(game.button_pressed_texture if game.hovered_button == "go_outside" else game.button_texture
+                    )
+        restart_button_texture = (game.button_pressed_texture if game.hovered_button == "new_reading" else game.button_texture
+                    )
+        
+        arcade.draw_texture_rectangle(
+            game.x_middle_button,
+            100,
+            350,
+            200,
+            restart_button_texture)
+        
+        arcade.draw_text(
+                    "New Reading",
+                    game.x_middle_button - 125,
+                    95,
+                    arcade.color.WHITE,
+                    DEFAULT_FONT_SIZE,
+                    width=250,
+                    align="center",
+                    font_name="Old School Adventures"
+                )
+        
+        arcade.draw_texture_rectangle(
+            game.x_right_button +100,
+            100,
+            350,
+            200,
+            outside_button_texture)
+        
+        arcade.draw_text(
+                    "Go Outside",
+                    game.x_right_button - 25,
+                    95,
+                    arcade.color.WHITE,
+                    DEFAULT_FONT_SIZE,
+                    width=250,
+                    align="center",
+                    font_name="Old School Adventures"
+                )
+        
+        arcade.draw_texture_rectangle(
+            game.x_left_button-100,
+            100,
+            350,
+            200,
+            previous_button_texture)
+        
+        arcade.draw_text(
+                    "Previous",
+                    game.x_left_button - 225,
+                    95,
+                    arcade.color.WHITE,
+                    DEFAULT_FONT_SIZE,
+                    width=250,
+                    align="center",
+                    font_name="Old School Adventures"
+                )
+
+        for i, card in enumerate(game.drawn_cards):
+            x = 350 + (i * 275)
+            y = 700
+            card.paint(x, y, show_front=True, scale = 2.2, is_small = True)
