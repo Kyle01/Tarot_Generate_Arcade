@@ -279,27 +279,18 @@ def draw_reading_intro(game):
                 font_name="Old School Adventures"
         )
 
-    button_texture = (
-                    game.button_pressed_texture if game.hovered_button == "next_card" else game.button_texture
-                )
-
-    arcade.draw_texture_rectangle(
-        game.x_middle_button,
-        100,
-        350,
-        200,
-        button_texture)
-    
-    arcade.draw_text(
-                "Next Card",
-                game.x_middle_button - 125,
-                95,
-                arcade.color.WHITE,
-                DEFAULT_FONT_SIZE,
-                width=250,
-                align="center",
-                font_name="Old School Adventures"
-            )
+    Button(
+        game=game,
+        name="next_card",
+        copy="Next Card",
+        x_center=game.x_middle_button,
+        y_center=100,
+        width=350,
+        height=200,
+        text_x_start=game.x_middle_button - 125,
+        text_y_start=95,
+        text_width=250
+    )
 
     for i, card in enumerate(game.drawn_cards):
         x = 350 + (i * 275)
@@ -327,48 +318,31 @@ def draw_reading_card(game, card_index):
         card = game.drawn_cards[card_index - 1]  # Cards are 0-indexed
         card.paint(SCREEN_WIDTH // 4, SCREEN_HEIGHT // 2, show_front=True)
 
-        next_button_texture = (
-                        game.button_pressed_texture if game.hovered_button == "next_card" else game.button_texture
-                    )
-        previous_button_texture = (
-                        game.button_pressed_texture if game.hovered_button == "previous_card" else game.button_texture
-                    )
+        Button(
+            game=game,
+            name="next_card",
+            copy="Next Card",
+            x_center=game.x_right_button,
+            y_center=100,
+            width=350,
+            height=200,
+            text_x_start=game.x_right_button - 125,
+            text_y_start=95,
+            text_width=250
+        )
 
-        arcade.draw_texture_rectangle(
-            game.x_right_button,
-            100,
-            350,
-            200,
-            previous_button_texture)
-        
-        arcade.draw_text(
-                    "Next Card",
-                    game.x_right_button - 125,
-                    95,
-                    arcade.color.WHITE,
-                    DEFAULT_FONT_SIZE,
-                    width=250,
-                    align="center",
-                    font_name="Old School Adventures"
-                )
-        
-        arcade.draw_texture_rectangle(
-            game.x_left_button,
-            100,
-            350,
-            200,
-            next_button_texture)
-        
-        arcade.draw_text(
-                    "Previous",
-                    game.x_left_button - 125,
-                    95,
-                    arcade.color.WHITE,
-                    DEFAULT_FONT_SIZE,
-                    width=250,
-                    align="center",
-                    font_name="Old School Adventures"
-                )
+        Button(
+            game=game,
+            name="previous_card",
+            copy="Previous Card",
+            x_center=game.x_left_button,
+            y_center=100,
+            width=350,
+            height=200,
+            text_x_start=game.x_left_button - 125,
+            text_y_start=95,
+            text_width=250
+        )
 
 def draw_reading_summary(game):
         """ Render the summary stage with all cards and a summary. """
@@ -388,67 +362,44 @@ def draw_reading_summary(game):
                     font_name="Old School Adventures"
             )
 
-        previous_button_texture = (
-                        game.button_pressed_texture if game.hovered_button == "previous_card" else game.button_texture
-                    )
-        outside_button_texture =(game.button_pressed_texture if game.hovered_button == "go_outside" else game.button_texture
-                    )
-        restart_button_texture = (game.button_pressed_texture if game.hovered_button == "new_reading" else game.button_texture
-                    )
-        
-        arcade.draw_texture_rectangle(
-            game.x_middle_button,
-            100,
-            350,
-            200,
-            restart_button_texture)
-        
-        arcade.draw_text(
-                    "New Reading",
-                    game.x_middle_button - 125,
-                    95,
-                    arcade.color.WHITE,
-                    DEFAULT_FONT_SIZE,
-                    width=250,
-                    align="center",
-                    font_name="Old School Adventures"
-                )
-        
-        arcade.draw_texture_rectangle(
-            game.x_right_button +100,
-            100,
-            350,
-            200,
-            outside_button_texture)
-        
-        arcade.draw_text(
-                    "Go Outside",
-                    game.x_right_button - 25,
-                    95,
-                    arcade.color.WHITE,
-                    DEFAULT_FONT_SIZE,
-                    width=250,
-                    align="center",
-                    font_name="Old School Adventures"
-                )
-        
-        arcade.draw_texture_rectangle(
-            game.x_left_button-100,
-            100,
-            350,
-            200,
-            previous_button_texture)
-        
-        arcade.draw_text(
-                    "Previous",
-                    game.x_left_button - 225,
-                    95,
-                    arcade.color.WHITE,
-                    DEFAULT_FONT_SIZE,
-                    width=250,
-                    align="center",
-                    font_name="Old School Adventures"
-                )
+        Button(
+            game=game,
+            name="new_reading",
+            copy="New Reading",
+            x_center=game.x_middle_button,
+            y_center=100,
+            width=350,
+            height=200,
+            text_x_start=game.x_middle_button - 125,
+            text_y_start=95,
+            text_width=250
+        )
+
+        Button(
+            game=game,
+            name="go_outside",
+            copy="Go Outside",
+            x_center=game.x_right_button + 100,
+            y_center=100,
+            width=350,
+            height=200,
+            text_x_start=game.x_right_button - 25,
+            text_y_start=95,
+            text_width=250
+        )
+
+        Button(
+            game=game,
+            name="previous_card",
+            copy="Previous",
+            x_center=game.x_left_button - 100,
+            y_center=100,
+            width=350,
+            height=200,
+            text_x_start=game.x_left_button - 225,
+            text_y_start=95,
+            text_width=250
+        )
 
         for i, card in enumerate(game.drawn_cards):
             x = 350 + (i * 275)
