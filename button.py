@@ -8,11 +8,10 @@ class Button():
             copy,
             x_center,
             y_center,
-            width,
-            height,
             text_x_start,
             text_y_start, 
-            text_width,
+            width=350,
+            height=200,
         ):
         button_texture = arcade.load_texture("assets/original/Purple Button Big.png")
         button_pressed_texture = arcade.load_texture("assets/original/Purple Button Pressed Big.png")
@@ -33,7 +32,7 @@ class Button():
             text_y_start,
             arcade.color.WHITE,
             16,
-            width=text_width,
+            width=250,
             align="center",
             font_name="Old School Adventures"
         )

@@ -27,7 +27,6 @@ def outside_stage(game):
         height=200 // 2,
         text_x_start=game.x_right_button + 75,
         text_y_start=45,
-        text_width=250
     )
 
     Button(
@@ -36,11 +35,8 @@ def outside_stage(game):
         copy="Step Inside",
         x_center=SCREEN_WIDTH // 2,
         y_center=100,
-        width=350,
-        height=200,
         text_x_start=SCREEN_WIDTH // 2 - 125,
         text_y_start=95,
-        text_width=250
     )
     
 def draw_intro_stage(game):
@@ -75,11 +71,8 @@ def draw_intro_stage(game):
                 copy=CATEGORIES[i],
                 x_center=x,
                 y_center=y,
-                width=350,
-                height=200,
                 text_x_start=x-125,
                 text_y_start=y,
-                text_width=250
             )
 
 def draw_spread_stage(game):
@@ -96,11 +89,8 @@ def draw_spread_stage(game):
                 copy=button_copy,
                 x_center=game.x_middle_button,
                 y_center=100,
-                width=350,
-                height=200,
                 text_x_start=game.x_middle_button - 125,
                 text_y_start=95,
-                text_width=250
             )
             
             arcade.draw_text(
@@ -285,11 +275,8 @@ def draw_reading_intro(game):
         copy="Next Card",
         x_center=game.x_middle_button,
         y_center=100,
-        width=350,
-        height=200,
         text_x_start=game.x_middle_button - 125,
         text_y_start=95,
-        text_width=250
     )
 
     for i, card in enumerate(game.drawn_cards):
@@ -324,11 +311,8 @@ def draw_reading_card(game, card_index):
             copy="Next Card",
             x_center=game.x_right_button,
             y_center=100,
-            width=350,
-            height=200,
             text_x_start=game.x_right_button - 125,
             text_y_start=95,
-            text_width=250
         )
 
         Button(
@@ -337,11 +321,8 @@ def draw_reading_card(game, card_index):
             copy="Previous Card",
             x_center=game.x_left_button,
             y_center=100,
-            width=350,
-            height=200,
             text_x_start=game.x_left_button - 125,
             text_y_start=95,
-            text_width=250
         )
 
 def draw_reading_summary(game):
@@ -368,11 +349,8 @@ def draw_reading_summary(game):
             copy="New Reading",
             x_center=game.x_middle_button,
             y_center=100,
-            width=350,
-            height=200,
             text_x_start=game.x_middle_button - 125,
             text_y_start=95,
-            text_width=250
         )
 
         Button(
@@ -381,11 +359,8 @@ def draw_reading_summary(game):
             copy="Go Outside",
             x_center=game.x_right_button + 100,
             y_center=100,
-            width=350,
-            height=200,
             text_x_start=game.x_right_button - 25,
             text_y_start=95,
-            text_width=250
         )
 
         Button(
@@ -394,11 +369,8 @@ def draw_reading_summary(game):
             copy="Previous",
             x_center=game.x_left_button - 100,
             y_center=100,
-            width=350,
-            height=200,
             text_x_start=game.x_left_button - 225,
             text_y_start=95,
-            text_width=250
         )
 
         for i, card in enumerate(game.drawn_cards):
