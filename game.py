@@ -79,9 +79,8 @@ class TarotGame(arcade.Window):
 
     def on_draw(self):
         """ Render the screen. """
-        # Clear the screen
-    
         self.clear()
+
         if self.stage != GameState.OUTSIDE:
             arcade.draw_lrwh_rectangle_textured(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, self.background_image)
         if self.stage == GameState.OUTSIDE:
@@ -93,14 +92,16 @@ class TarotGame(arcade.Window):
             draw_utility.draw_spread_stage(self)
         elif self.stage == GameState.LOADING:
             draw_utility.draw_loading_stage(self)
-        elif self.stage in {
-            GameState.READING_INTRO,
-            GameState.READING_CARD_1,
-            GameState.READING_CARD_2,
-            GameState.READING_CARD_3,
-            GameState.READING_SUMMARY,
-        }:
-            self.__draw_reading_stage()  # Centralized logic for all reading sub-stages
+        elif self.stage == GameState.READING_INTRO:
+            draw_utility.draw_reading_intro(self) # Stage 1: Show all cards and intro
+        elif self.stage == GameState.READING_CARD_1:
+            draw_utility.draw_reading_card(self, 1)  # Stage 2: Show card 1
+        elif self.stage == GameState.READING_CARD_2:
+            draw_utility.draw_reading_card(self, 2)  # Stage 3: Show card 2
+        elif self.stage == GameState.READING_CARD_3:
+            draw_utility.draw_reading_card(self, 3)  # Stage 4: Show card 3
+        elif self.stage == GameState.READING_SUMMARY:
+            draw_utility.draw_reading_summary(self)  # Stage 5: Show all cards and summary
             
 
         '''For Debugging Hit boxes'''
@@ -408,22 +409,6 @@ class TarotGame(arcade.Window):
                 if self.loading_progress >= 1.0:
                     self.loading_progress = 1.0
                     self.stage = GameState.READING_INTRO
-
-    def __draw_reading_stage(self):
-        if self.stage == GameState.READING_INTRO:
-            draw_utility.draw_reading_intro(self) # Stage 1: Show all cards and intro
-
-        elif self.stage == GameState.READING_CARD_1:
-            draw_utility.draw_reading_card(self, 1)  # Stage 2: Show card 1
-
-        elif self.stage == GameState.READING_CARD_2:
-            draw_utility.draw_reading_card(self, 2)  # Stage 3: Show card 2
-
-        elif self.stage == GameState.READING_CARD_3:
-            draw_utility.draw_reading_card(self, 3)  # Stage 4: Show card 3
-
-        elif self.stage == GameState.READING_SUMMARY:
-            draw_utility.draw_reading_summary(self)  # Stage 5: Show all cards and summary
 
 def main():
     """ Main function """
