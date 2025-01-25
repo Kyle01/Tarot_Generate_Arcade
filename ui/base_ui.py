@@ -49,7 +49,7 @@ class UI:
             # arcade.draw_lrwh_rectangle_textured(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, self.outside_image)  --keep this for later
             self.start.__draw_outside_stage()
         elif stage == GameState.INTRO:
-            self.__draw_intro_stage()
+            self.__draw_intro_stage()t
         elif stage == GameState.SPREAD:
             self.__draw_spread_stage()
         elif stage == GameState.LOADING:
