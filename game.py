@@ -2,6 +2,7 @@ import arcade
 import threading
 import pyglet
 import textwrap
+import draw_utility
 from deck import TarotDeck
 from tarot_bot import TarotBot
 from enum import Enum
@@ -93,8 +94,7 @@ class TarotGame(arcade.Window):
             arcade.draw_lrwh_rectangle_textured(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, self.background_image)
         if self.stage == GameState.OUTSIDE:
             arcade.set_background_color(arcade.color.IMPERIAL_PURPLE)
-            # arcade.draw_lrwh_rectangle_textured(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, self.outside_image)  --keep this for later
-            self.__draw_outside_stage()
+            draw_utility.outside_stage(self)
         elif self.stage == GameState.INTRO:
             self.__draw_intro_stage()
         elif self.stage == GameState.SPREAD:
@@ -418,50 +418,6 @@ class TarotGame(arcade.Window):
                 if self.loading_progress >= 1.0:
                     self.loading_progress = 1.0
                     self.stage = GameState.READING_INTRO
-
-    def __draw_outside_stage(self):
-        inside_button_texture = (
-                        self.button_pressed_texture if self.hovered_button == "step_inside" else self.button_texture
-                    )
-        exit_button_texture = (
-                        self.button_pressed_texture if self.hovered_button == "exit_game" else self.button_texture
-                    )
-
-        arcade.draw_texture_rectangle(
-            self.x_right_button+200,
-            50,
-            350 //2,
-            200 // 2,
-            exit_button_texture)
-        
-        arcade.draw_text(
-                    "Exit",
-                    self.x_right_button + 75,
-                    45,
-                    arcade.color.WHITE,
-                    DEFAULT_FONT_SIZE,
-                    width=250,
-                    align="center",
-                    font_name="Old School Adventures"
-                )
-        
-        arcade.draw_texture_rectangle(
-            self.x_middle_button,
-            100,
-            350,
-            200,
-            inside_button_texture)
-        
-        arcade.draw_text(
-                    "Step Inside",
-                    self.x_middle_button - 125,
-                    95,
-                    arcade.color.WHITE,
-                    DEFAULT_FONT_SIZE,
-                    width=250,
-                    align="center",
-                    font_name="Old School Adventures"
-                )
 
     def __draw_intro_stage(self):
         # Intro text
