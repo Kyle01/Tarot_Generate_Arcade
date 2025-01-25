@@ -1,4 +1,5 @@
 import arcade
+from button import Button
 
 DEFAULT_FONT_SIZE = 16
 SCREEN_WIDTH = 1280
@@ -16,48 +17,31 @@ INTRO_TEXT = (
 CATEGORIES = ["Love Life", "Professional Development", "Family and Friends", "Health", "Personal Growth", "Gain Clarity"]
 
 def outside_stage(game):
-    inside_button_texture = (
-                        game.button_pressed_texture if game.hovered_button == "step_inside" else game.button_texture
-                    )
-    exit_button_texture = (
-                    game.button_pressed_texture if game.hovered_button == "exit_game" else game.button_texture
-                )
+    Button(
+        game=game,
+        name='exit_game',
+        copy="Exit",
+        x_center=game.x_right_button+200,
+        y_center=50,
+        width=350 //2,
+        height=200 // 2,
+        text_x_start=game.x_right_button + 75,
+        text_y_start=45,
+        text_width=250
+    )
 
-    arcade.draw_texture_rectangle(
-        game.x_right_button+200,
-        50,
-        350 //2,
-        200 // 2,
-        exit_button_texture)
-    
-    arcade.draw_text(
-                "Exit",
-                game.x_right_button + 75,
-                45,
-                arcade.color.WHITE,
-                DEFAULT_FONT_SIZE,
-                width=250,
-                align="center",
-                font_name="Old School Adventures"
-            )
-    
-    arcade.draw_texture_rectangle(
-        game.x_middle_button,
-        100,
-        350,
-        200,
-        inside_button_texture)
-    
-    arcade.draw_text(
-                "Step Inside",
-                game.x_middle_button - 125,
-                95,
-                arcade.color.WHITE,
-                DEFAULT_FONT_SIZE,
-                width=250,
-                align="center",
-                font_name="Old School Adventures"
-            )
+    Button(
+        game=game,
+        name='step_inside',
+        copy="Step Inside",
+        x_center=SCREEN_WIDTH // 2,
+        y_center=100,
+        width=350,
+        height=200,
+        text_x_start=SCREEN_WIDTH // 2 - 125,
+        text_y_start=95,
+        text_width=250
+    )
     
 def draw_intro_stage(game):
         # Intro text
