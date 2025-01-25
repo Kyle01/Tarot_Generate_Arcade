@@ -2,7 +2,6 @@ import arcade
 import threading
 import pyglet
 import textwrap
-from pathlib import Path
 from deck import TarotDeck
 from tarot_bot import TarotBot
 from enum import Enum
@@ -13,7 +12,6 @@ SCREEN_HEIGHT = 960
 DEFAULT_LINE_HEIGHT = 24
 DEFAULT_FONT_SIZE = 16
 FONT_PATH = r"assets/fonts/OldSchoolAdventures-42j9.ttf"
-
 
 INTRO_TEXT = (
     "Ah, welcome, traveler!\n\n"
@@ -35,6 +33,7 @@ class GameState(Enum):
     READING_CARD_2 = 7
     READING_CARD_3 = 8
     READING_SUMMARY = 9
+
 class TarotGame(arcade.Window):
     """ Main application class. """
 
@@ -112,7 +111,7 @@ class TarotGame(arcade.Window):
             self.__draw_reading_stage()  # Centralized logic for all reading sub-stages
             
 
-        '''For Debugging Hittboxes'''
+        '''For Debugging Hit boxes'''
         # hitbox_x = self.x_right_button + 200
         # hitbox_y = self.y_bottom_button - 50 + (self.button_clickbox_height // 4)  # Center the y-coordinate
         # hitbox_width = self.button_clickbox_width
@@ -465,9 +464,6 @@ class TarotGame(arcade.Window):
                 )
 
     def __draw_intro_stage(self):
-       
-        
-
         # Intro text
         arcade.draw_text(
             INTRO_TEXT,
@@ -733,37 +729,6 @@ class TarotGame(arcade.Window):
             x = 350 + (i * 275)
             y = 700
             card.paint(x, y, show_front=True, scale = 2.2, is_small = True)
-        
-
-
-        # arcade.draw_text("Cards:",
-        #         100,
-        #         SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 1.5,
-        #         arcade.color.WHITE,
-        #         DEFAULT_FONT_SIZE,
-        #         width=500,
-        #         align="left")
-            
-        # for i, card in enumerate(self.drawn_cards):
-        #     card.paint(150 + (i * 300), 550, show_front = True)
-
-        # arcade.draw_text("Fortune:",
-        #                 100,
-        #                 400,
-        #                 arcade.color.WHITE,
-        #                 DEFAULT_FONT_SIZE,
-        #                 width=500,
-        #                 align="left")
-        
-        # arcade.draw_text(self.fortune,
-        #                 100,
-        #                 350,
-        #                 arcade.color.WHITE,
-        #                 DEFAULT_FONT_SIZE / 1.5,
-        #                 multiline=True,
-        #                 width=SCREEN_WIDTH - 100,
-        #                 align="left")
-
 
     def __draw_loading_stage(self):
         """ Render the loading screen. """
@@ -959,13 +924,6 @@ class TarotGame(arcade.Window):
             x = 300 + (i * 675)  # Spaced out horizontally with 150 pixels between cards
             y = 200  # Fixed y-coordinate for all cards
             card.paint(x, y, show_front=True, is_small=True)
-
-       
-
-
-
-        
-
 
 def main():
     """ Main function """

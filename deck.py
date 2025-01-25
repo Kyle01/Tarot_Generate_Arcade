@@ -14,8 +14,6 @@ class Card:
         self.x = 0
         self.y = 0
 
-
-
     def __str__(self):
         return f"{self.name} - {self.position}"
 
@@ -48,8 +46,6 @@ class Card:
         half_height = (self.height * 1) // 2
         clicked = (self.x - half_width < mouse_x < self.x + half_width and
                 self.y - half_height < mouse_y < self.y + half_height)
-        
-        
 
         return clicked
 
@@ -137,6 +133,7 @@ class TarotDeck:
             Card("King of Wands", "wandsK.png")
         ]
         self.card_back = Card("Card Back", "backing_diamond_2x.png")
+        
     def __str__(self):
         returned_str = ""
         for card in self.cards:
