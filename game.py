@@ -14,14 +14,6 @@ DEFAULT_LINE_HEIGHT = 24
 DEFAULT_FONT_SIZE = 16
 FONT_PATH = r"assets/fonts/OldSchoolAdventures-42j9.ttf"
 
-INTRO_TEXT = (
-    "Ah, welcome, traveler!\n\n"
-    "I am Mama Nyah, and the spirits have brought you to me for a reason.\n\n"
-    "Sit, relax, and let us see what the universe whispers for you.\n\n"
-    "But first, tell me—what is your intention? What does your heart seek to know, heal, or discover?\n\n"
-    "Speak it, and we will find the truth together."
-)
-
 CATEGORIES = ["Love Life", "Professional Development", "Family and Friends", "Health", "Personal Growth", "Gain Clarity"]
 
 class GameState(Enum):
@@ -96,7 +88,7 @@ class TarotGame(arcade.Window):
             arcade.set_background_color(arcade.color.IMPERIAL_PURPLE)
             draw_utility.outside_stage(self)
         elif self.stage == GameState.INTRO:
-            self.__draw_intro_stage()
+            draw_utility.draw_intro_stage(self)
         elif self.stage == GameState.SPREAD:
             self.__draw_spread_stage()
         elif self.stage == GameState.LOADING:
@@ -418,49 +410,6 @@ class TarotGame(arcade.Window):
                 if self.loading_progress >= 1.0:
                     self.loading_progress = 1.0
                     self.stage = GameState.READING_INTRO
-
-    def __draw_intro_stage(self):
-        # Intro text
-        arcade.draw_text(
-            INTRO_TEXT,
-            0,
-            SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 5,
-            arcade.color.WHITE,
-            DEFAULT_FONT_SIZE,
-            width=SCREEN_WIDTH,
-            multiline=True,
-            align="center",
-            font_name="Old School Adventures"
-        )
-
-        # Button positions
-        button_positions = [
-            (275, 300),  # Button 0
-            (650, 300),  # Button 1
-            (1025, 300),  # Button 2
-            (275, 150),  # Button 3
-            (650, 150),    # Button 4
-            (1025, 150)     # Button 5
-        ]
-
-        # Loop through categories and draw buttons
-        for i, (x, y) in enumerate(button_positions):
-            button_texture = (
-                self.button_pressed_texture if self.hovered_button == f"button_{i}" else self.button_texture
-            )
-            arcade.draw_texture_rectangle(x, y, 350, 200, button_texture)
-
-            arcade.draw_text(
-                CATEGORIES[i],
-                x - 125,  # Center text
-                y,   # Position text slightly below center
-                arcade.color.WHITE,
-                DEFAULT_FONT_SIZE,
-                width=250,
-                align="center",
-                font_name="Old School Adventures"
-            )
-
 
     def __draw_reading_stage(self):
 
