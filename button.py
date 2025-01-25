@@ -1,8 +1,5 @@
 import arcade
 
-DEFAULT_FONT_SIZE = 16
-
-
 class Button():
     def __init__(
             self,
@@ -35,7 +32,7 @@ class Button():
             text_x_start,
             text_y_start,
             arcade.color.WHITE,
-            DEFAULT_FONT_SIZE,
+            16,
             width=text_width,
             align="center",
             font_name="Old School Adventures"

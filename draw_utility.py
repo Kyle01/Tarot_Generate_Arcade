@@ -69,20 +69,17 @@ def draw_intro_stage(game):
 
         # Loop through categories and draw buttons
         for i, (x, y) in enumerate(button_positions):
-            button_texture = (
-                game.button_pressed_texture if game.hovered_button == f"button_{i}" else game.button_texture
-            )
-            arcade.draw_texture_rectangle(x, y, 350, 200, button_texture)
-
-            arcade.draw_text(
-                CATEGORIES[i],
-                x - 125,  # Center text
-                y,   # Position text slightly below center
-                arcade.color.WHITE,
-                DEFAULT_FONT_SIZE,
-                width=250,
-                align="center",
-                font_name="Old School Adventures"
+            Button(
+                game=game,
+                name=f"button_{i}",
+                copy=CATEGORIES[i],
+                x_center=x,
+                y_center=y,
+                width=350,
+                height=200,
+                text_x_start=x-125,
+                text_y_start=y,
+                text_width=250
             )
 
 def draw_spread_stage(game):
@@ -90,34 +87,21 @@ def draw_spread_stage(game):
         if game.reveal_active and game.current_revealed_card:
             # Draw the revealed card in the center
             game.current_revealed_card.paint(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, show_front=True, scale=1.8, is_small=False)
+            button_name = "pull_next" if len(game.selected_cards) <= 2 else "begin_reading"
+            button_copy = "Pull Next Card" if len(game.selected_cards) <= 2 else "Begin Reading" 
 
-            if len(game.selected_cards) <= 2:
-                    # print(f"what is hovered: {game.hovered_button}")
-                   
-                    button_texture = (
-                        game.button_pressed_texture if game.hovered_button == "pull_next" else game.button_texture
-                    )
-                    button_text = "Pull Next Card"
-            else:
-                    # print(f"what is hovered: {game.hovered_button}")
-                    
-                    button_texture = (
-                        game.button_pressed_texture if game.hovered_button == "begin_reading" else game.button_texture
-                    )
-                    button_text = "Begin Reading"
-
-            arcade.draw_texture_rectangle(game.x_middle_button, 100, 350, 200, button_texture)
-
-            arcade.draw_text(
-                    button_text,
-                    game.x_middle_button - 125,
-                    95,
-                    arcade.color.WHITE,
-                    DEFAULT_FONT_SIZE,
-                    width=250,
-                    align="center",
-                    font_name="Old School Adventures"
-                )
+            Button(
+                game=game,
+                name=button_name,
+                copy=button_copy,
+                x_center=game.x_middle_button,
+                y_center=100,
+                width=350,
+                height=200,
+                text_x_start=game.x_middle_button - 125,
+                text_y_start=95,
+                text_width=250
+            )
             
             arcade.draw_text(
                 f"{game.current_revealed_card.name}",
@@ -132,13 +116,11 @@ def draw_spread_stage(game):
             )
 
             if len(game.selected_cards) >1 and game.selected_cards[1]:
-
                 x = 300 
                 y = 200  
                 game.selected_cards[0].paint(x, y, show_front=True, is_small=True)
             
             if len(game.selected_cards) > 2 and game.selected_cards[2]:
-
                 x=975
                 y=200
                 game.selected_cards[1].paint(x,y,show_front=True, is_small = True)
