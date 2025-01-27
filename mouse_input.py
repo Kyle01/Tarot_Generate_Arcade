@@ -53,7 +53,7 @@ def mouse_press_intro(game, x, y, _game_state):
 
             # Check if a button is clicked
             for i, (bx, by) in enumerate(button_positions):
-                if bx - game.button_clickbox_width <= x <= bx + game.button_clickbox_width and by <= y <= by + game.button_clickbox_height:  # Button bounds
+                if bx - game.button_clickbox_width <= x <= bx + game.button_clickbox_width and by - (game.button_clickbox_height // 2) <= y <= by + game.button_clickbox_height:  # Button bounds
                     game.clicked_button = f"button_{i}"
                     game.set_intention(CATEGORIES[i])  # Set intention based on button index
                     return
@@ -198,7 +198,7 @@ def mouse_motion_intro(game,x,y,game_state):
         (1025, 150)  # Button 5
     ]):
         # Check if the mouse is within the button's bounds
-        if bx - game.button_clickbox_width <= x <= bx + game.button_clickbox_width and by - 100 <= y <= by + 100:
+        if bx - game.button_clickbox_width <= x <= bx + game.button_clickbox_width and by - 50 <= y <= by + 100:
             game.hovered_button = f"button_{i}"
             break
         else:

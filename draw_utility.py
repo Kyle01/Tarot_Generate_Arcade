@@ -1,4 +1,5 @@
 import arcade
+import textwrap
 from button import Button
 
 DEFAULT_FONT_SIZE = 16
@@ -15,6 +16,72 @@ INTRO_TEXT = (
 )
 
 CATEGORIES = ["Love Life", "Professional Development", "Family and Friends", "Health", "Personal Growth", "Gain Clarity"]
+
+
+
+def draw_outlined_text_multiline(text, x, y, font_size=DEFAULT_FONT_SIZE, font_name="Old School Adventures",
+                                 color=arcade.color.WHITE, outline_color=arcade.color.BLACK,
+                                 outline_thickness=2, width=SCREEN_WIDTH, line_height=DEFAULT_LINE_HEIGHT, align="center"):
+    """
+    Draw outlined multiline text with proper handling of `\n\n` line breaks.
+    :param text: The text to be drawn (can include multiple lines and paragraphs).
+    :param x: X position (center of the text block).
+    :param y: Y position (top of the text block).
+    :param font_size: Font size.
+    :param font_name: Name of the font to use.
+    :param color: The main color of the text.
+    :param outline_color: The color of the outline.
+    :param outline_thickness: Thickness of the outline.
+    :param width: Maximum width for text wrapping.
+    :param line_height: Space between lines.
+    :param align: Alignment of the text ("center", "left", "right").
+    """
+
+
+    # Split the text into paragraphs based on `\n\n`
+    paragraphs = text.split("\n\n")
+
+    current_y = y  # Start from the top of the text block
+
+    for paragraph in paragraphs:
+        # Wrap the paragraph into lines based on the width
+        lines = textwrap.wrap(paragraph, width=width // font_size)
+
+        for line in lines:
+            # Draw the outline for each line
+            for dx, dy in [(-outline_thickness, 0), (outline_thickness, 0), (0, -outline_thickness), (0, outline_thickness),
+                           (-outline_thickness, -outline_thickness), (-outline_thickness, outline_thickness),
+                           (outline_thickness, -outline_thickness), (outline_thickness, outline_thickness)]:
+                arcade.draw_text(
+                    line,
+                    x + dx,
+                    current_y + dy,
+                    outline_color,
+                    font_size,
+                    anchor_x=align,
+                    font_name=font_name
+                )
+
+            # Draw the main text for each line
+            arcade.draw_text(
+                line,
+                x,
+                current_y,
+                color,
+                font_size,
+                anchor_x=align,
+                font_name=font_name
+            )
+
+            # Move to the next line
+            current_y -= line_height
+
+        # Add extra space between paragraphs
+        current_y -= line_height * 0.5
+
+
+
+
 
 def outside_stage(game):
     Button(
@@ -41,17 +108,21 @@ def outside_stage(game):
     
 def draw_intro_stage(game):
         # Intro text
-        arcade.draw_text(
-            INTRO_TEXT,
-            0,
-            SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 5,
-            arcade.color.WHITE,
-            DEFAULT_FONT_SIZE,
-            width=SCREEN_WIDTH,
-            multiline=True,
-            align="center",
-            font_name="Old School Adventures"
-        )
+
+        draw_outlined_text_multiline(
+        text=INTRO_TEXT,
+        x=SCREEN_WIDTH // 2,  # Centered horizontally
+        y=SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 5,  # Top of the text block
+        font_size=DEFAULT_FONT_SIZE,  # Default font size
+        font_name="Old School Adventures",  # Specified font
+        color=arcade.color.WHITE,  # Main text color
+        outline_color=arcade.color.BLACK,  # Outline color
+        outline_thickness=1.2,  # Thickness of the outline
+        width=SCREEN_WIDTH - 200,  # Wrapping width
+        line_height=DEFAULT_LINE_HEIGHT*1.5,  # Space between lines
+        align="center"  # Text alignment
+    )
+     
 
         # Button positions
         button_positions = [
@@ -93,17 +164,21 @@ def draw_spread_stage(game):
                 text_y_start=95,
             )
             
-            arcade.draw_text(
+         
+
+            draw_outlined_text_multiline(
                 f"{game.current_revealed_card.name}",
-                SCREEN_WIDTH // 2,
-                SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 4.5,
-                arcade.color.WHITE,
-                DEFAULT_FONT_SIZE * 1.8,
-                width=SCREEN_WIDTH,
-                align="center",
-                anchor_x="center",
-                font_name="Old School Adventures"
-            )
+                x=SCREEN_WIDTH // 2,  # Centered horizontally
+                y=SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 5,  # Top of the text block
+                font_size=DEFAULT_FONT_SIZE*1.8,  # Default font size
+                font_name="Old School Adventures",  # Specified font
+                color=arcade.color.WHITE,  # Main text color
+                outline_color=arcade.color.BLACK,  # Outline color
+                outline_thickness=1.2,  # Thickness of the outline
+                width=SCREEN_WIDTH,  # Wrapping width
+                line_height=DEFAULT_LINE_HEIGHT*1.5,  # Space between lines
+                align="center"  # Text alignment
+    )
 
             if len(game.selected_cards) >1 and game.selected_cards[1]:
                 x = 300 
@@ -118,18 +193,20 @@ def draw_spread_stage(game):
             return  # Stop drawing the rest of the stage while reveal is active
 
 
-        # Draw instruction text
-        arcade.draw_text(
-            "Choose 3 Cards:",
-            SCREEN_WIDTH // 2,
-            SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 4.5,
-            arcade.color.WHITE,
-            DEFAULT_FONT_SIZE *1.5,
-            width=SCREEN_WIDTH,
-            align="center",
-            anchor_x="center",
-            font_name="Old School Adventures"
-        )
+
+        draw_outlined_text_multiline(
+                "Choose 3 Cards:",
+                x=SCREEN_WIDTH // 2,  # Centered horizontally
+                y=SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 5,  # Top of the text block
+                font_size=DEFAULT_FONT_SIZE*1.5,  # Default font size
+                font_name="Old School Adventures",  # Specified font
+                color=arcade.color.WHITE,  # Main text color
+                outline_color=arcade.color.BLACK,  # Outline color
+                outline_thickness=1.2,  # Thickness of the outline
+                width=SCREEN_WIDTH,  # Wrapping width
+                line_height=DEFAULT_LINE_HEIGHT*1.5,  # Space between lines
+                align="center"  # Text alignment
+    )
 
         # Draw the cards
         card_spacing = (SCREEN_WIDTH - 300) // len(game.deck.cards)  # Dynamic spacing
@@ -147,17 +224,20 @@ def draw_spread_stage(game):
 def draw_loading_stage(game):
     """ Render the loading screen. """
 
-    # Draw Loading Text
-    arcade.draw_text(
-        "Loading, please wait...",
-        SCREEN_WIDTH // 2,
-        SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 4,
-        arcade.color.WHITE,
-        DEFAULT_FONT_SIZE * 1.5,
-        width=SCREEN_WIDTH,
-        align="center",
-        anchor_x="center",
-        font_name="Old School Adventures"
+ 
+
+    draw_outlined_text_multiline(
+                "Studying cards...",
+                x=SCREEN_WIDTH // 2,  # Centered horizontally
+                y=SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 5,  # Top of the text block
+                font_size=DEFAULT_FONT_SIZE*1.5,  # Default font size
+                font_name="Old School Adventures",  # Specified font
+                color=arcade.color.WHITE,  # Main text color
+                outline_color=arcade.color.BLACK,  # Outline color
+                outline_thickness=1.2,  # Thickness of the outline
+                width=SCREEN_WIDTH,  # Wrapping width
+                line_height=DEFAULT_LINE_HEIGHT*1.5,  # Space between lines
+                align="center"  # Text alignment
     )
 
     # Progress bar dimensions
@@ -256,18 +336,32 @@ def draw_reading_intro(game):
     # Placeholder logic
     game.line_spacing= 50
     for i, line in enumerate(game.fortune[0].split('\n')):
-            arcade.draw_text(
-                line,
-                SCREEN_WIDTH //2 ,
-                SCREEN_HEIGHT // 2 - (i * game.line_spacing),
-                arcade.color.WHITE,
-                font_size=18,
-                anchor_x="center",
-                anchor_y="top",
-                width=SCREEN_WIDTH * 0.8,
-                align="center",
-                font_name="Old School Adventures"
-        )
+        #     arcade.draw_text(
+        #         line,
+        #         SCREEN_WIDTH //2 ,
+        #         SCREEN_HEIGHT // 2 - (i * game.line_spacing),
+        #         arcade.color.WHITE,
+        #         font_size=18,
+        #         anchor_x="center",
+        #         anchor_y="top",
+        #         width=SCREEN_WIDTH * 0.8,
+        #         align="center",
+        #         font_name="Old School Adventures"
+        # )
+            
+            draw_outlined_text_multiline(
+                    line    ,
+                    x=SCREEN_WIDTH // 2,  # Centered horizontally
+                    y=SCREEN_HEIGHT // 2 - (i * game.line_spacing),  # Top of the text block
+                    font_size=18,  # Default font size
+                    font_name="Old School Adventures",  # Specified font
+                    color=arcade.color.WHITE,  # Main text color
+                    outline_color=arcade.color.BLACK,  # Outline color
+                    outline_thickness=1.2,  # Thickness of the outline
+                    width=SCREEN_WIDTH * .8,  # Wrapping width
+                    line_height=DEFAULT_LINE_HEIGHT*1.5,  # Space between lines
+                    align="center"  # Text alignment
+    )
 
     Button(
         game=game,
@@ -290,20 +384,34 @@ def draw_reading_card(game, card_index):
         
         paragraph = game.fortune[card_index]
         for i, line in enumerate(paragraph.split('\n')):
-            arcade.draw_text(
-                line,
-                SCREEN_WIDTH * .7 ,  # Left-aligned starting position
-                SCREEN_HEIGHT * .75 - (i * game.line_spacing),
-                arcade.color.WHITE,
-                font_size=18,
-                anchor_x="center",
-                anchor_y="top",
-                width=SCREEN_WIDTH * 0.6,  # Define width for wrapping
-                align="center",
-                font_name="Old School Adventures"
-            )
+            # arcade.draw_text(
+            #     line,
+            #     SCREEN_WIDTH * .7 ,  # Left-aligned starting position
+            #     SCREEN_HEIGHT * .75 - (i * game.line_spacing),
+            #     arcade.color.WHITE,
+            #     font_size=18,
+            #     anchor_x="center",
+            #     anchor_y="top",
+            #     width=SCREEN_WIDTH * 0.6,  # Define width for wrapping
+            #     align="center",
+            #     font_name="Old School Adventures"
+            # )
+
+            draw_outlined_text_multiline(
+                    line    ,
+                    x=SCREEN_WIDTH *.65,  # Centered horizontally
+                    y=SCREEN_HEIGHT *.7 - (i * game.line_spacing),  # Top of the text block
+                    font_size=18,  # Default font size
+                    font_name="Old School Adventures",  # Specified font
+                    color=arcade.color.WHITE,  # Main text color
+                    outline_color=arcade.color.BLACK,  # Outline color
+                    outline_thickness=.8,  # Thickness of the outline
+                    width=SCREEN_WIDTH * .6,  # Wrapping width
+                    line_height=DEFAULT_LINE_HEIGHT*1.5,  # Space between lines
+                    align="center"  # Text alignment
+    )
         card = game.drawn_cards[card_index - 1]  # Cards are 0-indexed
-        card.paint(SCREEN_WIDTH // 4, SCREEN_HEIGHT // 2, show_front=True)
+        card.paint(SCREEN_WIDTH // 5.5, SCREEN_HEIGHT // 2, show_front=True)
 
         Button(
             game=game,
@@ -330,19 +438,31 @@ def draw_reading_summary(game):
         # Placeholder logic
         
         for i, line in enumerate(game.fortune[4].split('\n')):
-                arcade.draw_text(
-                    line,
-                    SCREEN_WIDTH //2 ,
-                    SCREEN_HEIGHT // 2 +25 - (i * game.line_spacing),
-                    arcade.color.WHITE,
-                    font_size=18,
-                    anchor_x="center",
-                    anchor_y="top",
-                    width=SCREEN_WIDTH * 0.8,
-                    align="center",
-                    font_name="Old School Adventures"
-            )
-
+            #     arcade.draw_text(
+            #         line,
+            #         SCREEN_WIDTH //2 ,
+            #         SCREEN_HEIGHT // 2 +25 - (i * game.line_spacing),
+            #         arcade.color.WHITE,
+            #         font_size=18,
+            #         anchor_x="center",
+            #         anchor_y="top",
+            #         width=SCREEN_WIDTH * 0.8,
+            #         align="center",
+            #         font_name="Old School Adventures"
+            # )
+                draw_outlined_text_multiline(
+                    line    ,
+                    x=SCREEN_WIDTH // 2,  # Centered horizontally
+                    y=SCREEN_HEIGHT // 2 - (i * game.line_spacing),  # Top of the text block
+                    font_size=18,  # Default font size
+                    font_name="Old School Adventures",  # Specified font
+                    color=arcade.color.WHITE,  # Main text color
+                    outline_color=arcade.color.BLACK,  # Outline color
+                    outline_thickness=1.2,  # Thickness of the outline
+                    width=SCREEN_WIDTH * .8,  # Wrapping width
+                    line_height=DEFAULT_LINE_HEIGHT*1.5,  # Space between lines
+                    align="center"  # Text alignment
+    )
         Button(
             game=game,
             name="new_reading",
