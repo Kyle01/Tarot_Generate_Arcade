@@ -3,9 +3,11 @@ import threading
 import pyglet
 import textwrap
 import draw_utility
+import mouse_input
 from deck import TarotDeck
 from tarot_bot import TarotBot
 from enum import Enum
+
 
 # Screen title and size
 SCREEN_WIDTH = 1280
@@ -47,8 +49,8 @@ class TarotGame(arcade.Window):
         self.outside_image = arcade.set_background_color(arcade.color.IMPERIAL_PURPLE) ## replace with cover art
         self.frame_timer = 0
         self.frame_rate = 0.4
-        self.button_texture = arcade.load_texture("assets/original/Purple Button Big.png")
-        self.button_pressed_texture = arcade.load_texture("assets/original/Purple Button Pressed Big.png")
+        # self.button_texture = arcade.load_texture("assets/original/Purple Button Big.png")
+        # self.button_pressed_texture = arcade.load_texture("assets/original/Purple Button Pressed Big.png")
         arcade.set_background_color(arcade.color.IMPERIAL_PURPLE)
        
       
@@ -119,136 +121,137 @@ class TarotGame(arcade.Window):
         #     color=arcade.color.RED,  # Red color for visibility
         #     border_width=2
         # )
-    def on_mouse_press(self, x, y, _button, _key_modifiers):
+    def on_mouse_press(self, x, y, _button, _modifiers):
+           
+            mouse_input.handle_mouse_press(self,x,y, _button, _modifiers, GameState)
         
-        
-        def mouse_press_outside(x,y):
-            if (self.x_right_button + 200) - (self.button_clickbox_width // 2)  <= x <= self.x_right_button + 200 + (self.button_clickbox_width //2) and \
-                self.y_bottom_button <= y <= self.y_bottom_button - 50 + (self.button_clickbox_height):
-                arcade.close_window()
-                return
-            if self.x_middle_button - self.button_clickbox_width <= x <= self.x_middle_button + self.button_clickbox_width and self.y_bottom_button <= y <= self.y_bottom_button +self.button_clickbox_height:
-                self.stage = GameState.INTRO
-                return
-        def mouse_press_intro(x, y):
-            button_positions = [
-                (275, 300),  # Button 0
-                (650, 300),  # Button 1
-                (1025, 300),  # Button 2
-                (275, 150),  # Button 3
-                (650, 150),  # Button 4
-                (1025, 150)  # Button 5
-            ]
+    #     # def mouse_press_outside(x,y):
+    #     #     if (self.x_right_button + 200) - (self.button_clickbox_width // 2)  <= x <= self.x_right_button + 200 + (self.button_clickbox_width //2) and \
+    #     #         self.y_bottom_button <= y <= self.y_bottom_button - 50 + (self.button_clickbox_height):
+    #     #         arcade.close_window()
+    #     #         return
+    #     #     if self.x_middle_button - self.button_clickbox_width <= x <= self.x_middle_button + self.button_clickbox_width and self.y_bottom_button <= y <= self.y_bottom_button +self.button_clickbox_height:
+    #     #         self.stage = GameState.INTRO
+    #     #         return
+    #     # def mouse_press_intro(x, y):
+    #     #     button_positions = [
+    #     #         (275, 300),  # Button 0
+    #     #         (650, 300),  # Button 1
+    #     #         (1025, 300),  # Button 2
+    #     #         (275, 150),  # Button 3
+    #     #         (650, 150),  # Button 4
+    #     #         (1025, 150)  # Button 5
+    #     #     ]
 
-            # Check if a button is clicked
-            for i, (bx, by) in enumerate(button_positions):
-                if bx - self.button_clickbox_width <= x <= bx + self.button_clickbox_width and by <= y <= by + self.button_clickbox_height:  # Button bounds
-                    self.clicked_button = f"button_{i}"
-                    self.set_intention(CATEGORIES[i])  # Set intention based on button index
-                    return
+    #     #     # Check if a button is clicked
+    #     #     for i, (bx, by) in enumerate(button_positions):
+    #     #         if bx - self.button_clickbox_width <= x <= bx + self.button_clickbox_width and by <= y <= by + self.button_clickbox_height:  # Button bounds
+    #     #             self.clicked_button = f"button_{i}"
+    #     #             self.set_intention(CATEGORIES[i])  # Set intention based on button index
+    #     #             return
             
-        def mouse_press_spread(x,y):
-            if self.reveal_active:
-                if self.x_middle_button - self.button_clickbox_width <= x <= self.x_middle_button + self.button_clickbox_width and self.y_bottom_button  <= y <= self.y_bottom_button  + self.button_clickbox_height:
-                    # Dismiss popup and place the revealed card in the corner
-                    self.reveal_active = False
+    #     # def mouse_press_spread(x,y):
+    #     #     if self.reveal_active:
+    #     #         if self.x_middle_button - self.button_clickbox_width <= x <= self.x_middle_button + self.button_clickbox_width and self.y_bottom_button  <= y <= self.y_bottom_button  + self.button_clickbox_height:
+    #     #             # Dismiss popup and place the revealed card in the corner
+    #     #             self.reveal_active = False
     
-                    self.current_revealed_card = None
-                    if len(self.selected_cards) == 2:
-                        self.start_reading_button_active = True
-                        print(f"is start reading active: {self.start_reading_button_active}")
-                    if len(self.selected_cards) == 3:
-                        self.drawn_cards = self.selected_cards
-                        self.start_loading()
-                        self.start_reading_button_active = False
-                        print(f"is start reading active: {self.start_reading_button_active}")
-                    return
+    #     #             self.current_revealed_card = None
+    #     #             if len(self.selected_cards) == 2:
+    #     #                 self.start_reading_button_active = True
+    #     #                 print(f"is start reading active: {self.start_reading_button_active}")
+    #     #             if len(self.selected_cards) == 3:
+    #     #                 self.drawn_cards = self.selected_cards
+    #     #                 self.start_loading()
+    #     #                 self.start_reading_button_active = False
+    #     #                 print(f"is start reading active: {self.start_reading_button_active}")
+    #     #             return
                     
         
-            if not self.reveal_active:
-                for card in reversed(self.deck.cards):
-                    if card.is_clicked(x, y):
-                        self.deck.cards.remove(card)
-                        self.reveal_card(card) 
-                        # Trigger popup for selected card
-                        return
+    #     #     if not self.reveal_active:
+    #     #         for card in reversed(self.deck.cards):
+    #     #             if card.is_clicked(x, y):
+    #     #                 self.deck.cards.remove(card)
+    #     #                 self.reveal_card(card) 
+    #     #                 # Trigger popup for selected card
+    #     #                 return
                     
-        def mouse_press_reading_intro(x,y):
+    #     # def mouse_press_reading_intro(x,y):
             
-            if self.x_middle_button-self.button_clickbox_width <= x <= self.x_middle_button + self.button_clickbox_width and self.y_bottom_button <= y <= self.y_bottom_button + self.button_clickbox_height:
-                self.advance_reading_stage()
-                return
+    #     #     if self.x_middle_button-self.button_clickbox_width <= x <= self.x_middle_button + self.button_clickbox_width and self.y_bottom_button <= y <= self.y_bottom_button + self.button_clickbox_height:
+    #     #         self.advance_reading_stage()
+    #     #         return
             
 
         
-        def mouse_press_reading_cards(x,y):
+    #     # def mouse_press_reading_cards(x,y):
                         
-            if self.x_right_button-self.button_clickbox_width <= x <= self.x_right_button + self.button_clickbox_width and self.y_bottom_button  <= y <= self.y_bottom_button + self.button_clickbox_height:
-                self.advance_reading_stage()
-                return
-            if self.x_left_button - self.button_clickbox_width <= x <= self.x_left_button + self.button_clickbox_width and self.y_bottom_button <= y <= self.y_bottom_button +self.button_clickbox_height:
-                self.previous_reading_stage()
-                return
+    #     #     if self.x_right_button-self.button_clickbox_width <= x <= self.x_right_button + self.button_clickbox_width and self.y_bottom_button  <= y <= self.y_bottom_button + self.button_clickbox_height:
+    #     #         self.advance_reading_stage()
+    #     #         return
+    #     #     if self.x_left_button - self.button_clickbox_width <= x <= self.x_left_button + self.button_clickbox_width and self.y_bottom_button <= y <= self.y_bottom_button +self.button_clickbox_height:
+    #     #         self.previous_reading_stage()
+    #     #         return
         
-        def mouse_press_reading_summary(x,y):
+    #     # def mouse_press_reading_summary(x,y):
           
             
             
-            if self.x_middle_button - self.button_clickbox_width <= x <= self.x_middle_button + self.button_clickbox_width and self.y_bottom_button  <= y <= self.y_bottom_button +self.button_clickbox_height:
-                self.reset_data()
-                self.stage = GameState.INTRO
-            if self.x_left_button - 100 - self.button_clickbox_width <= x <= self.x_left_button- 100 + self.button_clickbox_width and \
-                self.y_bottom_button <= y <= self.y_bottom_button + self.button_clickbox_height:
-                self.previous_reading_stage()
-                return
-            if self.x_right_button+100 - self.button_clickbox_width <= x <= self.x_right_button+100 + self.button_clickbox_width and \
-                self.y_bottom_button <= y <= self.y_bottom_button + self.button_clickbox_height:
-                self.reset_data()
-                self.stage = GameState.OUTSIDE
+    #     #     if self.x_middle_button - self.button_clickbox_width <= x <= self.x_middle_button + self.button_clickbox_width and self.y_bottom_button  <= y <= self.y_bottom_button +self.button_clickbox_height:
+    #     #         self.reset_data()
+    #     #         self.stage = GameState.INTRO
+    #     #     if self.x_left_button - 100 - self.button_clickbox_width <= x <= self.x_left_button- 100 + self.button_clickbox_width and \
+    #     #         self.y_bottom_button <= y <= self.y_bottom_button + self.button_clickbox_height:
+    #     #         self.previous_reading_stage()
+    #     #         return
+    #     #     if self.x_right_button+100 - self.button_clickbox_width <= x <= self.x_right_button+100 + self.button_clickbox_width and \
+    #     #         self.y_bottom_button <= y <= self.y_bottom_button + self.button_clickbox_height:
+    #     #         self.reset_data()
+    #     #         self.stage = GameState.OUTSIDE
 
 
 
-        if self.stage == GameState.OUTSIDE:
-            mouse_press_outside(x,y)
-        elif self.stage == GameState.INTRO:
-            mouse_press_intro(x,y)
-        elif self.stage == GameState.SPREAD:
-            mouse_press_spread(x,y)
-        elif self.stage == GameState.READING_INTRO:
-            mouse_press_reading_intro(x,y)
-        elif self.stage in {
-            GameState.READING_CARD_1,
-            GameState.READING_CARD_2,
-            GameState.READING_CARD_3,
-        }:
-            mouse_press_reading_cards(x,y)
-        elif self.stage == GameState.READING_SUMMARY:
-            mouse_press_reading_summary(x,y)
+    #         if self.stage == GameState.OUTSIDE:
+    #             mouse_input.mouse_press_outside(self,x,y)
+    #         elif self.stage == GameState.INTRO:
+    #             mouse_input.mouse_press_intro(x,y)
+    #         elif self.stage == GameState.SPREAD:
+    #             mouse_input.mouse_press_spread(x,y)
+    #         elif self.stage == GameState.READING_INTRO:
+    #             mouse_input.mouse_press_reading_intro(x,y)
+    #         elif self.stage in {
+    #             GameState.READING_CARD_1,
+    #             GameState.READING_CARD_2,
+    #             GameState.READING_CARD_3,
+    #         }:
+    #             mouse_input.mouse_press_reading_cards(x,y)
+    #         elif self.stage == GameState.READING_SUMMARY:
+    #             mouse_input.mouse_press_reading_summary(x,y)
 
-    def advance_reading_stage(self):
-        """ Advance to the next reading stage. """
-        if self.stage == GameState.READING_INTRO:
-            self.stage = GameState.READING_CARD_1
-        elif self.stage == GameState.READING_CARD_1:
-            self.stage = GameState.READING_CARD_2
-        elif self.stage == GameState.READING_CARD_2:
-            self.stage = GameState.READING_CARD_3
-        elif self.stage == GameState.READING_CARD_3:
-            self.stage = GameState.READING_SUMMARY
-        elif self.stage == GameState.READING_SUMMARY:
-            print("Reading complete.")  # Placeholder for post-reading action
+    # #     def advance_reading_stage(self):
+    #         """ Advance to the next reading stage. """
+    #         if self.stage == GameState.READING_INTRO:
+    #             self.stage = GameState.READING_CARD_1
+    #         elif self.stage == GameState.READING_CARD_1:
+    #             self.stage = GameState.READING_CARD_2
+    #         elif self.stage == GameState.READING_CARD_2:
+    #             self.stage = GameState.READING_CARD_3
+    #         elif self.stage == GameState.READING_CARD_3:
+    #             self.stage = GameState.READING_SUMMARY
+    #         elif self.stage == GameState.READING_SUMMARY:
+    #             print("Reading complete.")  # Placeholder for post-reading action
 
-    def previous_reading_stage(self):
-        """Return to previous reading stage"""
-        if self.stage == GameState.READING_CARD_1:
-            self.stage = GameState.READING_INTRO
-        elif self.stage == GameState.READING_CARD_2:
-            self.stage = GameState.READING_CARD_1
-        elif self.stage == GameState.READING_CARD_3:
-            self.stage = GameState.READING_CARD_2
-        elif self.stage == GameState.READING_SUMMARY:
-            self.stage = GameState.READING_CARD_3
-        
+    #     def previous_reading_stage(self):
+    #         """Return to previous reading stage"""
+    #         if self.stage == GameState.READING_CARD_1:
+    #             self.stage = GameState.READING_INTRO
+    #         elif self.stage == GameState.READING_CARD_2:
+    #             self.stage = GameState.READING_CARD_1
+    #         elif self.stage == GameState.READING_CARD_3:
+    #             self.stage = GameState.READING_CARD_2
+    #         elif self.stage == GameState.READING_SUMMARY:
+    #             self.stage = GameState.READING_CARD_3
+            
     
     def on_mouse_motion(self, x, y, dx, dy):
         """ Handle mouse movement to track hovered card. """

@@ -286,7 +286,7 @@ def draw_reading_intro(game):
 
 def draw_reading_card(game, card_index):
         """ Render a single card stage. """
-        # Placeholder logic for displaying one card
+       
         
         paragraph = game.fortune[card_index]
         for i, line in enumerate(paragraph.split('\n')):
