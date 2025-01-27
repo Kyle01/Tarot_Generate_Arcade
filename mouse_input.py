@@ -1,8 +1,13 @@
 from enum import Enum
 from game import CATEGORIES
 
+""""""
+
 
 """ Handle Mouse Clicks"""
+
+
+""""""
 
 def handle_mouse_press(game, x, y, _button, _modifiers, game_state):
     
@@ -137,3 +142,127 @@ def previous_reading_stage(game, game_state):
         game.stage = game_state.READING_CARD_2
     elif game.stage == game_state.READING_SUMMARY:
         game.stage = game_state.READING_CARD_3
+
+
+
+""""""
+
+
+"""Handle Mouse Motion"""
+
+
+""""""
+
+
+
+def handle_mouse_motion(game, x, y, _dx, _dy, game_state):
+        if game.stage == game_state.OUTSIDE:
+            mouse_motion_outside(game,x,y, game_state)
+        if game.stage == game_state.INTRO:
+            mouse_motion_intro(game,x,y, game_state)
+        if game.stage == game_state.SPREAD:
+            mouse_motion_spread(game,x,y, game_state)
+        if game.stage == game_state.READING_INTRO:
+            mouse_motion_reading_intro(game,x,y, game_state)
+        if game.stage in {
+            game_state.READING_CARD_1,
+            game_state.READING_CARD_2,
+            game_state.READING_CARD_3,
+        }:
+            mouse_motion_reading_cards(game,x,y,game_state)
+        if game.stage == game_state.READING_SUMMARY:
+            mouse_motion_reading_summary(game,x,y,game_state)
+        
+        
+    
+
+def mouse_motion_outside(game,x,y,game_state):
+    if game.x_middle_button - game.button_clickbox_width <= x <= game.x_middle_button + game.button_clickbox_width and \
+        game.y_bottom_button <= y <= game.y_bottom_button + game.button_clickbox_height:
+            game.hovered_button = "step_inside"
+    
+    elif (game.x_right_button + 200) - (game.button_clickbox_width // 2)  <= x <= game.x_right_button + 200 + (game.button_clickbox_width //2) and \
+        game.y_bottom_button <= y <= game.y_bottom_button - 50 + (game.button_clickbox_height):
+            game.hovered_button = "exit_game"
+    else:
+            game.hovered_button = None
+
+def mouse_motion_intro(game,x,y,game_state):
+    # Loop through button positions and detect hover
+    for i, (bx, by) in enumerate([
+        (275, 300),  # Button 0
+        (650, 300),  # Button 1
+        (1025, 300),  # Button 2
+        (275, 150),  # Button 3
+        (650, 150),  # Button 4
+        (1025, 150)  # Button 5
+    ]):
+        # Check if the mouse is within the button's bounds
+        if bx - game.button_clickbox_width <= x <= bx + game.button_clickbox_width and by - 100 <= y <= by + 100:
+            game.hovered_button = f"button_{i}"
+            break
+        else:
+            game.hovered_button = None
+
+    # do reverse for topmost card
+
+def mouse_motion_spread(game,x,y,game_state):
+
+    if game.reveal_active and not game.start_reading_button_active:
+        game.hovered_card = None  # Ensure no card is hovered when revealing
+        if game.x_middle_button - game.button_clickbox_width <= x <= game.x_middle_button + game.button_clickbox_width and \
+        game.y_bottom_button <= y <= game.y_bottom_button + game.button_clickbox_height:
+            game.hovered_button = "pull_next"
+        else:
+            game.hovered_button = None  # Reset hover state if not within bounds
+        return
+    elif game.reveal_active and game.start_reading_button_active:
+        game.hovered_card = None
+        if game.x_middle_button - game.button_clickbox_width <= x <= game.x_middle_button + game.button_clickbox_width and \
+        game.y_bottom_button <= y <= game.y_bottom_button + game.button_clickbox_height:
+            game.hovered_button = "begin_reading"
+
+        else:
+            game.hovered_button = None  # Reset hover state if not within bounds
+        return
+# Normal hover behavior
+    game.hovered_card = None
+    game.hovered_button = None
+
+    for card in reversed(game.deck.cards):
+        if card.is_clicked(x, y): 
+            game.hovered_card = card
+            break
+
+
+def mouse_motion_reading_intro(game,x,y,game_state):
+    if game.x_middle_button - game.button_clickbox_width <= x <= game.x_middle_button + game.button_clickbox_width and \
+        game.y_bottom_button <= y <= game.y_bottom_button + game.button_clickbox_height:
+            game.hovered_button = "next_card"
+    else:
+         game.hovered_button = None
+def mouse_motion_reading_cards(game,x,y,game_state):
+    if game.x_left_button - game.button_clickbox_width <= x <= game.x_left_button + game.button_clickbox_width and \
+        game.y_bottom_button <= y <= game.y_bottom_button + game.button_clickbox_height:
+            game.hovered_button = "previous_card"
+   
+    elif game.x_right_button - game.button_clickbox_width <= x <= game.x_right_button + game.button_clickbox_width and \
+        game.y_bottom_button <= y <= game.y_bottom_button + game.button_clickbox_height:
+            game.hovered_button = "next_card"
+    else:
+         game.hovered_button = None        
+def mouse_motion_reading_summary(game,x,y,game_state):
+    if game.x_middle_button - game.button_clickbox_width <= x <= game.x_middle_button + game.button_clickbox_width and \
+        game.y_bottom_button <= y <= game.y_bottom_button + game.button_clickbox_height:
+            game.hovered_button = "new_reading"
+    
+    elif game.x_left_button - 100 - game.button_clickbox_width <= x <= game.x_left_button- 100 + game.button_clickbox_width and \
+        game.y_bottom_button <= y <= game.y_bottom_button + game.button_clickbox_height:
+            game.hovered_button = "previous_card"
+  
+    elif game.x_right_button+100 - game.button_clickbox_width <= x <= game.x_right_button+100 + game.button_clickbox_width and \
+        game.y_bottom_button <= y <= game.y_bottom_button + game.button_clickbox_height:
+            game.hovered_button = "go_outside"
+    else:
+         game.hovered_button = None
+    # Check if hovering over "Begin Reading" button
