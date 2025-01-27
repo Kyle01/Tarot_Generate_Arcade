@@ -1,5 +1,6 @@
 from openai import OpenAI
 from dotenv import dotenv_values
+import textwrap
 
 environment_variables = dotenv_values()
 
@@ -9,7 +10,7 @@ class TarotBot:
             api_key=environment_variables['OPEN_AI_API_KEY']
         )
 
-    def fortune(self, cards, intention):
+    def generate_fortune(self, cards, intention):
         resp =  self.client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
@@ -38,4 +39,63 @@ class TarotBot:
                 }
             ],
         )
+
+        def token_usage(): 
+            """Token cost calculator based on prices for 4.o mini"""
+            input_rate = .15 / 1000000
+            cached_input_rate = .075 / 1000000
+            output_rate = .6 / 1000000
+
+            cached_input_cost = resp.usage.prompt_tokens_details.cached_tokens * cached_input_rate
+            input_cost = (resp.usage.prompt_tokens - resp.usage.prompt_tokens_details.cached_tokens) * input_rate
+            output_cost = resp.usage.completion_tokens * output_rate
+            total_cost = cached_input_cost + input_cost + output_cost
+
+            print("\nToken Usage:")
+            print(f"Prompt tokens: {resp.usage.prompt_tokens}")
+            print(f"Cached Prompt tokens: {resp.usage.prompt_tokens_details.cached_tokens}")
+            print(f"Completion tokens: {resp.usage.completion_tokens}")
+            print(f"Total tokens: {resp.usage.total_tokens}")
+            print("\n Token Cost:")
+            print(f"Prompt tokens: {input_cost}")
+            print(f"Cached Prompt tokens: {cached_input_cost}")
+            print(f"Completion tokens: {output_cost}")
+            print(f"Total tokens: {total_cost}")
+
+        ## there are 22,778,496 possible readings
+        ## Each reading costs somewhere between  $.0002 and $.0003
+        ## thats a projected range of $4,555.70 to $6,833.55 if we did every possible reading in the backend
+        ## We would need to come up 200-300 $ / 1 million full readings, or 20-30$ / 100k readings
+        ## We could just put a cap on the amount of readings/tokens we can spend and then have an animation where the house is on fire or in a storm lol
+
+
+    
+
+        token_usage()
         return resp.choices[0].message.content
+   
+   
+    def wrap_fortune_paragraphs(self, fortune):
+        """Split and wrap the fortune text into paragraphs."""
+
+        paragraphs = fortune.split('\n')  # Split the fortune into paragraphs
+        # print(f"Split paragraphs:\n{paragraphs}")  # Debug the split paragraphs
+
+        # Handle wrapping logic
+        default_width = 40
+        last_paragraph_width = 55
+        last_index = len(paragraphs) - 1
+        wrapped_paragraphs = [
+            textwrap.fill(p.strip(), width=last_paragraph_width if i == last_index else default_width)
+            for i, p in enumerate(paragraphs) if p.strip()
+]
+
+    
+        return wrapped_paragraphs
+    
+    def api_call(self, game, cards, intention):
+            game.fortune = self.generate_fortune(cards, intention)
+
+            game.api_call_complete = True
+        
+            game.fortune = self.wrap_fortune_paragraphs(game.fortune)       
