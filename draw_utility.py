@@ -81,7 +81,16 @@ def draw_outlined_text_multiline(text, x, y, font_size=DEFAULT_FONT_SIZE, font_n
         # Add extra space between paragraphs
         current_y -= line_height * 0.5
 
-
+def set_typing_text(game, new_text):
+    """
+    Sets the text to be typed dynamically.
+    Only resets typing if the text is different.
+    """
+    if game.current_text != new_text:  # Only reset if the text is different
+        game.current_text = new_text
+        game.displayed_text = ""  # Reset displayed text
+        game.text_index = 0       # Reset typing progress
+        game.typing_timer = 0  
 
 
 
@@ -110,21 +119,27 @@ def outside_stage(game):
     
 def draw_intro_stage(game):
         # Intro text
+        set_typing_text(game, INTRO_TEXT)
+
+        # Predefine the width and starting position of the full text block
+        text_block_width = SCREEN_WIDTH - 200  # Fixed width for multiline text
+        text_x = (SCREEN_WIDTH // 2) # Align text from the left, but pre-center it
+        text_y = SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 5
+
 
         draw_outlined_text_multiline(
-        text=INTRO_TEXT,
-        x=SCREEN_WIDTH // 2,  # Centered horizontally
-        y=SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 5,  # Top of the text block
-        font_size=DEFAULT_FONT_SIZE,  # Default font size
-        font_name="Old School Adventures",  # Specified font
-        color=arcade.color.WHITE,  # Main text color
-        outline_color=arcade.color.BLACK,  # Outline color
-        outline_thickness=1.2,  # Thickness of the outline
-        width=SCREEN_WIDTH - 200,  # Wrapping width
-        line_height=DEFAULT_LINE_HEIGHT*1.5,  # Space between lines
-        align="center"  # Text alignment
-    )
-     
+            game.displayed_text,
+            x=text_x,  # Start drawing from this fixed left-aligned x position
+            y=text_y,
+            font_size=DEFAULT_FONT_SIZE,
+            font_name="Old School Adventures",
+            color=arcade.color.WHITE,
+            outline_color=arcade.color.BLACK,
+            outline_thickness=1.2,
+            width=text_block_width,  # Fixed wrapping width
+            line_height=DEFAULT_LINE_HEIGHT * 1.5,
+            align="center"  # Left-align to prevent shifting
+        )
 
         # Button positions
         button_positions = [

@@ -62,6 +62,12 @@ class TarotGame(arcade.Window):
         self.x_left_button = SCREEN_WIDTH // 4
         self.x_right_button = SCREEN_WIDTH * .75
         self.y_bottom_button = 25
+
+        self.text_index = 0
+        self.displayed_text =""
+        self.typing_speed= .06
+        self.typing_timer= 0
+        self.current_text = ""
         
 
     def setup(self):
@@ -157,6 +163,17 @@ class TarotGame(arcade.Window):
 
     def on_update(self, delta_time):
         """ Update the game state. """
+
+        self.typing_timer += delta_time
+
+        if self.typing_timer >= self.typing_speed:
+           if self.text_index < len(self.current_text):  # Ensure we don't exceed the text length
+                self.text_index += 1
+                self.displayed_text = self.current_text[:self.text_index]  # Update the displayed text
+                self.typing_timer = 0  # Reset the timer
+
+        
+
         if self.stage == GameState.LOADING:
             self.frame_timer += delta_time
 
@@ -174,6 +191,7 @@ class TarotGame(arcade.Window):
                     self.loading_progress = 1.0
                     self.stage = GameState.READING_INTRO
 
+    
 def main():
     """ Main function """
     window = TarotGame()
