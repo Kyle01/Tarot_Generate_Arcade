@@ -3,6 +3,7 @@ import threading
 import pyglet
 import textwrap
 import draw_utility
+import text_utility as TEXT
 import mouse_input
 from deck import TarotDeck
 from tarot_bot import TarotBot
@@ -40,8 +41,6 @@ class TarotGame(arcade.Window):
         self.drawn_cards = None
         self.fortune = None
         self.hovered_card = None
-        self.hovered_button = None  # Track which button is hovered
-        self.clicked_button = None  # Track which button is clicked
         self.current_revealed_card = None
         self.reveal_active= False
         self.start_reading_button_active = False
@@ -55,7 +54,11 @@ class TarotGame(arcade.Window):
        
       
         pyglet.font.add_file(FONT_PATH)  # Load the font file
-           
+        
+        """ Variables for button formatting"""
+
+        self.hovered_button = None  # Track which button is hovered
+        self.clicked_button = None  # Track which button is clicked
         self.button_clickbox_width = 175
         self.button_clickbox_height = 150
         self.x_middle_button = SCREEN_WIDTH // 2
@@ -63,11 +66,15 @@ class TarotGame(arcade.Window):
         self.x_right_button = SCREEN_WIDTH * .75
         self.y_bottom_button = 25
 
+        """ Variables for typewriter Effect """
+
         self.text_index = 0
         self.displayed_text =""
-        self.typing_speed= .06
+        self.typing_speed= .03
         self.typing_timer= 0
         self.current_text = ""
+        self.current_line_index = 0
+        self.lines_to_type = []
         
 
     def setup(self):
@@ -84,6 +91,7 @@ class TarotGame(arcade.Window):
         self.current_revealed_card = None
         self.reveal_active= False
         self.start_reading_button_active = False
+        self.active_card_index = None
 
     def on_draw(self):
         """ Render the screen. """
@@ -101,7 +109,7 @@ class TarotGame(arcade.Window):
         elif self.stage == GameState.LOADING:
             draw_utility.draw_loading_stage(self)
         elif self.stage == GameState.READING_INTRO:
-            draw_utility.draw_reading_intro(self) # Stage 1: Show all cards and intro
+            draw_utility.draw_reading_intro(self, 0) # Stage 1: Show all cards and intro
         elif self.stage == GameState.READING_CARD_1:
             draw_utility.draw_reading_card(self, 1)  # Stage 2: Show card 1
         elif self.stage == GameState.READING_CARD_2:
@@ -109,7 +117,7 @@ class TarotGame(arcade.Window):
         elif self.stage == GameState.READING_CARD_3:
             draw_utility.draw_reading_card(self, 3)  # Stage 4: Show card 3
         elif self.stage == GameState.READING_SUMMARY:
-            draw_utility.draw_reading_summary(self)  # Stage 5: Show all cards and summary
+            draw_utility.draw_reading_summary(self, 4),   # Stage 5: Show all cards and summary
             
 
         '''For Debugging Hit boxes'''
@@ -139,6 +147,8 @@ class TarotGame(arcade.Window):
     def set_intention(self, intention_text):
         """ Set the intention and transition to the spread stage. """
         self.intention = intention_text
+        TEXT.reset_typing_state(self)  
+
         self.stage = GameState.SPREAD
         self.selected_cards = []  # reset selected cards for spread
         self.deck = TarotDeck()  # prepare deck
@@ -164,14 +174,7 @@ class TarotGame(arcade.Window):
     def on_update(self, delta_time):
         """ Update the game state. """
 
-        self.typing_timer += delta_time
-
-        if self.typing_timer >= self.typing_speed:
-           if self.text_index < len(self.current_text):  # Ensure we don't exceed the text length
-                self.text_index += 1
-                self.displayed_text = self.current_text[:self.text_index]  # Update the displayed text
-                self.typing_timer = 0  # Reset the timer
-
+        TEXT.update_typing_effect(self, delta_time)
         
 
         if self.stage == GameState.LOADING:
