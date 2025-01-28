@@ -8,65 +8,115 @@ SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 960
 DEFAULT_LINE_HEIGHT = 24
 
-def draw_outlined_text_multiline(text, x, y, font_size=DEFAULT_FONT_SIZE, font_name="Old School Adventures",
-                                 color=arcade.color.WHITE, outline_color=arcade.color.BLACK,
-                                 outline_thickness=2, width=SCREEN_WIDTH, line_height=DEFAULT_LINE_HEIGHT, align="center"):
+def typewriter_lines(
+    game,
+    center_x,
+    start_y,
+    font_size=18,
+    font_name="Old School Adventures",
+    color=arcade.color.WHITE,
+    outline_color=arcade.color.BLACK,
+    outline_thickness=1.2,
+    line_height=DEFAULT_LINE_HEIGHT * 1.5
+):
     """
-    Draw outlined multiline text with proper handling of `\n\n` line breaks.
-    :param text: The text to be drawn (can include multiple lines and paragraphs).
-    :param x: X position (center of the text block).
-    :param y: Y position (top of the text block).
-    :param font_size: Font size.
-    :param font_name: Name of the font to use.
-    :param color: The main color of the text.
-    :param outline_color: The color of the outline.
-    :param outline_thickness: Thickness of the outline.
-    :param width: Maximum width for text wrapping.
-    :param line_height: Space between lines.
-    :param align: Alignment of the text ("center", "left", "right").
+    Renders the pre-wrapped lines in `game.lines_to_type`, using 
+    the pre-calculated widths in `game.line_widths` for dynamic centering.
     """
+    for i, line in enumerate(game.lines_to_type):
+        # Calculate where the line should go vertically
+        y = start_y - (i * line_height)
+        # print(f"{i}: '{line}' => width={game.line_widths[i]}")
+        # Get the pre-calculated width for this line
+        line_width = game.line_widths[i]
+        
+        # Calculate the left-aligned starting position to center the line
+        adjusted_x = center_x - (line_width // 2)
+
+        # Determine which line is fully typed vs. the current typing line
+        if i < game.current_line_index:
+            # Fully typed line
+            draw_outlined_line(
+                line=line,
+                x=adjusted_x,
+                y=y,
+                font_size=font_size,
+                font_name=font_name,
+                color=color,
+                outline_color=outline_color,
+                outline_thickness=outline_thickness
+            )
+        elif i == game.current_line_index:
+            # Current line in the process of typing (game.displayed_text)
+            draw_outlined_line(
+                line=game.displayed_text,
+                x=adjusted_x,
+                y=y,
+                font_size=font_size,
+                font_name=font_name,
+                color=color,
+                outline_color=outline_color,
+                outline_thickness=outline_thickness
+            )
+        # else: future lines after current_line_index remain unrendered (or blank)
+        arcade.draw_rectangle_outline(
+            center_x=adjusted_x + line_width / 2,
+            center_y=y + font_size / 2,  # approximate vertical center
+            width=line_width,
+            height=font_size,
+            color=arcade.color.RED
+)
 
 
-    # Split the text into paragraphs based on `\n\n`
-    paragraphs = text.split("\n\n")
+def draw_outlined_line(
+        line,
+        x,
+        y,
+        font_size=18,
+        font_name="Old School Adventures",
+        color=arcade.color.WHITE,
+        outline_color=arcade.color.BLACK,
+        outline_thickness=1.2
+    ):
+        
 
-    current_y = y  # Start from the top of the text block
+        """Draw a single line of text with an outline, at a fixed position."""
 
-    for paragraph in paragraphs:
-        # Wrap the paragraph into lines based on the width
-        lines = textwrap.wrap(paragraph, width=width // font_size)
 
-        for line in lines:
-            # Draw the outline for each line
-            for dx, dy in [(-outline_thickness, 0), (outline_thickness, 0), (0, -outline_thickness), (0, outline_thickness),
-                           (-outline_thickness, -outline_thickness), (-outline_thickness, outline_thickness),
-                           (outline_thickness, -outline_thickness), (outline_thickness, outline_thickness)]:
-                arcade.draw_text(
-                    line,
-                    x + dx,
-                    current_y + dy,
-                    outline_color,
-                    font_size,
-                    anchor_x=align,
-                    font_name=font_name
-                )
+        offsets = [
+            (-outline_thickness, 0),
+            (outline_thickness, 0),
+            (0, -outline_thickness),
+            (0, outline_thickness),
+            (-outline_thickness, -outline_thickness),
+            (-outline_thickness, outline_thickness),
+            (outline_thickness, -outline_thickness),
+            (outline_thickness, outline_thickness),
+        ]
 
-            # Draw the main text for each line
+        # Draw outline by offsetting in all directions
+        for dx, dy in offsets:
             arcade.draw_text(
-                line,
-                x,
-                current_y,
-                color,
-                font_size,
-                anchor_x=align,
+                text=line,
+                start_x=x + dx,
+                start_y=y + dy,
+                color=outline_color,
+                font_size=font_size,
+                anchor_x="left",
                 font_name=font_name
             )
 
-            # Move to the next line
-            current_y -= line_height
+        # Draw the main text on top
+        arcade.draw_text(
+            text=line,
+            start_x=x,
+            start_y=y,
+            color=color,
+            font_size=font_size,
+            anchor_x="left",
+            font_name=font_name
+        )
 
-        # Add extra space between paragraphs
-        current_y -= line_height * 0.5
 
 
 def set_typing_text(game, new_text):
@@ -81,15 +131,33 @@ def set_typing_text(game, new_text):
         game.typing_timer = 0  
 
 
-def set_paragraph_typing(game, paragraph):
+def set_paragraph_typing(game, paragraph, font_size=18, font_name = "Old School Adventures", color=arcade.color.WHITE):
     """
     Sets up the typing effect for a multi-line paragraph.
     """
     
     if not game.lines_to_type or game.current_text != paragraph:  # Prevent resetting
-        game.lines_to_type = paragraph.split('\n')  # Split the paragraph into lines
-        game.current_line_index = 0  
-        # print(f"Lines to type{len(game.lines_to_type)}" )             # Start with the first line
+        lines = []
+        for block in paragraph.split("\n\n"):  # Split into paragraphs
+            wrapped_lines = textwrap.wrap(block, width=(SCREEN_WIDTH - 200) // font_size)
+            lines.extend(wrapped_lines + [""])  # Add wrapped lines and an empty line for spacing
+
+        game.lines_to_type = lines  # Store all lines
+        game.current_line_index = 0  # Start from the first line
+        game.line_widths = []
+        for line in game.lines_to_type:
+            text_image = arcade.create_text_image(
+                text=line,
+                font_size=font_size,
+                font_name=font_name,
+                text_color=color,
+                align= "center"
+            )
+            line_width = text_image.width * 1.5 ##Account for the fonts larger size and glyph boxes
+          
+            game.line_widths.append(line_width) 
+            
+        
         set_typing_text(game, game.lines_to_type[0])  
 
 
@@ -107,9 +175,13 @@ def update_typing_effect(game, delta_time):
         else:  # Current line is finished
             if game.current_line_index < len(game.lines_to_type) - 1:
                 # Move to the next line
-                print("Line is finished")
+                
                 game.current_line_index += 1
-                print(f"current line idex= {game.current_line_index}")
+                
+                debug_x_list =[]
+                for line in game.line_widths:
+                    debug_x_list.append((SCREEN_WIDTH //2)- (line //2))
+                    print(f"{debug_x_list}")
                 set_typing_text(game, game.lines_to_type[game.current_line_index])
             else:
                 # All lines are finished

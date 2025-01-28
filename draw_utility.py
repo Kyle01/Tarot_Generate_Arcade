@@ -1,5 +1,7 @@
 import arcade
 import textwrap
+
+import arcade.color
 from button import Button
 import random
 import math
@@ -17,7 +19,16 @@ INTRO_TEXT = (
     "But first, tell me—what is your intention? What does your heart seek to know, heal, or discover?\n\n"
     "Speak it, and we will find the truth together."
 )
-
+INTRO_TEXT2 = (
+    "Ah, welcome, traveler!\n\n"
+    "I am Mama Nyah, and the spirits have\n" 
+    "brought you to me for a reason.\n\n"
+    "Sit, relax, and let us see\n\n" 
+    "what the universe whispers for you.\n"
+    "But first, tell me—what is your intention?\n" 
+    "What does your heart seek to know, heal, or discover?\n\n"
+    "Speak it, and we will find the truth together."
+)
 CATEGORIES = ["Love Life", "Professional Development", "Family and Friends", "Health", "Personal Growth", "Gain Clarity"]
 
 
@@ -46,27 +57,29 @@ def outside_stage(game):
     )
     
 def draw_intro_stage(game):
-        # Intro text
-        TEXT.set_typing_text(game, INTRO_TEXT)
+       
+        if not game.lines_to_type: # guard against looping, could also place the line below when scene is changed
+            TEXT.set_paragraph_typing(game, INTRO_TEXT)
 
-        # Predefine the width and starting position of the full text block -- this didnt work, dont really need these variable imo
+        # this didnt work, dont really need these variable imo
         text_block_width = SCREEN_WIDTH - 200  # Fixed width for multiline text
         text_x = (SCREEN_WIDTH // 2) # Align text from the left, but pre-center it
         text_y = SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 5
 
 
-        TEXT.draw_outlined_text_multiline(
-            game.displayed_text,
-            x=text_x,  # Start drawing from this fixed left-aligned x position
-            y=text_y,
+        TEXT.typewriter_lines(game,
+           
+            center_x = text_x,  # Start drawing from this fixed left-aligned x position
+            start_y=text_y,
             font_size=DEFAULT_FONT_SIZE,
             font_name="Old School Adventures",
             color=arcade.color.WHITE,
             outline_color=arcade.color.BLACK,
             outline_thickness=1.2,
-            width=text_block_width,  # Fixed wrapping width
+            
             line_height=DEFAULT_LINE_HEIGHT * 1.5,
-            align="center"  # Left-align to prevent shifting
+            
+            
         )
 
         # Button positions
