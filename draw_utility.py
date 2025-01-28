@@ -402,7 +402,10 @@ def draw_reading_card(game, card_index):
         """ Render a single card stage. """
        
         
+        card = game.drawn_cards[card_index - 1]  # Cards are 0-indexed
+        card.paint(SCREEN_WIDTH // 5.5, SCREEN_HEIGHT // 2, show_front=True)
         paragraph = game.fortune[card_index]
+        card_name =card.name
         for i, line in enumerate(paragraph.split('\n')):
             # arcade.draw_text(
             #     line,
@@ -418,7 +421,7 @@ def draw_reading_card(game, card_index):
             # )
 
             draw_outlined_text_multiline(
-                    line    ,
+                    line,
                     x=SCREEN_WIDTH *.65,  # Centered horizontally
                     y=SCREEN_HEIGHT *.75 - (i * game.line_spacing),  # Top of the text block
                     font_size=18,  # Default font size
@@ -430,13 +433,70 @@ def draw_reading_card(game, card_index):
                     line_height=DEFAULT_LINE_HEIGHT*1.5,  # Space between lines
                     align="center"  # Text alignment
     )
-        card = game.drawn_cards[card_index - 1]  # Cards are 0-indexed
-        card.paint(SCREEN_WIDTH // 5.5, SCREEN_HEIGHT // 2, show_front=True)
+            
+           
+            if card.position == 'Reversed':
+                position_text = "Reversed"
+            else:
+                position_text = "Upright"
 
+            if card_index == 1:
+                 card_slot = "Past"
+            elif card_index == 2:
+                 card_slot = "Present"
+            elif card_index == 3:
+                 card_slot = "Future"
+
+            draw_outlined_text_multiline(
+                f"{card_slot}",
+                x=SCREEN_WIDTH // 2,  # Centered horizontally
+                y=SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 4 ,  # Top of the text block
+                font_size=DEFAULT_FONT_SIZE*1.5,  # Default font size
+                font_name="Old School Adventures",  # Specified font
+                color=arcade.color.WHITE,  # Main text color
+                outline_color=arcade.color.BLACK,  # Outline color
+                outline_thickness=1.2,  # Thickness of the outline
+                width=SCREEN_WIDTH,  # Wrapping width
+                line_height=DEFAULT_LINE_HEIGHT*1.5,  # Space between lines
+                align="center"  # Text alignment
+    )
+            
+            draw_outlined_text_multiline(
+                f"{card_name}: {position_text}",
+                x=SCREEN_WIDTH // 2,  # Centered horizontally
+                y=SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 4 - 75,  # Top of the text block
+                font_size=DEFAULT_FONT_SIZE*1.3,  # Default font size
+                font_name="Old School Adventures",  # Specified font
+                color=arcade.color.WHITE,  # Main text color
+                outline_color=arcade.color.BLACK,  # Outline color
+                outline_thickness=1.2,  # Thickness of the outline
+                width=SCREEN_WIDTH,  # Wrapping width
+                line_height=DEFAULT_LINE_HEIGHT*1.5,  # Space between lines
+                align="center"  # Text alignment
+    )
+            
+            
+            # draw_outlined_text_multiline(
+            #         position_text,
+            #         x=SCREEN_WIDTH // 2,  # Centered horizontally
+            #         y=SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 4 - 75,  # Top of the text block
+            #         font_size=DEFAULT_FONT_SIZE*1.25,  # Default font size
+            #         font_name="Old School Adventures",  # Specified font
+            #         color=arcade.color.WHITE,  # Main text color
+            #         outline_color=arcade.color.BLACK,  # Outline color
+            #         outline_thickness=1.2,  # Thickness of the outline
+            #         width=SCREEN_WIDTH,  # Wrapping width
+            #         line_height=DEFAULT_LINE_HEIGHT*1.5,  # Space between lines
+            #         align="center"  # Text alignment
+        # )
+        if card_index == 3:
+            next_card_copy = "Summary"
+        else: 
+             next_card_copy = "Next Card"
         Button(
             game=game,
             name="next_card",
-            copy="Next Card",
+            copy=next_card_copy,
             x_center=game.x_right_button,
             y_center=100,
             text_x_start=game.x_right_button - 125,
