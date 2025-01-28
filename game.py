@@ -112,7 +112,7 @@ class TarotGame(arcade.Window):
         # hitbox_width = self.button_clickbox_width
         # hitbox_height = self.button_clickbox_height // 2
 
-        # 
+        
         # arcade.draw_rectangle_outline(
         #     center_x=hitbox_x,
         #     center_y=hitbox_y,

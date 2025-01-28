@@ -1,6 +1,8 @@
 import arcade
 import textwrap
 from button import Button
+import random
+import math
 
 DEFAULT_FONT_SIZE = 16
 SCREEN_WIDTH = 1280
@@ -231,9 +233,19 @@ def draw_spread_stage(game):
         # Draw the cards
         card_spacing = (SCREEN_WIDTH - 300) // len(game.deck.cards)  # Dynamic spacing
         for i, card in enumerate(game.deck.cards):
+
             x = 150 + (i * card_spacing)
-            y = SCREEN_HEIGHT // 2
-            card.paint(x, y, show_front=False, is_hovered=(card == game.hovered_card), is_small=True)
+
+
+            curve_height = 50
+            curve_center = len(game.deck.cards) // 2
+            y = (SCREEN_HEIGHT // 2) + curve_height * ((i - curve_center) / curve_center) ** 2
+            x += card.x_offset
+            y += card.y_offset
+
+           
+
+            card.paint(x, y, show_front=False, is_hovered=(card == game.hovered_card), is_small=True, angle=card.rotation_angle)
 
         # Draw previously selected cards in the left corner
         for i, card in enumerate(game.selected_cards):
