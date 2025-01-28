@@ -179,6 +179,26 @@ def draw_spread_stage(game):
                 line_height=DEFAULT_LINE_HEIGHT*1.5,  # Space between lines
                 align="center"  # Text alignment
     )
+           
+            if game.current_revealed_card.position == 'Reversed':
+                position_text = "Reversed"
+            else:
+                position_text = "Upright"
+            
+            
+            draw_outlined_text_multiline(
+                    position_text,
+                    x=SCREEN_WIDTH // 2,  # Centered horizontally
+                    y=SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 5 - 75,  # Top of the text block
+                    font_size=DEFAULT_FONT_SIZE*1.5,  # Default font size
+                    font_name="Old School Adventures",  # Specified font
+                    color=arcade.color.WHITE,  # Main text color
+                    outline_color=arcade.color.BLACK,  # Outline color
+                    outline_thickness=1.2,  # Thickness of the outline
+                    width=SCREEN_WIDTH,  # Wrapping width
+                    line_height=DEFAULT_LINE_HEIGHT*1.5,  # Space between lines
+                    align="center"  # Text alignment
+        )
 
             if len(game.selected_cards) >1 and game.selected_cards[1]:
                 x = 300 
@@ -400,7 +420,7 @@ def draw_reading_card(game, card_index):
             draw_outlined_text_multiline(
                     line    ,
                     x=SCREEN_WIDTH *.65,  # Centered horizontally
-                    y=SCREEN_HEIGHT *.7 - (i * game.line_spacing),  # Top of the text block
+                    y=SCREEN_HEIGHT *.75 - (i * game.line_spacing),  # Top of the text block
                     font_size=18,  # Default font size
                     font_name="Old School Adventures",  # Specified font
                     color=arcade.color.WHITE,  # Main text color
