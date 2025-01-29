@@ -1,5 +1,6 @@
 import random
 import arcade
+import os
 
 positions = ['Upright', 'Reversed']
 
@@ -25,8 +26,10 @@ class Card:
     def __init__(self, name, file_name):
         self.name = name 
         self.file_name = file_name
+        self.dir_path = current_asset_path
+        self.card_back_file_name = current_card_back_path
         self.position = positions[0]
-        texture = arcade.load_texture(f"./assets/copyright/{self.file_name}")
+        texture = arcade.load_texture(f"./{self.dir_path}/{self.file_name}")
         self.width = texture.width
         self.height = texture.height
         self.x = 0
@@ -62,7 +65,7 @@ class Card:
                 tilt_angle=angle,  # Rotate the outline to match the card
             )
 
-        texture_file = f"./assets/copyright/{self.file_name}" if show_front else "./assets/copyright/backing_diamond_2x.png"
+        texture_file = f"./{self.dir_path}/{self.file_name}" if show_front else f"./{self.dir_path}/{self.card_back_file_name}"
         texture = arcade.load_texture(texture_file)
         if self.position == positions[0]:
             arcade.draw_scaled_texture_rectangle(x, y, texture, scale, 0+angle,)
