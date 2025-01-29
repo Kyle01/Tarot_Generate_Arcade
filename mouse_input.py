@@ -31,8 +31,8 @@ def handle_mouse_press(game, x, y, _button, _modifiers, game_state):
 
 
 def mouse_press_outside(game, x, y, game_state):
-    print(f"Mouse clicked at ({x}, {y})")
-    print(f"game_state is {game.stage}")
+    # print(f"Mouse clicked at ({x}, {y})")
+    # print(f"game_state is {game.stage}")
     if game.x_right_button + 200 - game.button_clickbox_width // 2 <= x <= game.x_right_button + 200 + game.button_clickbox_width // 2 and \
             game.y_bottom_button <= y <= game.y_bottom_button - 50 + game.button_clickbox_height:
         game.close()

@@ -28,14 +28,15 @@ def typewriter_lines(
     for i, line in enumerate(game.lines_to_type):
         # Calculate where the line should go vertically
         y = start_y - (i * line_height)
-        # print(f"{i}: '{line}' => width={game.line_widths[i]}")
-        # Get the pre-calculated width for this line
+
+        # Get the pre-calculated width for this line, this is calculated below in set_paragraph_typing()
         line_width = game.line_widths[i]
         
-        # Calculate the left-aligned starting position to center the line
+        # Calculate the left-aligned starting position from the center line
         adjusted_x = center_x - (line_width // 2)
 
-        # Determine which line is fully typed vs. the current typing line
+        ## Determine which line is fully typed vs. the current typing line
+        ## This keeps fully typed lines static, while moving to the next one, instead of printing each line over and over again, often times at the same time
         if i < game.current_line_index:
             # Fully typed line
             draw_outlined_line(
@@ -61,13 +62,19 @@ def typewriter_lines(
                 outline_thickness=outline_thickness
             )
         # else: future lines after current_line_index remain unrendered (or blank)
-        arcade.draw_rectangle_outline(
-            center_x=adjusted_x + line_width / 2,
-            center_y=y + font_size / 2,  # approximate vertical center
-            width=line_width,
-            height=font_size,
-            color=arcade.color.RED
-)
+
+        ## This is my debug tool for measuring the font's actual size, in set_paragraph_typing(), I set the line_width here, line_width = text_image.width * 1.5
+        ## This helps us see where the actualy visual of the text box lies, because the internal measurement of the line_width is set for a standard, smaller font
+        ## For the typewriter effect to be actually centered, we need the line_width in pixels to match what we see on screen for use in the adjusted_x above
+        ## Let's keep this in case i need to adjust the font later
+
+            # arcade.draw_rectangle_outline(
+            #     center_x=adjusted_x + line_width / 2,
+            #     center_y=y + font_size / 2,  # approximate vertical center
+            #     width=line_width,
+            #     height=font_size,
+            #     color=arcade.color.RED
+            # )
 
 
 def draw_outlined_line(
@@ -148,7 +155,7 @@ def set_paragraph_typing(game, paragraph, font_size=18, font_name = "Old School 
         game.lines_to_type = lines  # Store all lines
         game.current_line_index = 0  # Start from the first line
         game.line_widths = []
-        for line in game.lines_to_type:
+        for line in game.lines_to_type:  ## This measure the pixel width of each line dynamically
             text_image = arcade.create_text_image(
                 text=line,
                 font_size=font_size,
@@ -180,10 +187,10 @@ def update_typing_effect(game, delta_time):
                 # Move to the next line
                 
                 game.current_line_index += 1
-                
-                debug_x_list =[]
-                for line in game.line_widths:
-                    debug_x_list.append((SCREEN_WIDTH //2)- (line //2))
+                #Debug tool for checking line width
+                # debug_x_list =[]
+                # for line in game.line_widths:
+                #     debug_x_list.append((SCREEN_WIDTH //2)- (line //2))
                     # print(f"{debug_x_list}")
                 set_typing_text(game, game.lines_to_type[game.current_line_index])
             else:
@@ -194,6 +201,7 @@ def update_typing_effect(game, delta_time):
 def reset_typing_state(game):
     """
     Resets typing-related state for transitioning to a new stage or card.
+
     """
     game.active_card_index = None
     game.current_line_index = 0

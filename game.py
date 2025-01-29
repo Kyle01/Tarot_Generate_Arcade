@@ -1,7 +1,6 @@
 import arcade
 import threading
 import pyglet
-import textwrap
 import draw_utility
 import text_utility as TEXT
 import mouse_input
@@ -35,28 +34,34 @@ class TarotGame(arcade.Window):
 
     def __init__(self):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Voodoo Tarot GPT")
-        self.tarot_bot = TarotBot()
         self.stage = GameState.OUTSIDE
+
+        """ Variables for reading generation"""
+
+        self.tarot_bot = TarotBot()
         self.intention = None
         self.drawn_cards = None
         self.fortune = None
+
+        """ Variables for spread stage"""
+
         self.hovered_card = None
         self.current_revealed_card = None
         self.reveal_active= False
-        self.start_reading_button_active = False
-        self.background_image = arcade.load_texture("assets/original/TableClothbigger.png")
-        self.outside_image = arcade.set_background_color(arcade.color.IMPERIAL_PURPLE) ## replace with cover art
+
+        """ Varables for progress bar"""
         self.frame_timer = 0
         self.frame_rate = 0.4
-        # self.button_texture = arcade.load_texture("assets/original/Purple Button Big.png")
-        # self.button_pressed_texture = arcade.load_texture("assets/original/Purple Button Pressed Big.png")
+  
+        """ Global Assets """
+        self.background_image = arcade.load_texture("assets/original/TableClothbigger.png")
+        self.outside_image = arcade.set_background_color(arcade.color.IMPERIAL_PURPLE) ## replace with cover art
         arcade.set_background_color(arcade.color.IMPERIAL_PURPLE)
-       
-      
         pyglet.font.add_file(FONT_PATH)  # Load the font file
         
         """ Variables for button formatting"""
 
+        self.start_reading_button_active = False
         self.hovered_button = None  # Track which button is hovered
         self.clicked_button = None  # Track which button is clicked
         self.button_clickbox_width = 175
@@ -82,12 +87,13 @@ class TarotGame(arcade.Window):
         pass
 
     def reset_data(self):
+        """ Resets the class variables for new readings """
         self.intention = None
         self.drawn_cards = None
         self.fortune = None
         self.hovered_card = None
-        self.hovered_button = None  # Track which button is hovered
-        self.clicked_button = None  # Track which button is clicked
+        self.hovered_button = None  
+        self.clicked_button = None 
         self.current_revealed_card = None
         self.reveal_active= False
         self.start_reading_button_active = False
@@ -101,7 +107,7 @@ class TarotGame(arcade.Window):
             arcade.draw_lrwh_rectangle_textured(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, self.background_image)
         if self.stage == GameState.OUTSIDE:
             arcade.set_background_color(arcade.color.IMPERIAL_PURPLE)
-            draw_utility.outside_stage(self)
+            draw_utility.draw_outside_stage(self)
         elif self.stage == GameState.INTRO:
             draw_utility.draw_intro_stage(self)
         elif self.stage == GameState.SPREAD:
@@ -120,7 +126,7 @@ class TarotGame(arcade.Window):
             draw_utility.draw_reading_summary(self, 4),   # Stage 5: Show all cards and summary
             
 
-        '''For Debugging Hit boxes'''
+        '''For Debugging Button Hit boxes'''
         # hitbox_x = self.x_right_button + 200
         # hitbox_y = self.y_bottom_button - 50 + (self.button_clickbox_height // 4)  # Center the y-coordinate
         # hitbox_width = self.button_clickbox_width
@@ -148,7 +154,6 @@ class TarotGame(arcade.Window):
         """ Set the intention and transition to the spread stage. """
         self.intention = intention_text
         TEXT.reset_typing_state(self)  
-
         self.stage = GameState.SPREAD
         self.selected_cards = []  # reset selected cards for spread
         self.deck = TarotDeck()  # prepare deck
