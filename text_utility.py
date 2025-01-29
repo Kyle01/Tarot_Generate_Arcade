@@ -22,6 +22,8 @@ def typewriter_lines(
     """
     Renders the pre-wrapped lines in `game.lines_to_type`, using 
     the pre-calculated widths in `game.line_widths` for dynamic centering.
+    This fixes the start of each line at the left alignment, but moves the x of each line to appear to be center aligned.
+    The typewriter script effect only looks correct if its left aligned.
     """
     for i, line in enumerate(game.lines_to_type):
         # Calculate where the line should go vertically
@@ -76,7 +78,8 @@ def draw_outlined_line(
         font_name="Old School Adventures",
         color=arcade.color.WHITE,
         outline_color=arcade.color.BLACK,
-        outline_thickness=1.2
+        outline_thickness=1.2,
+        align = "left"
     ):
         
 
@@ -102,7 +105,7 @@ def draw_outlined_line(
                 start_y=y + dy,
                 color=outline_color,
                 font_size=font_size,
-                anchor_x="left",
+                anchor_x=align,
                 font_name=font_name
             )
 
@@ -113,7 +116,7 @@ def draw_outlined_line(
             start_y=y,
             color=color,
             font_size=font_size,
-            anchor_x="left",
+            anchor_x=align,
             font_name=font_name
         )
 
@@ -131,7 +134,7 @@ def set_typing_text(game, new_text):
         game.typing_timer = 0  
 
 
-def set_paragraph_typing(game, paragraph, font_size=18, font_name = "Old School Adventures", color=arcade.color.WHITE):
+def set_paragraph_typing(game, paragraph, font_size=18, font_name = "Old School Adventures", color=arcade.color.WHITE, width =(SCREEN_WIDTH-200)):
     """
     Sets up the typing effect for a multi-line paragraph.
     """
@@ -139,7 +142,7 @@ def set_paragraph_typing(game, paragraph, font_size=18, font_name = "Old School 
     if not game.lines_to_type or game.current_text != paragraph:  # Prevent resetting
         lines = []
         for block in paragraph.split("\n\n"):  # Split into paragraphs
-            wrapped_lines = textwrap.wrap(block, width=(SCREEN_WIDTH - 200) // font_size)
+            wrapped_lines = textwrap.wrap(block, width= width // font_size)
             lines.extend(wrapped_lines + [""])  # Add wrapped lines and an empty line for spacing
 
         game.lines_to_type = lines  # Store all lines
@@ -181,7 +184,7 @@ def update_typing_effect(game, delta_time):
                 debug_x_list =[]
                 for line in game.line_widths:
                     debug_x_list.append((SCREEN_WIDTH //2)- (line //2))
-                    print(f"{debug_x_list}")
+                    # print(f"{debug_x_list}")
                 set_typing_text(game, game.lines_to_type[game.current_line_index])
             else:
                 # All lines are finished
