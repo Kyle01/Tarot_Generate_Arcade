@@ -3,6 +3,24 @@ import arcade
 
 positions = ['Upright', 'Reversed']
 
+""" Variables for Copyright / Open Source Asset Switcher """
+
+copyright_asset_path = "assets/copyright"
+backup_assets_path = "assets/riderWeightPublicDomain/convertedx2"
+current_asset_path = None
+current_card_back_path = None
+copyright_card_back_path = "backing_diamond_2x.png"
+backup_card_back_path = "CardBacks.png"
+
+if os.path.isdir(copyright_asset_path):
+    current_asset_path = copyright_asset_path
+    current_card_back_path = copyright_card_back_path
+    is_backup = False
+else:
+    current_asset_path = backup_assets_path
+    current_card_back_path = backup_card_back_path
+    is_backup = True
+
 class Card:
     def __init__(self, name, file_name):
         self.name = name 
@@ -28,7 +46,9 @@ class Card:
         self.y = y
         if is_small:
            scale /= 2
-    
+        if is_backup:
+            scale /= 2
+
         width = self.width * scale
         height = self.height * scale
 
