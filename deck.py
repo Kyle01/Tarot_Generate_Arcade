@@ -13,6 +13,9 @@ class Card:
         self.height = texture.height
         self.x = 0
         self.y = 0
+        self.x_offset = random.randint(-3, 3)  # Pre-generate random x offset
+        self.y_offset = random.randint(-3, 3)   # Pre-generate random y offset
+        self.rotation_angle = random.uniform(-2, 2)  # Pre-generate random rotation
 
     def __str__(self):
         return f"{self.name} - {self.position}"
@@ -20,7 +23,7 @@ class Card:
     def reverse(self):
         self.position = positions[1]
 
-    def paint(self, x, y, show_front, is_hovered = False, scale =1.8, is_small = False):
+    def paint(self, x, y, show_front, is_hovered = False, scale =1.8, is_small = False, angle = 0):
         self.x = x
         self.y = y
         if is_small:
@@ -30,15 +33,23 @@ class Card:
         height = self.height * scale
 
         if is_hovered:
-            y += 20
-            arcade.draw_rectangle_outline(x, y, width, height, arcade.color.LIGHT_BLUE, 5)
+            y += 30  # Lift the card when hovered
+            arcade.draw_rectangle_outline(
+                center_x=x,
+                center_y=y,
+                width=width,
+                height=height,
+                color=arcade.color.LIGHT_BLUE,
+                border_width=5,
+                tilt_angle=angle,  # Rotate the outline to match the card
+            )
 
         texture_file = f"./assets/copyright/{self.file_name}" if show_front else "./assets/copyright/backing_diamond_2x.png"
         texture = arcade.load_texture(texture_file)
         if self.position == positions[0]:
-            arcade.draw_scaled_texture_rectangle(x, y, texture, scale, 0)
+            arcade.draw_scaled_texture_rectangle(x, y, texture, scale, 0+angle,)
         else:
-            arcade.draw_scaled_texture_rectangle(x, y, texture, scale, 180)
+            arcade.draw_scaled_texture_rectangle(x, y, texture, scale, 180+angle)
 
     def is_clicked(self, mouse_x, mouse_y):
         """ Check if the card is clicked based on mouse coordinates. """

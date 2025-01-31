@@ -1,6 +1,6 @@
 from enum import Enum
 from game import CATEGORIES
-
+import text_utility as TEXT
 """"""
 
 
@@ -31,8 +31,8 @@ def handle_mouse_press(game, x, y, _button, _modifiers, game_state):
 
 
 def mouse_press_outside(game, x, y, game_state):
-    print(f"Mouse clicked at ({x}, {y})")
-    print(f"game_state is {game.stage}")
+    # print(f"Mouse clicked at ({x}, {y})")
+    # print(f"game_state is {game.stage}")
     if game.x_right_button + 200 - game.button_clickbox_width // 2 <= x <= game.x_right_button + 200 + game.button_clickbox_width // 2 and \
             game.y_bottom_button <= y <= game.y_bottom_button - 50 + game.button_clickbox_height:
         game.close()
@@ -108,6 +108,7 @@ def mouse_press_reading_summary(game,x,y, game_state):
     
     if game.x_middle_button - game.button_clickbox_width <= x <= game.x_middle_button + game.button_clickbox_width and game.y_bottom_button  <= y <= game.y_bottom_button +game.button_clickbox_height:
         game.reset_data()
+        TEXT.reset_typing_state(game) 
         game.stage = game_state.INTRO
     if game.x_left_button - 100 - game.button_clickbox_width <= x <= game.x_left_button- 100 + game.button_clickbox_width and \
         game.y_bottom_button <= y <= game.y_bottom_button + game.button_clickbox_height:
@@ -116,6 +117,7 @@ def mouse_press_reading_summary(game,x,y, game_state):
     if game.x_right_button+100 - game.button_clickbox_width <= x <= game.x_right_button+100 + game.button_clickbox_width and \
         game.y_bottom_button <= y <= game.y_bottom_button + game.button_clickbox_height:
         game.reset_data()
+        TEXT.reset_typing_state(game) 
         game.stage = game_state.OUTSIDE
 
 
@@ -123,12 +125,16 @@ def advance_reading_stage(game, game_state):
         """ Advance to the next reading stage. """
         if game.stage == game_state.READING_INTRO:
             game.stage = game_state.READING_CARD_1
+            TEXT.reset_typing_state(game)  
         elif game.stage == game_state.READING_CARD_1:
             game.stage = game_state.READING_CARD_2
+            TEXT.reset_typing_state(game)  
         elif game.stage == game_state.READING_CARD_2:
             game.stage = game_state.READING_CARD_3
+            TEXT.reset_typing_state(game)  
         elif game.stage == game_state.READING_CARD_3:
             game.stage = game_state.READING_SUMMARY
+            TEXT.reset_typing_state(game)  
         elif game.stage == game_state.READING_SUMMARY:
             print("Reading complete.")  # Placeholder for post-reading action
 
@@ -136,12 +142,16 @@ def previous_reading_stage(game, game_state):
     """Return to previous reading stage"""
     if game.stage == game_state.READING_CARD_1:
         game.stage = game_state.READING_INTRO
+        TEXT.reset_typing_state(game) 
     elif game.stage == game_state.READING_CARD_2:
         game.stage = game_state.READING_CARD_1
+        TEXT.reset_typing_state(game) 
     elif game.stage == game_state.READING_CARD_3:
         game.stage = game_state.READING_CARD_2
+        TEXT.reset_typing_state(game) 
     elif game.stage == game_state.READING_SUMMARY:
         game.stage = game_state.READING_CARD_3
+        TEXT.reset_typing_state(game) 
 
 
 
