@@ -154,10 +154,10 @@ class TarotGame(arcade.Window):
         """ Set the intention and transition to the spread stage. """
         self.intention = intention_text
         TEXT.reset_typing_state(self)  
-        self.stage = GameState.SPREAD
-        self.selected_cards = []  # reset selected cards for spread
         self.deck = TarotDeck()  # prepare deck
         self.deck.shuffle()
+        self.stage = GameState.SPREAD
+        self.selected_cards = []  # reset selected cards for spread
 
     def reveal_card(self, card):
         if card not in self.selected_cards:
