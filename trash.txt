@@ -1,0 +1,7 @@
+bd3727c (HEAD -> backup-art) Added card borders, changed card saturation, and adjusted
+| | |/ /
+| | * | 7614df2 Adjusted size, added a simple, is_backup variable to do so, backup card art kinda sucks
+| | * | b05a54e added alternative card art and fuinctionality, need to adjust card sizeif this is true
+| |/ /
+|/| |
+| | * 4e0511d (adjustments)  added backup art, switching branches
