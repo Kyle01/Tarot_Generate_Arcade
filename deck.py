@@ -10,7 +10,7 @@ copyright_asset_path = "assets/copyright"
 backup_assets_path = "assets/riderWeightPublicDomain/convertedx2"
 current_asset_path = None
 current_card_back_path = None
-copyright_card_back_path = "backing_diamond_2x.1.png"
+copyright_card_back_path = "backing_diamond_4x.png"
 backup_card_back_path = "CardBacks.png"
 
 if os.path.isdir(copyright_asset_path):
@@ -60,8 +60,8 @@ class Card:
             arcade.draw_rectangle_outline(
                 center_x=x,
                 center_y=y,
-                width=width,
-                height=height,
+                width=width*.98,
+                height=height*.98,
                 color=arcade.color.LIGHT_BLUE,
                 border_width=5,
                 tilt_angle=angle,  # Rotate the outline to match the card
@@ -76,8 +76,8 @@ class Card:
 
     def is_clicked(self, mouse_x, mouse_y):
         """ Check if the card is clicked based on mouse coordinates. """
-        half_width = (self.width * 1) // 2
-        half_height = (self.height * 1) // 2
+        half_width = (self.width ) // 4
+        half_height = (self.height) // 4
         clicked = (self.x - half_width < mouse_x < self.x + half_width and
                 self.y - half_height < mouse_y < self.y + half_height)
 
@@ -180,7 +180,7 @@ class TarotDeck:
                 Card("King of Wands", "wandsK.1.png")
                 ]
 
-                self.card_back = Card("Card Back", "backing_diamond_2x.1.png")
+                self.card_back = Card("Card Back", "backing_diamond_4x.png")
         else: 
             self.cards = [
                 # Major Arcana
