@@ -150,7 +150,7 @@ def draw_spread_stage(game):
         """ Render the card spread stage with the backs of the cards. """
         if game.reveal_active and game.current_revealed_card:
             # Draw the revealed card in the center
-            game.current_revealed_card.paint(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, show_front=True, scale=1.8, is_small=False)
+            game.current_revealed_card.paint(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, show_front=True, is_small=False)
             button_name = "pull_next" if len(game.selected_cards) <= 2 else "begin_reading"
             button_copy = "Pull Next Card" if len(game.selected_cards) <= 2 else "Begin Reading" 
 
@@ -329,7 +329,7 @@ def draw_loading_stage(game):
     for i, card in enumerate(game.drawn_cards):
         x = 350 + (i * 275)  # Spaced out horizontally
         y = 575  # Fixed y-coordinate
-        card.paint(x, y, show_front=True,scale=2.2, is_small=True)
+        card.paint(x, y, show_front=True,scale=1.4, is_small=True)
 
 def draw_reading_intro(game):
     """ Render the intro stage with all cards shown. """
@@ -376,7 +376,7 @@ def draw_reading_intro(game):
     for i, card in enumerate(game.drawn_cards):
         x = 350 + (i * 275)
         y = 700
-        card.paint(x, y, show_front=True, scale = 2.2, is_small = True)
+        card.paint(x, y, show_front=True, scale = 1.2, is_small = True)
 
 def draw_reading_card(game, card_index):
         """ Render a single card stage. """
@@ -496,4 +496,4 @@ def draw_reading_summary(game):
         for i, card in enumerate(game.drawn_cards):
             x = 350 + (i * 275)
             y = 700
-            card.paint(x, y, show_front=True, scale = 2.2, is_small = True)
+            card.paint(x, y, show_front=True, scale = 1.2, is_small = True)
