@@ -4,6 +4,7 @@ import pyglet
 import draw_utility
 import text_utility as TEXT
 import mouse_input
+from sound_manager import SoundManager
 from deck import TarotDeck
 from tarot_bot import TarotBot
 from enum import Enum
@@ -82,8 +83,19 @@ class TarotGame(arcade.Window):
         self.lines_to_type = []
         
 
+        """ Variables for sound"""
+        self.sound_manager = SoundManager("assets\sound\Pixel 1.ogg")
+        self.sound_manager.load_music()
+        self.sound_manager.load_sfx("card_move", "assets\sound\JDSherbert - Tabletop Games SFX Pack - Paper Flip - 1.wav")
+        self.sound_manager.load_sfx("card_spread", "assets\sound\JDSherbert - Tabletop Games SFX Pack - Deck Shuffle - 1.wav")
+        self.sound_manager.load_sfx("button", "assets\sound\clonck.wav")
+        self.sound_manager.load_sfx("door", "assets\sound\mixkit-creaky-door-open-195.wav")
+        self.sound_manager.load_sfx("typewriter", "assets\sound\mixkit-modern-click-box-check-1120.wav")
+
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
+        
+        self.sound_manager.play_music(volume = 0.6, loop=True)
         pass
 
     def reset_data(self):
@@ -175,6 +187,8 @@ class TarotGame(arcade.Window):
             daemon=True  # Set as a daemon thread so it exits when the game exits
         )
         api_thread.start()
+        self.sound_manager.play_sfx("card_spread", volume=1.0)
+        
 
     def on_update(self, delta_time):
         """ Update the game state. """
