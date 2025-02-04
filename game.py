@@ -55,8 +55,8 @@ class TarotGame(arcade.Window):
         self.frame_rate = 0.4
   
         """ Global Assets """
-        self.background_image = arcade.load_texture("assets/original/TableClothbigger.png")
-        self.outside_image = arcade.set_background_color(arcade.color.IMPERIAL_PURPLE) ## replace with cover art
+        self.background_image = arcade.load_texture(r"assets/original/TableClothbiggerHueShift1.png")
+        self.outside_image = arcade.load_texture("assets/original/NolaHouse1.7.png")
         arcade.set_background_color(arcade.color.IMPERIAL_PURPLE)
         pyglet.font.add_file(FONT_PATH)  # Load the font file
         
@@ -84,13 +84,13 @@ class TarotGame(arcade.Window):
         
 
         """ Variables for sound"""
-        self.sound_manager = SoundManager("assets\sound\Pixel 1.ogg")
+        self.sound_manager = SoundManager(r"assets/sound/Pixel 1.wav")
         self.sound_manager.load_music()
-        self.sound_manager.load_sfx("card_move", "assets\sound\JDSherbert - Tabletop Games SFX Pack - Paper Flip - 1.wav")
-        self.sound_manager.load_sfx("card_spread", "assets\sound\JDSherbert - Tabletop Games SFX Pack - Deck Shuffle - 1.wav")
-        self.sound_manager.load_sfx("button", "assets\sound\clonck.wav")
-        self.sound_manager.load_sfx("door", "assets\sound\mixkit-creaky-door-open-195.wav")
-        self.sound_manager.load_sfx("typewriter", "assets\sound\mixkit-modern-click-box-check-1120.wav")
+        self.sound_manager.load_sfx("card_move", r"assets/sound/JDSherbert - Tabletop Games SFX Pack - Paper Flip - 1.wav")
+        self.sound_manager.load_sfx("card_spread", r"assets/sound/JDSherbert - Tabletop Games SFX Pack - Deck Shuffle - 1.wav")
+        self.sound_manager.load_sfx("button", r"assets/sound/clonck.wav")
+        self.sound_manager.load_sfx("door", r"assets/sound/mixkit-creaky-door-open-195.wav")
+        self.sound_manager.load_sfx("typewriter", r"assets/sound/mixkit-modern-click-box-check-1120.wav")
 
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
@@ -118,7 +118,7 @@ class TarotGame(arcade.Window):
         if self.stage != GameState.OUTSIDE:
             arcade.draw_lrwh_rectangle_textured(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, self.background_image)
         if self.stage == GameState.OUTSIDE:
-            arcade.set_background_color(arcade.color.IMPERIAL_PURPLE)
+            arcade.draw_lrwh_rectangle_textured(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, self.outside_image)
             draw_utility.draw_outside_stage(self)
         elif self.stage == GameState.INTRO:
             draw_utility.draw_intro_stage(self)
