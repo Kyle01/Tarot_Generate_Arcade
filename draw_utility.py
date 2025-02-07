@@ -21,6 +21,10 @@ CATEGORIES = ["Love Life", "Professional Development", "Family and Friends", "He
 
 
 def draw_outside_stage(game):
+
+
+
+
     Button(
         game=game,
         name='exit_game',

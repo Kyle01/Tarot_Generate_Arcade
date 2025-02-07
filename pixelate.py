@@ -30,8 +30,7 @@ SOURCE_FOLDER = os.path.join(
     "brain",
     "projects",
     "Tarot_generate_Arcade",
-    "assets",
-    "riderWeightPublicDomain"
+    "assets"
 )
 OUTPUT_FOLDER = os.path.join(SOURCE_FOLDER, "convertedx2")
 

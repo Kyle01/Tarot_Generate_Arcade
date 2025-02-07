@@ -59,6 +59,11 @@ class TarotGame(arcade.Window):
         self.outside_image = arcade.load_texture("assets/original/NolaHouse1.7.png")
         arcade.set_background_color(arcade.color.IMPERIAL_PURPLE)
         pyglet.font.add_file(FONT_PATH)  # Load the font file
+       
+        # print(len(self.frames))
+        # self.current_frame_index = 0
+        # self.time_since_last_frame = 0.0
+        # self.time_per_frame = 1.0  # e.g., 10 FPS
         
         """ Variables for button formatting"""
 
@@ -195,6 +200,19 @@ class TarotGame(arcade.Window):
 
         TEXT.update_typing_effect(self, delta_time)
         
+        # if self.stage == GameState.OUTSIDE:
+        #     self.time_since_last_frame += delta_time
+        
+        # # Check if enough time has passed to show the next frame
+        #     if self.time_since_last_frame >= self.time_per_frame:
+        #         # It's time to move to the next frame
+        #         self.time_since_last_frame = 0.0  # reset the timer
+        #         self.current_frame_index += 1     # increment which frame we show
+                
+        #         # If we've gone past the last frame, loop back to the first
+        #         if self.current_frame_index >= len(self.frames):
+        #             self.current_frame_index = 0
+
 
         if self.stage == GameState.LOADING:
             self.frame_timer += delta_time
