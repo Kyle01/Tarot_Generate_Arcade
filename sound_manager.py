@@ -48,3 +48,5 @@ class SoundManager:
             arcade.play_sound(self.sfx_sounds[sfx_name], volume=volume, speed=speed)
         else:
             print(f"SFX '{sfx_name}' not found. Make sure you've loaded it.")
+    
+    

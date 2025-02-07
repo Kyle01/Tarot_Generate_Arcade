@@ -22,8 +22,24 @@ CATEGORIES = ["Love Life", "Professional Development", "Family and Friends", "He
 
 def draw_outside_stage(game):
 
+    current_state = game.states[game.state_index]
+    if current_state == "LEFT":
+        
+        current_texture = game.outside_frame_left
+    elif current_state == "CENTER":
+        current_texture = game.outside_frame_center
+    elif current_state == "RIGHT":
+        
+        current_texture = game.outside_frame_right
+    else:
+        current_texture = game.outside_frame_center  # fallback
 
-
+   
+    arcade.draw_lrwh_rectangle_textured(
+        0, 0,
+        SCREEN_WIDTH, SCREEN_HEIGHT,
+        current_texture
+    )
 
     Button(
         game=game,
