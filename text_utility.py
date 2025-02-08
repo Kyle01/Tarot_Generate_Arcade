@@ -1,8 +1,8 @@
 import arcade
-
+import random
 import textwrap
 
-
+speed = random.uniform(.95,1.05)
 DEFAULT_FONT_SIZE = 16
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 960
@@ -181,6 +181,13 @@ def update_typing_effect(game, delta_time):
         if game.text_index < len(game.current_text):  # Typing the current line
             game.text_index += 1
             game.displayed_text = game.current_text[:game.text_index]
+          
+
+            if hasattr(game, "sound_manager"):
+                            if game.text_index % 2 == 0:
+                                game.sound_manager.play_sfx("typewriter", volume=.5, speed = speed)
+
+
             game.typing_timer = 0
         else:  # Current line is finished
             if game.current_line_index < len(game.lines_to_type) - 1:

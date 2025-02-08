@@ -35,10 +35,13 @@ def mouse_press_outside(game, x, y, game_state):
     # print(f"game_state is {game.stage}")
     if game.x_right_button + 200 - game.button_clickbox_width // 2 <= x <= game.x_right_button + 200 + game.button_clickbox_width // 2 and \
             game.y_bottom_button <= y <= game.y_bottom_button - 50 + game.button_clickbox_height:
+        
+        game.sound_manager.play_sfx("button", volume=1.0)
         game.close()
         return
     if game.x_middle_button - game.button_clickbox_width <= x <= game.x_middle_button + game.button_clickbox_width and \
             game.y_bottom_button <= y <= game.y_bottom_button + game.button_clickbox_height:
+        game.sound_manager.play_sfx("door", volume=1.0)
         game.stage = game_state.INTRO
 
 def mouse_press_intro(game, x, y, _game_state):
@@ -55,6 +58,7 @@ def mouse_press_intro(game, x, y, _game_state):
             for i, (bx, by) in enumerate(button_positions):
                 if bx - game.button_clickbox_width <= x <= bx + game.button_clickbox_width and by - (game.button_clickbox_height // 2) <= y <= by + game.button_clickbox_height:  # Button bounds
                     game.clicked_button = f"button_{i}"
+                    game.sound_manager.play_sfx("button", volume=1.0)
                     game.set_intention(CATEGORIES[i])  # Set intention based on button index
                     return
                 
@@ -62,9 +66,10 @@ def mouse_press_intro(game, x, y, _game_state):
 def mouse_press_spread(game, x, y, _game_state):
             if game.reveal_active:
                 if game.x_middle_button - game.button_clickbox_width <= x <= game.x_middle_button + game.button_clickbox_width and game.y_bottom_button  <= y <= game.y_bottom_button  + game.button_clickbox_height:
+                    game.sound_manager.play_sfx("button", volume=1.0)
                     # Dismiss popup and place the revealed card in the corner
                     game.reveal_active = False
-    
+
                     game.current_revealed_card = None
                     if len(game.selected_cards) == 2:
                         game.start_reading_button_active = True
@@ -81,6 +86,7 @@ def mouse_press_spread(game, x, y, _game_state):
                 for card in reversed(game.deck.cards):
                     if card.is_clicked(x, y):
                         game.deck.cards.remove(card)
+                        game.sound_manager.play_sfx("card_move", volume=1.0)
                         game.reveal_card(card) 
                         # Trigger popup for selected card
                         return    
@@ -109,6 +115,7 @@ def mouse_press_reading_summary(game,x,y, game_state):
     if game.x_middle_button - game.button_clickbox_width <= x <= game.x_middle_button + game.button_clickbox_width and game.y_bottom_button  <= y <= game.y_bottom_button +game.button_clickbox_height:
         game.reset_data()
         TEXT.reset_typing_state(game) 
+        game.sound_manager.play_sfx("button", volume=1.0)
         game.stage = game_state.INTRO
     if game.x_left_button - 100 - game.button_clickbox_width <= x <= game.x_left_button- 100 + game.button_clickbox_width and \
         game.y_bottom_button <= y <= game.y_bottom_button + game.button_clickbox_height:
@@ -118,6 +125,7 @@ def mouse_press_reading_summary(game,x,y, game_state):
         game.y_bottom_button <= y <= game.y_bottom_button + game.button_clickbox_height:
         game.reset_data()
         TEXT.reset_typing_state(game) 
+        game.sound_manager.play_sfx("door", volume=1.0)
         game.stage = game_state.OUTSIDE
 
 
@@ -126,14 +134,18 @@ def advance_reading_stage(game, game_state):
         if game.stage == game_state.READING_INTRO:
             game.stage = game_state.READING_CARD_1
             TEXT.reset_typing_state(game)  
+            game.sound_manager.play_sfx("card_move", volume=1.0)
         elif game.stage == game_state.READING_CARD_1:
             game.stage = game_state.READING_CARD_2
-            TEXT.reset_typing_state(game)  
+            TEXT.reset_typing_state(game)
+            game.sound_manager.play_sfx("card_move", volume=1.0)
         elif game.stage == game_state.READING_CARD_2:
             game.stage = game_state.READING_CARD_3
+            game.sound_manager.play_sfx("card_move", volume=1.0)
             TEXT.reset_typing_state(game)  
         elif game.stage == game_state.READING_CARD_3:
             game.stage = game_state.READING_SUMMARY
+            game.sound_manager.play_sfx("card_spread", volume=1.0)
             TEXT.reset_typing_state(game)  
         elif game.stage == game_state.READING_SUMMARY:
             print("Reading complete.")  # Placeholder for post-reading action
@@ -143,14 +155,18 @@ def previous_reading_stage(game, game_state):
     if game.stage == game_state.READING_CARD_1:
         game.stage = game_state.READING_INTRO
         TEXT.reset_typing_state(game) 
+        game.sound_manager.play_sfx("button", volume=1.0)
     elif game.stage == game_state.READING_CARD_2:
         game.stage = game_state.READING_CARD_1
         TEXT.reset_typing_state(game) 
+        game.sound_manager.play_sfx("card_move", volume=1.0)
     elif game.stage == game_state.READING_CARD_3:
         game.stage = game_state.READING_CARD_2
+        game.sound_manager.play_sfx("card_move", volume=1.0)
         TEXT.reset_typing_state(game) 
     elif game.stage == game_state.READING_SUMMARY:
         game.stage = game_state.READING_CARD_3
+        game.sound_manager.play_sfx("card_move", volume=1.0)
         TEXT.reset_typing_state(game) 
 
 

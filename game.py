@@ -4,6 +4,8 @@ import pyglet
 import draw_utility
 import text_utility as TEXT
 import mouse_input
+import random
+from sound_manager import SoundManager
 from deck import TarotDeck
 from tarot_bot import TarotBot
 from enum import Enum
@@ -54,11 +56,28 @@ class TarotGame(arcade.Window):
         self.frame_rate = 0.4
   
         """ Global Assets """
-        self.background_image = arcade.load_texture("assets/original/TableClothbigger.png")
-        self.outside_image = arcade.set_background_color(arcade.color.IMPERIAL_PURPLE) ## replace with cover art
+        self.background_image = arcade.load_texture(r"assets/original/TableClothbiggerHueShift1.png")
+        self.outside_image = arcade.load_texture("assets/original/NolaHouse1.7.png")
         arcade.set_background_color(arcade.color.IMPERIAL_PURPLE)
         pyglet.font.add_file(FONT_PATH)  # Load the font file
-        
+       
+        """ Variables for Outside Animation"""
+        self.outside_frame_center = arcade.load_texture(r"assets\original\AnimationFrames2.1\NolaHouse2.1.1.png")
+        self.outside_frame_left = arcade.load_texture(r"assets\original\AnimationFrames2.1\NolaHouse2.1.3.png")
+        self.outside_frame_right = arcade.load_texture(r"assets\original\AnimationFrames2.1\NolaHouse2.1.2.png")
+        self.states = ["LEFT", "CENTER", "RIGHT", "CENTER"]
+        self.state_index = 0  # start at 0 => "LEFT"
+
+        # Track how long we've been in the current state
+        self.time_in_state = 0.0
+
+        # Define duration (seconds) for each state
+        self.durations = {
+            "LEFT": 1.2,     # stay on left for 1 sec
+            "CENTER": random.randint(6,10),   # stay on center for 2 sec
+            "RIGHT": 1.2     # stay on right for 1 sec
+        }
+
         """ Variables for button formatting"""
 
         self.start_reading_button_active = False
@@ -82,8 +101,21 @@ class TarotGame(arcade.Window):
         self.lines_to_type = []
         
 
+        """ Variables for sound"""
+        self.sound_manager = SoundManager(r"assets/sound/Pixel 1.wav")
+        self.sound_manager.load_music()
+        self.sound_manager.load_sfx("card_move", r"assets/sound/JDSherbert - Tabletop Games SFX Pack - Paper Flip - 1.wav")
+        self.sound_manager.load_sfx("card_spread", r"assets/sound/JDSherbert - Tabletop Games SFX Pack - Deck Shuffle - 1.wav")
+        self.sound_manager.load_sfx("button", r"assets/sound/clonck.wav")
+        self.sound_manager.load_sfx("door", r"assets/sound/mixkit-creaky-door-open-195.wav")
+        self.sound_manager.load_sfx("typewriter", r"assets/sound/mixkit-modern-click-box-check-1120.wav")
+        self.sound_manager.load_sfx("wind", r"assets/sound/mixkit-storm-wind-2411.wav")
+
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
+        
+        self.sound_manager.play_music(volume = 0.6, loop=True)
+       
         pass
 
     def reset_data(self):
@@ -106,7 +138,7 @@ class TarotGame(arcade.Window):
         if self.stage != GameState.OUTSIDE:
             arcade.draw_lrwh_rectangle_textured(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, self.background_image)
         if self.stage == GameState.OUTSIDE:
-            arcade.set_background_color(arcade.color.IMPERIAL_PURPLE)
+            # arcade.draw_lrwh_rectangle_textured(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, self.outside_image)
             draw_utility.draw_outside_stage(self)
         elif self.stage == GameState.INTRO:
             draw_utility.draw_intro_stage(self)
@@ -175,12 +207,38 @@ class TarotGame(arcade.Window):
             daemon=True  # Set as a daemon thread so it exits when the game exits
         )
         api_thread.start()
+        self.sound_manager.play_sfx("card_spread", volume=1.0)
+        
 
     def on_update(self, delta_time):
         """ Update the game state. """
 
         TEXT.update_typing_effect(self, delta_time)
         
+        if self.stage == GameState.OUTSIDE:
+            self.time_in_state += delta_time
+            current_state = self.states[self.state_index]
+            if self.time_in_state >= self.durations[current_state]:
+                # Move to the next state in the sequence
+                self.state_index += 1
+                # If we've gone past the last item, loop back to 0
+                if self.state_index >= len(self.states):
+                    self.state_index = 0
+
+                # Reset the time in the new state
+                self.time_in_state = 0.0
+
+                new_state = self.states[self.state_index]
+
+                # block looping per frame
+                if new_state != current_state:
+                    
+                    if new_state == "LEFT":
+                        self.sound_manager.play_sfx("wind", volume=0.6)
+                    elif new_state == "RIGHT":
+                        self.sound_manager.play_sfx("wind", volume=.6)
+                    elif new_state == "CENTER":
+                        pass  
 
         if self.stage == GameState.LOADING:
             self.frame_timer += delta_time
