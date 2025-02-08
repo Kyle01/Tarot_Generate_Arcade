@@ -17,7 +17,7 @@ CUSTOM_PALETTE = [
 ]
 
 # Block size 25 => scale factor = 0.25
-BLOCK_SIZE = 50
+BLOCK_SIZE = 30
 SCALE_FACTOR = BLOCK_SIZE * 0.01  # = 0.25
 
 # -------------------------

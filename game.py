@@ -21,22 +21,23 @@ FONT_PATH = r"assets/fonts/OldSchoolAdventures-42j9.ttf"
 CATEGORIES = ["Love Life", "Professional Development", "Family and Friends", "Health", "Personal Growth", "Gain Clarity"]
 
 class GameState(Enum):
-    OUTSIDE =1
-    INTRO = 2
-    SPREAD = 3
-    LOADING = 4
-    READING_INTRO = 5
-    READING_CARD_1 = 6
-    READING_CARD_2 = 7
-    READING_CARD_3 = 8
-    READING_SUMMARY = 9
+    TITLE = 1
+    OUTSIDE =2
+    INTRO = 3
+    SPREAD = 4
+    LOADING = 5
+    READING_INTRO = 6
+    READING_CARD_1 = 7
+    READING_CARD_2 = 8
+    READING_CARD_3 = 9
+    READING_SUMMARY = 10
 
 class TarotGame(arcade.Window):
     """ Main application class. """
 
     def __init__(self):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Voodoo Tarot GPT")
-        self.stage = GameState.OUTSIDE
+        self.stage = GameState.TITLE
 
         """ Variables for reading generation"""
 
@@ -58,7 +59,7 @@ class TarotGame(arcade.Window):
         """ Global Assets """
         self.background_image = arcade.load_texture(r"assets/original/TableClothbiggerHueShift1.png")
         self.outside_image = arcade.load_texture("assets/original/NolaHouse1.7.png")
-        arcade.set_background_color(arcade.color.IMPERIAL_PURPLE)
+        arcade.set_background_color(arcade.color.BLACK)
         pyglet.font.add_file(FONT_PATH)  # Load the font file
        
         """ Variables for Outside Animation"""
@@ -135,9 +136,11 @@ class TarotGame(arcade.Window):
         """ Render the screen. """
         self.clear()
 
-        if self.stage != GameState.OUTSIDE:
+        if self.stage not in [GameState.OUTSIDE, GameState.TITLE]:
             arcade.draw_lrwh_rectangle_textured(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, self.background_image)
-        if self.stage == GameState.OUTSIDE:
+        if self.stage == GameState.TITLE:
+            draw_utility.draw_title_stage(self)
+        elif self.stage == GameState.OUTSIDE:
             # arcade.draw_lrwh_rectangle_textured(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, self.outside_image)
             draw_utility.draw_outside_stage(self)
         elif self.stage == GameState.INTRO:
@@ -214,6 +217,12 @@ class TarotGame(arcade.Window):
         """ Update the game state. """
 
         TEXT.update_typing_effect(self, delta_time)
+
+        if self.stage == GameState.TITLE:
+            self.time_in_state += delta_time
+            if self.time_in_state > 13:
+                self.stage = GameState.OUTSIDE
+                self.time_in_state = 0.0
         
         if self.stage == GameState.OUTSIDE:
             self.time_in_state += delta_time

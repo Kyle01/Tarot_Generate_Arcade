@@ -10,11 +10,10 @@ Tarot Card Arcade game using python arcade and chatgpt
 
 
 # Resources
-* Art from [chee-seekins](https://chee-seekins.itch.io/tarot) - note, files not in git. commercial use, no distribution 
+* CardArt base from [chee-seekins](https://chee-seekins.itch.io/tarot) - note, files not in git. commercial use, no distribution 
 * Click sfx from [jarzarr](https://jarzarr.itch.io/ui-button-sounds) - commercial use, distribution
 * Music from [alkarab](https://alkakrab.itch.io/free-12-tracks-pixel-rpg-game-music-pack) - commercial use, distribution
 * Card SfX from [jdshertbert](https://jdsherbert.itch.io/tabletop-games-sfx-pack) - commercial use, distribution
 * Door opening sound from (https://mixkit.co/free-sound-effects/doors/) - commercial use, distribution
 * Typerwriter Sfx from (https://mixkit.co/free-sound-effects/click/) - commercial use, Distrubution
-https://pixabay.com/sound-effects/search/breeze/
 * Wind Sfx from https://mixkit.co/free-sound-effects/wind/ - commercial use, distribution
