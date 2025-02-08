@@ -17,4 +17,4 @@ Tarot Card Arcade game using python arcade and chatgpt
 * Door opening sound from (https://mixkit.co/free-sound-effects/doors/) - commercial use, distribution
 * Typerwriter Sfx from (https://mixkit.co/free-sound-effects/click/) - commercial use, Distrubution
 https://pixabay.com/sound-effects/search/breeze/
-https://mixkit.co/free-sound-effects/wind/
+* Wind Sfx from https://mixkit.co/free-sound-effects/wind/ - commercial use, distribution

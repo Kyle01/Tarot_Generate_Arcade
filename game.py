@@ -230,9 +230,9 @@ class TarotGame(arcade.Window):
 
                 new_state = self.states[self.state_index]
 
-                # Compare new_state vs. current_state
+                # block looping per frame
                 if new_state != current_state:
-                    # We just changed states
+                    
                     if new_state == "LEFT":
                         self.sound_manager.play_sfx("wind", volume=0.6)
                     elif new_state == "RIGHT":
