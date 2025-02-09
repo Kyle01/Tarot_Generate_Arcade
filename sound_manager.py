@@ -19,9 +19,7 @@ class SoundManager:
             print("Music not loaded yet. Call load_music() first.")
             return
         
-        # Note: arcade 3.0 introduced a new Sound API
-        # If using older versions, the code might differ slightly.
-        # `play_sound` returns a player object in arcade 3.0+
+     
         self.music_player = arcade.play_sound(self.music, volume=volume, looping=loop)
 
     def stop_music(self):
@@ -48,5 +46,4 @@ class SoundManager:
             arcade.play_sound(self.sfx_sounds[sfx_name], volume=volume, speed=speed)
         else:
             print(f"SFX '{sfx_name}' not found. Make sure you've loaded it.")
-    
     

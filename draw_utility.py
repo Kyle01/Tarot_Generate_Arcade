@@ -520,3 +520,32 @@ def options_button(game):
     height = 45,
     texture=cog
 )
+    
+def draw_options_menu(game):
+        arcade.draw_lrtb_rectangle_filled(
+        200, SCREEN_WIDTH - 200, SCREEN_HEIGHT - 150, 150, 
+        (0, 0, 0, 200)  # Dark translucent background
+        )
+
+        # Draw options menu background
+        arcade.draw_lrtb_rectangle_filled(
+            250, SCREEN_WIDTH - 250, SCREEN_HEIGHT - 200, 200, 
+            arcade.color.DARK_SLATE_BLUE
+        )
+
+        # Draw text for options menu
+        arcade.draw_text(
+            "Options",
+            SCREEN_WIDTH // 2,
+            SCREEN_HEIGHT - 180,
+            arcade.color.WHITE,
+            font_size=20,
+            anchor_x="center",
+        )
+
+        # Example buttons (Adjust positions)
+        arcade.draw_lrtb_rectangle_filled(400, 600, 350, 300, arcade.color.GRAY)
+        arcade.draw_text("Toggle Sound", 500, 315, arcade.color.WHITE, font_size=16, anchor_x="center")
+
+        arcade.draw_lrtb_rectangle_filled(400, 600, 250, 200, arcade.color.GRAY)
+        arcade.draw_text("Close", 500, 215, arcade.color.WHITE, font_size=16, anchor_x="center")

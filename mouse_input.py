@@ -30,6 +30,9 @@ def handle_mouse_press(game, x, y, _button, _modifiers, game_state):
 
     if game.stage != game_state.TITLE:
          mouse_press_option_button(game, x,y, game_state)
+    
+    if game.menu_open:
+         mouse_press_options_menu(game, x,y)
 
 
 def mouse_press_outside(game, x, y, game_state):
@@ -174,8 +177,18 @@ def previous_reading_stage(game, game_state):
 def mouse_press_option_button(game, x, y, game_state):
      if game.x_right_button + 250 - 100 <= x <= game.x_right_button + 250 + 100 and \
             900 -20 <= y <= 900 - 50 + 100:
-        
+        game.menu_open = True
         game.sound_manager.play_sfx("button", volume=1.0)
+
+def mouse_press_options_menu(game, x, y):
+      if game.menu_open:
+        if 400 <= x <= 600 and 200 <= y <= 250:  # Close button
+            game.menu_open = False
+            game.sound_manager.play_sfx("button", volume=1.0)
+        elif 400 <= x <= 600 and 300 <= y <= 350:  # Toggle sound button
+            game.sound_manager.stop_music()
+            game.sound_manager.play_sfx("button", volume=1.0)
+        return  # Prevent clicks from affecting the game
         
 
 

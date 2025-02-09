@@ -112,6 +112,10 @@ class TarotGame(arcade.Window):
         self.sound_manager.load_sfx("typewriter", r"assets/sound/mixkit-modern-click-box-check-1120.wav")
         self.sound_manager.load_sfx("wind", r"assets/sound/mixkit-storm-wind-2411.wav")
 
+        """ Variables for Options Menu"""
+
+        self.menu_open = False
+
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
         
@@ -162,6 +166,9 @@ class TarotGame(arcade.Window):
         
         if self.stage != GameState.TITLE:
             draw_utility.options_button(self)
+
+        if self.menu_open:
+            draw_utility.draw_options_menu(self)
             
 
         '''For Debugging Button Hit boxes'''
@@ -220,6 +227,8 @@ class TarotGame(arcade.Window):
         """ Update the game state. """
 
         TEXT.update_typing_effect(self, delta_time)
+        if self.menu_open:
+            return 
 
         if self.stage == GameState.TITLE:
             self.time_in_state += delta_time
@@ -269,7 +278,8 @@ class TarotGame(arcade.Window):
                     self.loading_progress = 1.0
                     self.stage = GameState.READING_INTRO
 
-    
+
+
 def main():
     """ Main function """
     window = TarotGame()
