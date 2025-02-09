@@ -95,6 +95,8 @@ def draw_outside_stage(game):
         text_y_start=45,
     )
 
+   
+
     Button(
         game=game,
         name='step_inside',
@@ -497,3 +499,24 @@ def draw_reading_summary(game, card_index):
             x = 350 + (i * 275)
             y = 700 + 50
             card.paint(x, y, show_front=True, scale = 1.2, is_small = True)
+
+def options_button(game):
+    Button(
+        game=game,
+        name='options',
+        copy="",
+        x_center=game.x_right_button+250,
+        y_center=900,
+        width=200 //2,
+        height=200 // 2,
+        text_x_start=game.x_right_button + 75,
+        text_y_start=545,
+    )
+    cog=arcade.load_texture(r"assets/original/OptionsCog.png")
+    arcade.draw_texture_rectangle(
+    center_x= game.x_right_button+250,
+    center_y= 903,
+    width = 45,
+    height = 45,
+    texture=cog
+)

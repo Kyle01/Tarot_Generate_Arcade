@@ -141,7 +141,7 @@ class TarotGame(arcade.Window):
         if self.stage == GameState.TITLE:
             draw_utility.draw_title_stage(self)
         elif self.stage == GameState.OUTSIDE:
-            # arcade.draw_lrwh_rectangle_textured(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, self.outside_image)
+        
             draw_utility.draw_outside_stage(self)
         elif self.stage == GameState.INTRO:
             draw_utility.draw_intro_stage(self)
@@ -159,6 +159,9 @@ class TarotGame(arcade.Window):
             draw_utility.draw_reading_card(self, 3)  # Stage 4: Show card 3
         elif self.stage == GameState.READING_SUMMARY:
             draw_utility.draw_reading_summary(self, 4),   # Stage 5: Show all cards and summary
+        
+        if self.stage != GameState.TITLE:
+            draw_utility.options_button(self)
             
 
         '''For Debugging Button Hit boxes'''
