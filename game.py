@@ -63,10 +63,10 @@ class TarotGame(arcade.Window):
         pyglet.font.add_file(FONT_PATH)  # Load the font file
        
         """ Variables for Outside Animation"""
-        self.outside_frame_center = arcade.load_texture(r"assets\original\AnimationFrames2.1\NolaHouse2.1.1.png")
-        self.outside_frame_left = arcade.load_texture(r"assets\original\AnimationFrames2.1\NolaHouse2.1.3.png")
-        self.outside_frame_right = arcade.load_texture(r"assets\original\AnimationFrames2.1\NolaHouse2.1.2.png")
-        self.states = ["LEFT", "CENTER", "RIGHT", "CENTER"]
+        self.outside_frame_center = arcade.load_texture(r"assets/original/AnimationFrames2.1/NolaHouse2.1.1.png")
+        self.outside_frame_left = arcade.load_texture(r"assets/original/AnimationFrames2.1/NolaHouse2.1.3.png")
+        self.outside_frame_right = arcade.load_texture(r"assets/original/AnimationFrames2.1/NolaHouse2.1.2.png")
+        self.states = ["CENTER","LEFT", "CENTER", "RIGHT", "CENTER"]
         self.state_index = 0  # start at 0 => "LEFT"
 
         # Track how long we've been in the current state
@@ -220,7 +220,7 @@ class TarotGame(arcade.Window):
 
         if self.stage == GameState.TITLE:
             self.time_in_state += delta_time
-            if self.time_in_state > 13:
+            if self.time_in_state > 14:
                 self.stage = GameState.OUTSIDE
                 self.time_in_state = 0.0
         
