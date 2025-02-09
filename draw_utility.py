@@ -18,8 +18,50 @@ INTRO_TEXT = (
 
 CATEGORIES = ["Love Life", "Professional Development", "Family and Friends", "Health", "Personal Growth", "Gain Clarity"]
 
+def draw_title_stage(game):
+    dev_title = arcade.load_texture("assets\original\KandD1.png")
+    game_title = arcade.load_texture("assets/original/TitleScreen1.png")
+    
+
+    fade_duration = 1.5
+    hold_time = 4
+
+    if game.time_in_state < hold_time:
+        alpha_1 = 255  # Fully visible
+    elif hold_time <= game.time_in_state < hold_time + fade_duration:
+        alpha_1 = int(255 * (1 - (game.time_in_state - hold_time) / fade_duration))  # Fading out
+    else:
+        alpha_1 = 0  # Fully invisible
+
+    # Image 2: Game Title Screen
+    if game.time_in_state < hold_time + fade_duration:
+        alpha_2 = 0  # Not visible at first
+    elif hold_time + fade_duration <= game.time_in_state < 2 * hold_time:
+        alpha_2 = int(255 * ((game.time_in_state - (hold_time + fade_duration)) / fade_duration))  # Fading in
+    elif 2 * hold_time <= game.time_in_state < 2 * hold_time + fade_duration:
+        alpha_2 = 255  # Fully visible for hold time
+    elif 2 * hold_time + fade_duration <= game.time_in_state < 2 * hold_time + 2 * fade_duration:
+        alpha_2 = int(255 * (1 - (game.time_in_state - (2 * hold_time + fade_duration)) / fade_duration))  # Fading out
+    else:
+        alpha_2 = 0  # Fully invisible
+
+    # Image 3: dummy house
+    if game.time_in_state < 2 * hold_time + 2 * fade_duration:
+        alpha_3 = 0  # Not visible initially
+    elif 2 * hold_time + 2 * fade_duration <= game.time_in_state < 3 * hold_time + 2 * fade_duration:
+        alpha_3 = int(255 * ((game.time_in_state - (2 * hold_time + 2 * fade_duration)) / fade_duration))  # Fading in
+    else:
+        alpha_3 = 255  # Fully visible
+
+    alpha_1 = max(0, min(255, alpha_1))
+    alpha_2 = max(0, min(255, alpha_2))
+    alpha_3 = max(0, min(255, alpha_3))
 
 
+    # Draw images with calculated alpha values
+    arcade.draw_lrwh_rectangle_textured(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, dev_title, alpha=alpha_1)
+    arcade.draw_lrwh_rectangle_textured(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, game_title, alpha=alpha_2)
+    arcade.draw_lrwh_rectangle_textured(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, game.outside_frame_center, alpha=alpha_3)
 def draw_outside_stage(game):
 
     current_state = game.states[game.state_index]
