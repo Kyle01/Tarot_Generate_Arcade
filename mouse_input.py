@@ -28,6 +28,8 @@ def handle_mouse_press(game, x, y, _button, _modifiers, game_state):
     elif game.stage == game_state.READING_SUMMARY:
         mouse_press_reading_summary(game,x,y,game_state)
 
+    if game.stage != game_state.TITLE:
+         mouse_press_option_button(game, x,y, game_state)
 
 
 def mouse_press_outside(game, x, y, game_state):
@@ -169,6 +171,12 @@ def previous_reading_stage(game, game_state):
         game.sound_manager.play_sfx("card_move", volume=1.0)
         TEXT.reset_typing_state(game) 
 
+def mouse_press_option_button(game, x, y, game_state):
+     if game.x_right_button + 250 - 100 <= x <= game.x_right_button + 250 + 100 and \
+            900 -20 <= y <= 900 - 50 + 100:
+        
+        game.sound_manager.play_sfx("button", volume=1.0)
+        
 
 
 """"""
@@ -198,6 +206,10 @@ def handle_mouse_motion(game, x, y, _dx, _dy, game_state):
             mouse_motion_reading_cards(game,x,y,game_state)
         if game.stage == game_state.READING_SUMMARY:
             mouse_motion_reading_summary(game,x,y,game_state)
+
+        if game.stage != game_state.TITLE:
+             mouse_motion_option_button(game, x,y, game_state)
+
         
         
     
@@ -292,3 +304,11 @@ def mouse_motion_reading_summary(game,x,y,game_state):
     else:
          game.hovered_button = None
     # Check if hovering over "Begin Reading" button
+
+def mouse_motion_option_button(game, x, y, game_state):
+    if game.x_right_button + 250 - 100 <= x <= game.x_right_button + 250 + 100 and \
+            900-20 <= y <= 900 - 50 + 100:
+        
+        game.hovered_button = "options"
+    
+    
