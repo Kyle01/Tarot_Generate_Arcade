@@ -2,7 +2,7 @@ import text_utility as TEXT
 
 """ Updates game each frame and hold timer logics """
 
-def update(game, delta_time, game_state):
+def handle_animation(game, delta_time, game_state):
     if game.menu_open: # This freezes/pauses the game if the options menu is open
         return 
     else:
