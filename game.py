@@ -5,6 +5,7 @@ import draw_utility
 import text_utility as TEXT
 import mouse_input
 import random
+import update_manager
 from sound_manager import SoundManager
 from deck import TarotDeck
 from tarot_bot import TarotBot
@@ -58,7 +59,7 @@ class TarotGame(arcade.Window):
   
         """ Global Assets """
         self.background_image = arcade.load_texture(r"assets/original/TableClothbiggerHueShift1.png")
-        self.outside_image = arcade.load_texture("assets/original/NolaHouse1.7.png")
+        self.outside_image = arcade.load_texture("assets/original/AnimationFrames2.1/NolaHouse2.1.1.png")
         arcade.set_background_color(arcade.color.BLACK)
         pyglet.font.add_file(FONT_PATH)  # Load the font file
        
@@ -66,24 +67,24 @@ class TarotGame(arcade.Window):
         self.outside_frame_center = arcade.load_texture(r"assets/original/AnimationFrames2.1/NolaHouse2.1.1.png")
         self.outside_frame_left = arcade.load_texture(r"assets/original/AnimationFrames2.1/NolaHouse2.1.3.png")
         self.outside_frame_right = arcade.load_texture(r"assets/original/AnimationFrames2.1/NolaHouse2.1.2.png")
-        self.states = ["START","LEFT", "CENTER", "RIGHT", "CENTER"]
-        self.state_index = 0  # start at 0 => "LEFT"
+        self.states = ["START","LEFT", "CENTER", "RIGHT", "CENTER"] # this creates the order for the animation frames, below is the timing for each
+        self.state_index = 0  # start at 0 => "Start"
 
         # Track how long we've been in the current state
         self.time_in_state = 0.0
 
         # Define duration (seconds) for each state
         self.durations = {
-            "LEFT": 1.2,     # stay on left for 1 sec
-            "CENTER": random.randint(6,10),   # stay on center for 2 sec
+            "LEFT": 1.2,     
+            "CENTER": random.randint(6,10),  
             "RIGHT": 1.2,
-            "START":2     # stay on right for 1 sec
+            "START":2     # start center for a smaller amount to make sure users see and hear wind animation before entering house
         }
 
         """ Variables for button formatting"""
 
         self.start_reading_button_active = False
-        self.hovered_button = None  # Track which button is hovered
+        self.hovered_button = None  # Track which button is hovered, used for mouse over highlights with the Button Class
         self.clicked_button = None  # Track which button is clicked
         self.button_clickbox_width = 175
         self.button_clickbox_height = 150
@@ -207,12 +208,14 @@ class TarotGame(arcade.Window):
         self.selected_cards = []  # reset selected cards for spread
 
     def reveal_card(self, card):
+        """ Control and save faceup cards when the use selects them """
         if card not in self.selected_cards:
             self.selected_cards.append(card)  # Add the card to selected cards
         self.current_revealed_card = card  # Track the card being revealed
         self.reveal_active = True  
 
     def start_loading(self):
+        """  Begin Loading Screen, Call API and begin threading """
         self.stage = GameState.LOADING
         self.loading_progress = 0.0
         self.api_call_complete = False
@@ -228,58 +231,7 @@ class TarotGame(arcade.Window):
     def on_update(self, delta_time):
         """ Update the game state. """
 
-        if self.menu_open:
-            return 
-        else:
-
-            TEXT.update_typing_effect(self, delta_time)
-            if self.stage == GameState.TITLE:
-                self.time_in_state += delta_time
-                if self.time_in_state > 14:
-                    self.stage = GameState.OUTSIDE
-                    self.time_in_state = 0.0
-            
-            if self.stage == GameState.OUTSIDE:
-                self.time_in_state += delta_time
-                current_state = self.states[self.state_index]
-                if self.time_in_state >= self.durations[current_state]:
-                    # Move to the next state in the sequence
-                    self.state_index += 1
-                    # If we've gone past the last item, loop back to 0
-                    if self.state_index >= len(self.states):
-                        self.state_index = 0
-
-                    # Reset the time in the new state
-                    self.time_in_state = 0.0
-
-                    new_state = self.states[self.state_index]
-
-                    # block looping per frame
-                    if new_state != current_state:
-                        
-                        if new_state == "LEFT":
-                            self.sound_manager.play_sfx("wind", volume=0.5)
-                        elif new_state == "RIGHT":
-                            self.sound_manager.play_sfx("wind", volume=.5)
-                        elif new_state == "CENTER":
-                            pass  
-
-            if self.stage == GameState.LOADING:
-                self.frame_timer += delta_time
-
-                if self.frame_timer >self.frame_rate *4:
-                    self.frame_timer -= self.frame_rate *4
-
-                if not self.api_call_complete:
-                    # load progress bar with api is called
-                    self.loading_progress += delta_time / 5  # adjust speed
-                    self.loading_progress = min(self.loading_progress, 0.95)  # cap at 95%
-                else:
-                    # finish progress bar if api is done loading first
-                    self.loading_progress += delta_time / 2  
-                    if self.loading_progress >= 1.0:
-                        self.loading_progress = 1.0
-                        self.stage = GameState.READING_INTRO
+        update_manager.update(self, delta_time, game_state = GameState)
 
 
 
