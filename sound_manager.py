@@ -6,29 +6,50 @@ class SoundManager:
         self.music = None
         self.music_player = None
         self.sfx_sounds={}
+
+        self.music_enabled = True
+        self.music_volume = .8
+
+        self.sfx_enabled = True
+        self.sfx_volume = 1.0
         
 
     def load_music(self):
         """Load the music file."""
      
-        self.music = arcade.load_sound(self.music_file_path)
+        self.music = arcade.Sound(self.music_file_path,streaming=True)
+
 
     def play_music(self, volume=0.5, loop=True):
         """Play the loaded music at specified volume, optionally looping."""
-        if not self.music:
-            print("Music not loaded yet. Call load_music() first.")
-            return
         
-        # Note: arcade 3.0 introduced a new Sound API
-        # If using older versions, the code might differ slightly.
-        # `play_sound` returns a player object in arcade 3.0+
-        self.music_player = arcade.play_sound(self.music, volume=volume, looping=loop)
+        if self.music_player:
+            self.music_player.play()  # Resume music if it's paused??
+        else:
+            self.music_player = self.music.play(volume=volume, loop=loop)
 
-    def stop_music(self):
+    def pause_music(self):
         """Stop the music."""
         if self.music_player:
-            self.music_player.stop()
-            self.music_player = None
+            self.music_player.pause()
+
+
+    def toggle_music(self):
+        if self.music_player:
+            if self.music_enabled:
+                self.pause_music()
+                self.music_enabled = False
+            else:
+                self.play_music()
+                self.music_enabled = True
+    
+    def change_music_volume(self, amount):
+        self.music_volume = max(0.0, min(1.0, self.music_volume + amount))
+        if self.music_player:
+            self.music_player.volume = self.music_volume
+        
+        print(f"New volume: {self.music_volume}") 
+
     
     def load_sfx(self, sfx_name, file_path):
         """
@@ -42,11 +63,21 @@ class SoundManager:
         except Exception as e:
             print(f"Failed to load SFX '{sfx_name}': {e}")
 
-    def play_sfx(self, sfx_name, volume=1.0, speed=1.0):
+    def play_sfx(self, sfx_name, volume=None, speed=1.0):
         """Play a loaded SFX by name."""
-        if sfx_name in self.sfx_sounds:
+        if sfx_name in self.sfx_sounds and self.sfx_enabled:
+            volume=self.sfx_volume if volume is None else volume 
             arcade.play_sound(self.sfx_sounds[sfx_name], volume=volume, speed=speed)
         else:
             print(f"SFX '{sfx_name}' not found. Make sure you've loaded it.")
-    
+
+    def toggle_sfx(self):
+        """Toggle SFX on/off."""
+        self.sfx_enabled = not self.sfx_enabled
+        print(f"SFX Enabled: {self.sfx_enabled}")
+
+    def change_sfx_volume(self, amount):
+        """Change SFX volume."""
+        self.sfx_volume = max(0.0, min(1.0, self.sfx_volume + amount))
+        print(f"New SFX volume: {self.sfx_volume}")
     

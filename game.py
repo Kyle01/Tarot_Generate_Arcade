@@ -5,6 +5,7 @@ import draw_utility
 import text_utility as TEXT
 import mouse_input
 import random
+import update_manager
 from sound_manager import SoundManager
 from deck import TarotDeck
 from tarot_bot import TarotBot
@@ -58,31 +59,32 @@ class TarotGame(arcade.Window):
   
         """ Global Assets """
         self.background_image = arcade.load_texture(r"assets/original/TableClothbiggerHueShift1.png")
-        self.outside_image = arcade.load_texture("assets/original/NolaHouse1.7.png")
+        self.outside_image = arcade.load_texture("assets/original/AnimationFrames2.1/NolaHouse2.1.1.png")
         arcade.set_background_color(arcade.color.BLACK)
         pyglet.font.add_file(FONT_PATH)  # Load the font file
-       
+
         """ Variables for Outside Animation"""
         self.outside_frame_center = arcade.load_texture(r"assets/original/AnimationFrames2.1/NolaHouse2.1.1.png")
         self.outside_frame_left = arcade.load_texture(r"assets/original/AnimationFrames2.1/NolaHouse2.1.3.png")
         self.outside_frame_right = arcade.load_texture(r"assets/original/AnimationFrames2.1/NolaHouse2.1.2.png")
-        self.states = ["CENTER","LEFT", "CENTER", "RIGHT", "CENTER"]
-        self.state_index = 0  # start at 0 => "LEFT"
+        self.states = ["START","LEFT", "CENTER", "RIGHT", "CENTER"] # this creates the order for the animation frames, below is the timing for each
+        self.state_index = 0  # start at 0 => "Start"
 
         # Track how long we've been in the current state
         self.time_in_state = 0.0
 
         # Define duration (seconds) for each state
         self.durations = {
-            "LEFT": 1.2,     # stay on left for 1 sec
-            "CENTER": random.randint(6,10),   # stay on center for 2 sec
-            "RIGHT": 1.2     # stay on right for 1 sec
+            "LEFT": 1.2,     
+            "CENTER": random.randint(6,10),  
+            "RIGHT": 1.2,
+            "START":2     # start center for a smaller amount to make sure users see and hear wind animation before entering house
         }
 
         """ Variables for button formatting"""
 
         self.start_reading_button_active = False
-        self.hovered_button = None  # Track which button is hovered
+        self.hovered_button = None  # Track which button is hovered, used for mouse over highlights with the Button Class
         self.clicked_button = None  # Track which button is clicked
         self.button_clickbox_width = 175
         self.button_clickbox_height = 150
@@ -111,6 +113,11 @@ class TarotGame(arcade.Window):
         self.sound_manager.load_sfx("door", r"assets/sound/mixkit-creaky-door-open-195.wav")
         self.sound_manager.load_sfx("typewriter", r"assets/sound/mixkit-modern-click-box-check-1120.wav")
         self.sound_manager.load_sfx("wind", r"assets/sound/mixkit-storm-wind-2411.wav")
+
+        """ Variables for Options Menu"""
+
+        self.menu_open = False
+        
 
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
@@ -141,7 +148,7 @@ class TarotGame(arcade.Window):
         if self.stage == GameState.TITLE:
             draw_utility.draw_title_stage(self)
         elif self.stage == GameState.OUTSIDE:
-            # arcade.draw_lrwh_rectangle_textured(0,0, SCREEN_WIDTH, SCREEN_HEIGHT, self.outside_image)
+        
             draw_utility.draw_outside_stage(self)
         elif self.stage == GameState.INTRO:
             draw_utility.draw_intro_stage(self)
@@ -159,6 +166,12 @@ class TarotGame(arcade.Window):
             draw_utility.draw_reading_card(self, 3)  # Stage 4: Show card 3
         elif self.stage == GameState.READING_SUMMARY:
             draw_utility.draw_reading_summary(self, 4),   # Stage 5: Show all cards and summary
+        
+        if self.stage != GameState.TITLE:
+            draw_utility.options_button(self)
+
+        if self.menu_open:
+            draw_utility.draw_options_menu(self)
             
 
         '''For Debugging Button Hit boxes'''
@@ -195,12 +208,14 @@ class TarotGame(arcade.Window):
         self.selected_cards = []  # reset selected cards for spread
 
     def reveal_card(self, card):
+        """ Control and save faceup cards when the use selects them """
         if card not in self.selected_cards:
             self.selected_cards.append(card)  # Add the card to selected cards
         self.current_revealed_card = card  # Track the card being revealed
         self.reveal_active = True  
 
     def start_loading(self):
+        """  Begin Loading Screen, Call API and begin threading """
         self.stage = GameState.LOADING
         self.loading_progress = 0.0
         self.api_call_complete = False
@@ -210,63 +225,16 @@ class TarotGame(arcade.Window):
             daemon=True  # Set as a daemon thread so it exits when the game exits
         )
         api_thread.start()
-        self.sound_manager.play_sfx("card_spread", volume=1.0)
+        self.sound_manager.play_sfx("card_spread")
         
 
     def on_update(self, delta_time):
         """ Update the game state. """
 
-        TEXT.update_typing_effect(self, delta_time)
+        update_manager.handle_animation(self, delta_time, game_state = GameState)
 
-        if self.stage == GameState.TITLE:
-            self.time_in_state += delta_time
-            if self.time_in_state > 14:
-                self.stage = GameState.OUTSIDE
-                self.time_in_state = 0.0
-        
-        if self.stage == GameState.OUTSIDE:
-            self.time_in_state += delta_time
-            current_state = self.states[self.state_index]
-            if self.time_in_state >= self.durations[current_state]:
-                # Move to the next state in the sequence
-                self.state_index += 1
-                # If we've gone past the last item, loop back to 0
-                if self.state_index >= len(self.states):
-                    self.state_index = 0
 
-                # Reset the time in the new state
-                self.time_in_state = 0.0
 
-                new_state = self.states[self.state_index]
-
-                # block looping per frame
-                if new_state != current_state:
-                    
-                    if new_state == "LEFT":
-                        self.sound_manager.play_sfx("wind", volume=0.6)
-                    elif new_state == "RIGHT":
-                        self.sound_manager.play_sfx("wind", volume=.6)
-                    elif new_state == "CENTER":
-                        pass  
-
-        if self.stage == GameState.LOADING:
-            self.frame_timer += delta_time
-
-            if self.frame_timer >self.frame_rate *4:
-                self.frame_timer -= self.frame_rate *4
-
-            if not self.api_call_complete:
-                # load progress bar with api is called
-                self.loading_progress += delta_time / 5  # adjust speed
-                self.loading_progress = min(self.loading_progress, 0.95)  # cap at 95%
-            else:
-                # finish progress bar if api is done loading first
-                self.loading_progress += delta_time / 2  
-                if self.loading_progress >= 1.0:
-                    self.loading_progress = 1.0
-                    self.stage = GameState.READING_INTRO
-
-    
 def main():
     """ Main function """
     window = TarotGame()

@@ -19,7 +19,7 @@ INTRO_TEXT = (
 CATEGORIES = ["Love Life", "Professional Development", "Family and Friends", "Health", "Personal Growth", "Gain Clarity"]
 
 def draw_title_stage(game):
-    dev_title = arcade.load_texture("assets\original\KandD1.png")
+    dev_title = arcade.load_texture("assets/original/KandD1.png")
     game_title = arcade.load_texture("assets/original/TitleScreen1.png")
     
 
@@ -94,6 +94,8 @@ def draw_outside_stage(game):
         text_x_start=game.x_right_button + 75,
         text_y_start=45,
     )
+
+   
 
     Button(
         game=game,
@@ -497,3 +499,160 @@ def draw_reading_summary(game, card_index):
             x = 350 + (i * 275)
             y = 700 + 50
             card.paint(x, y, show_front=True, scale = 1.2, is_small = True)
+
+def options_button(game):
+    Button(
+        game=game,
+        name='options',
+        copy="",
+        x_center=game.x_right_button+250,
+        y_center=900,
+        width=200 //2,
+        height=200 // 2,
+        text_x_start=game.x_right_button + 75,
+        text_y_start=545,
+    )
+    cog=arcade.load_texture(r"assets/original/OptionsCog.png")
+    arcade.draw_texture_rectangle(
+    center_x= game.x_right_button+250,
+    center_y= 903,
+    width = 45,
+    height = 45,
+    texture=cog
+)
+    
+
+
+def draw_options_menu(game):
+    """Draw the options menu with real UI elements like buttons, checkboxes, and volume controls."""
+
+    # Dark translucent background overlay
+    arcade.draw_lrtb_rectangle_filled(
+        0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 
+        (0, 0, 0, 200)  # Semi-transparent overlay
+    )
+
+    # Load UI textures
+    menu_background = arcade.load_texture(r"assets/original/OptionMenuBackground.png")
+    checkbox_on = arcade.load_texture(r"assets/original/togglecheckboxyes.png")
+    checkbox_off = arcade.load_texture(r"assets/original/togglecheckboxno.png")
+    plus_button = arcade.load_texture(r"assets/original/Plus.png")
+    minus_button = arcade.load_texture(r"assets/original/minus.png")
+
+    # Draw menu background
+    arcade.draw_texture_rectangle(
+        center_x=SCREEN_WIDTH // 2,
+        center_y=SCREEN_HEIGHT // 2,
+        width=SCREEN_WIDTH - 200,
+        height=SCREEN_HEIGHT - 200,
+        texture=menu_background
+    )
+
+    # Section Titles
+    TEXT.draw_outlined_line("Options", SCREEN_WIDTH // 2, SCREEN_HEIGHT - 250, font_size=24, align="center")
+
+    ## -------------------- CLOSE MENU BUTTON -------------------- ##
+    Button(
+        game=game,
+        name='close_menu',
+        copy="Close",
+        x_center=game.x_middle_button,
+        y_center=250,
+        width=195,  # Scaled down
+        height=115,  # Scaled down
+        text_x_start=game.x_middle_button-125,
+        text_y_start=245,
+    )
+
+    ## -------------------- MUSIC TOGGLE -------------------- ##
+    TEXT.draw_outlined_line("Toggle Music",
+                             SCREEN_WIDTH // 2 - 150, 
+                             SCREEN_HEIGHT // 2 + 140,
+                             font_size=20, align="center")
+
+    # Checkbox for Music Toggle (Uses game.sound_manager.music_enabled)
+    arcade.draw_texture_rectangle(
+        center_x=SCREEN_WIDTH *.66 ,
+        center_y=SCREEN_HEIGHT // 2 + 150,
+        width=45,
+        height=45,
+        texture=checkbox_on if game.sound_manager.music_enabled else checkbox_off
+    )
+
+    ## -------------------- MUSIC VOLUME -------------------- ##
+    TEXT.draw_outlined_line("Music Volume",
+                             SCREEN_WIDTH // 2-150, 
+                             SCREEN_HEIGHT // 2 + 50, 
+                             font_size=20, align="center")
+
+    # Decrease Music Volume (-)
+    arcade.draw_texture_rectangle(
+        center_x=SCREEN_WIDTH *.66  - 76,
+        center_y=SCREEN_HEIGHT // 2 + 60,
+        width=40,
+        height=40,
+        texture=minus_button
+    )
+
+    # Increase Music Volume (+)
+    arcade.draw_texture_rectangle(
+        center_x=SCREEN_WIDTH *.66  + 76,
+        center_y=SCREEN_HEIGHT // 2 + 60,
+        width=40,
+        height=40,
+        texture=plus_button
+    )
+
+    # Display Current Music Volume
+    volume_text = f"{int(game.sound_manager.music_volume * 100)}%"
+    TEXT.draw_outlined_line(volume_text,
+                             SCREEN_WIDTH *.66 , 
+                             SCREEN_HEIGHT // 2 + 50, 
+                             font_size=20, align="center")
+    
+
+    ## -------------------- SFX TOGGLE -------------------- ##
+    TEXT.draw_outlined_line("Toggle SFX",
+                             SCREEN_WIDTH // 2 - 150,
+                               SCREEN_HEIGHT // 2 - 40,
+                                 font_size=20, align="center")
+
+    # Checkbox for SFX Toggle (Uses game.sound_manager.sfx_enabled)
+    arcade.draw_texture_rectangle(
+        center_x=SCREEN_WIDTH *.66 ,
+        center_y=SCREEN_HEIGHT // 2 - 30,
+        width=45,
+        height=45,
+        texture=checkbox_on if game.sound_manager.sfx_enabled else checkbox_off
+    )
+
+    ## -------------------- SFX VOLUME -------------------- ##
+    TEXT.draw_outlined_line("SFX Volume",
+                             SCREEN_WIDTH // 2-150, 
+                             SCREEN_HEIGHT // 2 - 140, font_size=20, align="center")
+
+    # Decrease SFX Volume (-)
+    arcade.draw_texture_rectangle(
+        center_x=SCREEN_WIDTH *.66  - 76,
+        center_y=SCREEN_HEIGHT // 2 - 130,
+        width=40,
+        height=40,
+        texture=minus_button
+    )
+
+    # Increase SFX Volume (+)
+    arcade.draw_texture_rectangle(
+        center_x=SCREEN_WIDTH *.66 + 76,
+        center_y=SCREEN_HEIGHT // 2 - 130,
+        width=40,
+        height=40,
+        texture=plus_button
+    )
+
+    # Display Current SFX Volume
+    sfx_volume_text = f"{int(game.sound_manager.sfx_volume * 100)}%"
+    TEXT.draw_outlined_line(sfx_volume_text,
+                             SCREEN_WIDTH *.66 , 
+                             SCREEN_HEIGHT // 2 - 140, 
+                             font_size=20, align="center")
+    
