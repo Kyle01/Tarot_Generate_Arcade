@@ -66,7 +66,7 @@ class TarotGame(arcade.Window):
         self.outside_frame_center = arcade.load_texture(r"assets/original/AnimationFrames2.1/NolaHouse2.1.1.png")
         self.outside_frame_left = arcade.load_texture(r"assets/original/AnimationFrames2.1/NolaHouse2.1.3.png")
         self.outside_frame_right = arcade.load_texture(r"assets/original/AnimationFrames2.1/NolaHouse2.1.2.png")
-        self.states = ["CENTER","LEFT", "CENTER", "RIGHT", "CENTER"]
+        self.states = ["START","LEFT", "CENTER", "RIGHT", "CENTER"]
         self.state_index = 0  # start at 0 => "LEFT"
 
         # Track how long we've been in the current state
@@ -76,7 +76,8 @@ class TarotGame(arcade.Window):
         self.durations = {
             "LEFT": 1.2,     # stay on left for 1 sec
             "CENTER": random.randint(6,10),   # stay on center for 2 sec
-            "RIGHT": 1.2     # stay on right for 1 sec
+            "RIGHT": 1.2,
+            "START":2     # stay on right for 1 sec
         }
 
         """ Variables for button formatting"""
@@ -115,6 +116,7 @@ class TarotGame(arcade.Window):
         """ Variables for Options Menu"""
 
         self.menu_open = False
+        
 
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
@@ -220,63 +222,64 @@ class TarotGame(arcade.Window):
             daemon=True  # Set as a daemon thread so it exits when the game exits
         )
         api_thread.start()
-        self.sound_manager.play_sfx("card_spread", volume=1.0)
+        self.sound_manager.play_sfx("card_spread")
         
 
     def on_update(self, delta_time):
         """ Update the game state. """
 
-        TEXT.update_typing_effect(self, delta_time)
         if self.menu_open:
             return 
+        else:
 
-        if self.stage == GameState.TITLE:
-            self.time_in_state += delta_time
-            if self.time_in_state > 14:
-                self.stage = GameState.OUTSIDE
-                self.time_in_state = 0.0
-        
-        if self.stage == GameState.OUTSIDE:
-            self.time_in_state += delta_time
-            current_state = self.states[self.state_index]
-            if self.time_in_state >= self.durations[current_state]:
-                # Move to the next state in the sequence
-                self.state_index += 1
-                # If we've gone past the last item, loop back to 0
-                if self.state_index >= len(self.states):
-                    self.state_index = 0
+            TEXT.update_typing_effect(self, delta_time)
+            if self.stage == GameState.TITLE:
+                self.time_in_state += delta_time
+                if self.time_in_state > 14:
+                    self.stage = GameState.OUTSIDE
+                    self.time_in_state = 0.0
+            
+            if self.stage == GameState.OUTSIDE:
+                self.time_in_state += delta_time
+                current_state = self.states[self.state_index]
+                if self.time_in_state >= self.durations[current_state]:
+                    # Move to the next state in the sequence
+                    self.state_index += 1
+                    # If we've gone past the last item, loop back to 0
+                    if self.state_index >= len(self.states):
+                        self.state_index = 0
 
-                # Reset the time in the new state
-                self.time_in_state = 0.0
+                    # Reset the time in the new state
+                    self.time_in_state = 0.0
 
-                new_state = self.states[self.state_index]
+                    new_state = self.states[self.state_index]
 
-                # block looping per frame
-                if new_state != current_state:
-                    
-                    if new_state == "LEFT":
-                        self.sound_manager.play_sfx("wind", volume=0.6)
-                    elif new_state == "RIGHT":
-                        self.sound_manager.play_sfx("wind", volume=.6)
-                    elif new_state == "CENTER":
-                        pass  
+                    # block looping per frame
+                    if new_state != current_state:
+                        
+                        if new_state == "LEFT":
+                            self.sound_manager.play_sfx("wind", volume=0.5)
+                        elif new_state == "RIGHT":
+                            self.sound_manager.play_sfx("wind", volume=.5)
+                        elif new_state == "CENTER":
+                            pass  
 
-        if self.stage == GameState.LOADING:
-            self.frame_timer += delta_time
+            if self.stage == GameState.LOADING:
+                self.frame_timer += delta_time
 
-            if self.frame_timer >self.frame_rate *4:
-                self.frame_timer -= self.frame_rate *4
+                if self.frame_timer >self.frame_rate *4:
+                    self.frame_timer -= self.frame_rate *4
 
-            if not self.api_call_complete:
-                # load progress bar with api is called
-                self.loading_progress += delta_time / 5  # adjust speed
-                self.loading_progress = min(self.loading_progress, 0.95)  # cap at 95%
-            else:
-                # finish progress bar if api is done loading first
-                self.loading_progress += delta_time / 2  
-                if self.loading_progress >= 1.0:
-                    self.loading_progress = 1.0
-                    self.stage = GameState.READING_INTRO
+                if not self.api_call_complete:
+                    # load progress bar with api is called
+                    self.loading_progress += delta_time / 5  # adjust speed
+                    self.loading_progress = min(self.loading_progress, 0.95)  # cap at 95%
+                else:
+                    # finish progress bar if api is done loading first
+                    self.loading_progress += delta_time / 2  
+                    if self.loading_progress >= 1.0:
+                        self.loading_progress = 1.0
+                        self.stage = GameState.READING_INTRO
 
 
 

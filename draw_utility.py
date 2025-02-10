@@ -19,7 +19,7 @@ INTRO_TEXT = (
 CATEGORIES = ["Love Life", "Professional Development", "Family and Friends", "Health", "Personal Growth", "Gain Clarity"]
 
 def draw_title_stage(game):
-    dev_title = arcade.load_texture("assets\original\KandD1.png")
+    dev_title = arcade.load_texture("assets/original/KandD1.png")
     game_title = arcade.load_texture("assets/original/TitleScreen1.png")
     
 
@@ -521,31 +521,138 @@ def options_button(game):
     texture=cog
 )
     
+import arcade
+
 def draw_options_menu(game):
-        arcade.draw_lrtb_rectangle_filled(
-        200, SCREEN_WIDTH - 200, SCREEN_HEIGHT - 150, 150, 
-        (0, 0, 0, 200)  # Dark translucent background
-        )
+    """Draw the options menu with real UI elements like buttons, checkboxes, and volume controls."""
 
-        # Draw options menu background
-        arcade.draw_lrtb_rectangle_filled(
-            250, SCREEN_WIDTH - 250, SCREEN_HEIGHT - 200, 200, 
-            arcade.color.DARK_SLATE_BLUE
-        )
+    # Dark translucent background overlay
+    arcade.draw_lrtb_rectangle_filled(
+        0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 
+        (0, 0, 0, 200)  # Semi-transparent overlay
+    )
 
-        # Draw text for options menu
-        arcade.draw_text(
-            "Options",
-            SCREEN_WIDTH // 2,
-            SCREEN_HEIGHT - 180,
-            arcade.color.WHITE,
-            font_size=20,
-            anchor_x="center",
-        )
+    # Load UI textures
+    menu_background = arcade.load_texture(r"assets/original/OptionMenuBackground.png")
+    checkbox_on = arcade.load_texture(r"assets/original/togglecheckboxyes.png")
+    checkbox_off = arcade.load_texture(r"assets/original/togglecheckboxno.png")
+    plus_button = arcade.load_texture(r"assets/original/Plus.png")
+    minus_button = arcade.load_texture(r"assets/original/minus.png")
 
-        # Example buttons (Adjust positions)
-        arcade.draw_lrtb_rectangle_filled(400, 600, 350, 300, arcade.color.GRAY)
-        arcade.draw_text("Toggle Sound", 500, 315, arcade.color.WHITE, font_size=16, anchor_x="center")
+    # Draw menu background
+    arcade.draw_texture_rectangle(
+        center_x=SCREEN_WIDTH // 2,
+        center_y=SCREEN_HEIGHT // 2,
+        width=SCREEN_WIDTH - 200,
+        height=SCREEN_HEIGHT - 200,
+        texture=menu_background
+    )
 
-        arcade.draw_lrtb_rectangle_filled(400, 600, 250, 200, arcade.color.GRAY)
-        arcade.draw_text("Close", 500, 215, arcade.color.WHITE, font_size=16, anchor_x="center")
+    # Section Titles
+    TEXT.draw_outlined_line("Options", SCREEN_WIDTH // 2, SCREEN_HEIGHT - 250, font_size=24, align="center")
+
+    ## -------------------- CLOSE MENU BUTTON -------------------- ##
+    Button(
+        game=game,
+        name='close_menu',
+        copy="Close",
+        x_center=game.x_middle_button,
+        y_center=250,
+        width=195,  # Scaled down
+        height=115,  # Scaled down
+        text_x_start=game.x_middle_button-125,
+        text_y_start=245,
+    )
+
+    ## -------------------- MUSIC TOGGLE -------------------- ##
+    TEXT.draw_outlined_line("Toggle Music",
+                             SCREEN_WIDTH // 2 - 150, 
+                             SCREEN_HEIGHT // 2 + 140,
+                             font_size=20, align="center")
+
+    # Checkbox for Music Toggle (Uses game.sound_manager.music_enabled)
+    arcade.draw_texture_rectangle(
+        center_x=SCREEN_WIDTH *.66 ,
+        center_y=SCREEN_HEIGHT // 2 + 150,
+        width=45,
+        height=45,
+        texture=checkbox_on if game.sound_manager.music_enabled else checkbox_off
+    )
+
+    ## -------------------- MUSIC VOLUME -------------------- ##
+    TEXT.draw_outlined_line("Music Volume",
+                             SCREEN_WIDTH // 2-150, 
+                             SCREEN_HEIGHT // 2 + 50, 
+                             font_size=20, align="center")
+
+    # Decrease Music Volume (-)
+    arcade.draw_texture_rectangle(
+        center_x=SCREEN_WIDTH *.66  - 76,
+        center_y=SCREEN_HEIGHT // 2 + 60,
+        width=40,
+        height=40,
+        texture=minus_button
+    )
+
+    # Increase Music Volume (+)
+    arcade.draw_texture_rectangle(
+        center_x=SCREEN_WIDTH *.66  + 76,
+        center_y=SCREEN_HEIGHT // 2 + 60,
+        width=40,
+        height=40,
+        texture=plus_button
+    )
+
+    # Display Current Music Volume
+    volume_text = f"{int(game.sound_manager.music_volume * 100)}%"
+    TEXT.draw_outlined_line(volume_text,
+                             SCREEN_WIDTH *.66 , 
+                             SCREEN_HEIGHT // 2 + 50, 
+                             font_size=20, align="center")
+    
+
+    ## -------------------- SFX TOGGLE -------------------- ##
+    TEXT.draw_outlined_line("Toggle SFX",
+                             SCREEN_WIDTH // 2 - 150,
+                               SCREEN_HEIGHT // 2 - 40,
+                                 font_size=20, align="center")
+
+    # Checkbox for SFX Toggle (Uses game.sound_manager.sfx_enabled)
+    arcade.draw_texture_rectangle(
+        center_x=SCREEN_WIDTH *.66 ,
+        center_y=SCREEN_HEIGHT // 2 - 30,
+        width=45,
+        height=45,
+        texture=checkbox_on if game.sound_manager.sfx_enabled else checkbox_off
+    )
+
+    ## -------------------- SFX VOLUME -------------------- ##
+    TEXT.draw_outlined_line("SFX Volume",
+                             SCREEN_WIDTH // 2-150, 
+                             SCREEN_HEIGHT // 2 - 140, font_size=20, align="center")
+
+    # Decrease SFX Volume (-)
+    arcade.draw_texture_rectangle(
+        center_x=SCREEN_WIDTH *.66  - 76,
+        center_y=SCREEN_HEIGHT // 2 - 130,
+        width=40,
+        height=40,
+        texture=minus_button
+    )
+
+    # Increase SFX Volume (+)
+    arcade.draw_texture_rectangle(
+        center_x=SCREEN_WIDTH *.66 + 76,
+        center_y=SCREEN_HEIGHT // 2 - 130,
+        width=40,
+        height=40,
+        texture=plus_button
+    )
+
+    # Display Current SFX Volume
+    sfx_volume_text = f"{int(game.sound_manager.sfx_volume * 100)}%"
+    TEXT.draw_outlined_line(sfx_volume_text,
+                             SCREEN_WIDTH *.66 , 
+                             SCREEN_HEIGHT // 2 - 140, 
+                             font_size=20, align="center")
+    
