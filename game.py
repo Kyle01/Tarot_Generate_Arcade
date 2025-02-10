@@ -62,7 +62,7 @@ class TarotGame(arcade.Window):
         self.outside_image = arcade.load_texture("assets/original/AnimationFrames2.1/NolaHouse2.1.1.png")
         arcade.set_background_color(arcade.color.BLACK)
         pyglet.font.add_file(FONT_PATH)  # Load the font file
-       
+        
         """ Variables for Outside Animation"""
         self.outside_frame_center = arcade.load_texture(r"assets/original/AnimationFrames2.1/NolaHouse2.1.1.png")
         self.outside_frame_left = arcade.load_texture(r"assets/original/AnimationFrames2.1/NolaHouse2.1.3.png")

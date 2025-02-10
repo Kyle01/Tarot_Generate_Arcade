@@ -521,7 +521,7 @@ def options_button(game):
     texture=cog
 )
     
-import arcade
+
 
 def draw_options_menu(game):
     """Draw the options menu with real UI elements like buttons, checkboxes, and volume controls."""
