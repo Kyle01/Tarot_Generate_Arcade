@@ -67,7 +67,7 @@ class TarotBot:
         ## thats a projected range of $4,555.70 to $6,833.55 if we did every possible reading in the backend
         ## We would need to come up 200-300 $ / 1 million full readings, or 20-30$ / 100k readings
         ## We could just put a cap on the amount of readings/tokens we can spend and then have an animation where the house is on fire or in a storm lol
-
+        ## 5 $ is 16k to 25k readings
 
     
 
