@@ -1,5 +1,5 @@
 # Overview
-Tarot Card Arcade game using python arcade and chatgpt. This directory contains the python game, which compiles to an executable and is available on steam, and a flask server that renders on [render](https://render.com/) and provides the API endpoints.
+Tarot Card Arcade game using python arcade and chatgpt. This directory contains the python game, which compiles to an executable and is available on steam, and a flask server that runs on [render](https://render.com/) and provides the API endpoints.
 
 # Get started instructions 
 * As a prerequisite be sure you have python installed with `$ python --version`. The project supports python 3.12.4. You'll also need Postgres installed, you can check the installation of that by using `$ psql --version`.
