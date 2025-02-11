@@ -1,0 +1,9 @@
+bin
+lib
+.venv
+pyvenv.cfg
+ 
+__pycache__/
+.pytest_cache/
+.env
+.DS_Store

@@ -1,8 +1,19 @@
 # Overview
 Tarot Card Arcade game using python arcade and chatgpt. This directory contains the python game, which compiles to an executable and is available on steam, and a flask server that renders on [render](https://render.com/) and provides the API endpoints.
 
-# Getting Started Instructions 
-1. Go into the python game directory `$ cd python-game` 
+# Get started instructions 
+* As a prerequisite be sure you have python installed with `$ python --version`. The project supports python 3.12.4. You'll also need Postgres installed, you can check the installation of that by using `$ psql --version`.
+# Server instructions
+1. In a new terminal go to the flask server directory with `$ cd server-engine`
+2. Copy the environment files `cp -a .env.example .env` and fill out the applicable variables 
+3. Create a virtual environment using `$ python -m venv .venv`
+4. Start virtual environment using `$ source .venv/bin/activate`
+5. Install the packages using `$ pip install -r requirements.txt`
+6. Start the server with by running `$ flask --debug run`
+7. See server running on http://localhost:5000/
+
+# Game instructions 
+1. In a new terminal, go into the python game directory `$ cd python-game` 
 2. Copy the environment files `cp -a .env.example .env` and fill out the applicable variables
 3. Create a virtual environment using `$ python -m venv .venv`
 4. Start virtual environment using `$ source .venv/bin/activate`
