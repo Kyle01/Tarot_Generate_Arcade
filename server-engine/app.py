@@ -202,6 +202,29 @@ def reset_tokens():
     # """
     # cur.execute(query, (formatted_date,))
     return "This endpoint will reset the monthly token count", 200
+
+@app.route('/token_status', methods=['GET'])
+def token_status():
+    """
+    Return the current total_cost from the token_tracking table.
+    """
+    verify_authentication()  # Optional; remove if you want this open to game clients
+
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+
+        cur.execute("SELECT total_cost FROM token_tracking WHERE id = 1;")
+        total_cost = cur.fetchone()[0]
+
+        cur.close()
+        conn.close()
+
+        return jsonify({"total_cost": float(total_cost)}), 200
+
+    except Exception as e:
+        print(f"❌ Failed to fetch token status: {e}")
+        return jsonify({"error": "Failed to retrieve token status"}), 500
     
 @app.route("/")
 def hello_world():
