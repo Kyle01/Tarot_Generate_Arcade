@@ -18,6 +18,7 @@ def verify_authentication():
         return True
     
     try: 
+        print("not in dev mode")
         secret = os.environ.get('SECRET_HASH')
 
         request_token = request.headers['Token']
@@ -208,7 +209,7 @@ def token_status():
     """
     Return the current total_cost from the token_tracking table.
     """
-    verify_authentication()  # Optional; remove if you want this open to game clients
+    verify_authentication() 
 
     try:
         conn = get_db_connection()

@@ -102,7 +102,7 @@ class TarotBot:
         card_names = [card.name for card in cards]
         try:
             response = requests.post(
-                "http://localhost:5000/fortune",
+                f"{game.request_url}fortune",
                 json={"cards": card_names, "intention": intention}
             )
 
