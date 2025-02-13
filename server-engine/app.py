@@ -10,7 +10,8 @@ load_dotenv()
 
 def verify_authentication():
     mode = os.environ.get('DEPLOY_MODE')
-
+    print(f"DEPLOY_MODE is: {mode}")
+    
     if mode == 'dev':
         return True
     
