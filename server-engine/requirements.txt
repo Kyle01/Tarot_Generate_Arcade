@@ -3,3 +3,4 @@ Gunicorn==21.2.0
 Flask-SQLAlchemy==3.1.1
 psycopg2==2.9.9
 python-dotenv==1.0.1
+openai==1.58.1
