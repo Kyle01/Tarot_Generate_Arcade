@@ -10,6 +10,7 @@ from sound_manager import SoundManager
 from deck import TarotDeck
 from tarot_bot import TarotBot
 from enum import Enum
+import requests
 
 
 # Screen title and size
@@ -42,6 +43,7 @@ class TarotGame(arcade.Window):
 
         """ Variables for reading generation"""
 
+        self.has_tokens = True
         self.tarot_bot = TarotBot()
         self.intention = None
         self.drawn_cards = None
@@ -123,6 +125,7 @@ class TarotGame(arcade.Window):
         """ Set up the game here. Call this function to restart the game. """
         
         self.sound_manager.play_music(volume = 0.6, loop=True)
+        self.check_token_usage()
        
         pass
 
@@ -232,6 +235,34 @@ class TarotGame(arcade.Window):
         """ Update the game state. """
 
         update_manager.handle_animation(self, delta_time, game_state = GameState)
+
+
+
+    def check_token_usage(self):
+        """
+        Fetches the total_cost from Flask API endpoint `/token_status`.
+        """
+        try:
+            response = requests.get("http://127.0.0.1:5000/token_status")
+            data = response.json()
+
+            if 'total_cost' in data:
+                total_cost = data['total_cost']
+
+                if total_cost >= 4.90:
+                    print(f"🚨 WARNING: Token usage is at ${total_cost:.2f}. Approaching limit!")
+                    self.has_tokens = False
+                else:
+                    print(f"Token usage is at ${total_cost}")
+                return total_cost
+            else:
+                print("❌ Unexpected response structure:", data)
+                return None
+
+        except Exception as e:
+            print(f"❌ Failed to fetch token cost from server: {e}")
+            return None
+
 
 
 
