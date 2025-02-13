@@ -64,49 +64,87 @@ def draw_title_stage(game):
     arcade.draw_lrwh_rectangle_textured(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, game.outside_frame_center, alpha=alpha_3)
 def draw_outside_stage(game):
 
-    current_state = game.states[game.state_index]
-    if current_state == "LEFT":
-        
-        current_texture = game.outside_frame_left
-    elif current_state == "CENTER":
-        current_texture = game.outside_frame_center
-    elif current_state == "RIGHT":
-        
-        current_texture = game.outside_frame_right
-    else:
-        current_texture = game.outside_frame_center  # fallback
+    def draw_oustside_open(game):
+        current_state = game.states[game.state_index]
+        if current_state == "LEFT":
+            
+            current_texture = game.outside_frame_left
+        elif current_state == "CENTER":
+            current_texture = game.outside_frame_center
+        elif current_state == "RIGHT":
+            
+            current_texture = game.outside_frame_right
+        else:
+            current_texture = game.outside_frame_center  # fallback
 
-   
-    arcade.draw_lrwh_rectangle_textured(
-        0, 0,
-        SCREEN_WIDTH, SCREEN_HEIGHT,
-        current_texture
-    )
-
-    Button(
-        game=game,
-        name='exit_game',
-        copy="Exit",
-        x_center=game.x_right_button+200,
-        y_center=50,
-        width=350 //2,
-        height=200 // 2,
-        text_x_start=game.x_right_button + 75,
-        text_y_start=45,
-    )
-
-   
-
-    Button(
-        game=game,
-        name='step_inside',
-        copy="Step Inside",
-        x_center=SCREEN_WIDTH // 2,
-        y_center=100,
-        text_x_start=SCREEN_WIDTH // 2 - 125,
-        text_y_start=95,
-    )
     
+        arcade.draw_lrwh_rectangle_textured(
+            0, 0,
+            SCREEN_WIDTH, SCREEN_HEIGHT,
+            current_texture
+        )
+
+        Button(
+            game=game,
+            name='exit_game',
+            copy="Exit",
+            x_center=game.x_right_button+200,
+            y_center=50,
+            width=350 //2,
+            height=200 // 2,
+            text_x_start=game.x_right_button + 75,
+            text_y_start=45,
+        )
+
+   
+
+        Button(
+            game=game,
+            name='step_inside',
+            copy="Step Inside",
+            x_center=SCREEN_WIDTH // 2,
+            y_center=100,
+            text_x_start=SCREEN_WIDTH // 2 - 125,
+            text_y_start=95,
+        )
+
+    def draw_outside_closed(game):
+        current_state = game.states[game.state_index]
+        if current_state == "LEFT":
+            
+            current_texture = game.outside_frame_left
+        elif current_state == "CENTER":
+            current_texture = game.outside_frame_center
+        elif current_state == "RIGHT":
+            
+            current_texture = game.outside_frame_right
+        else:
+            current_texture = game.outside_frame_center  # fallback
+
+    
+        arcade.draw_lrwh_rectangle_textured(
+            0, 0,
+            SCREEN_WIDTH, SCREEN_HEIGHT,
+            current_texture
+        )
+
+        Button(
+            game=game,
+            name='exit_game',
+            copy="Exit",
+            x_center=game.x_right_button+200,
+            y_center=50,
+            width=350 //2,
+            height=200 // 2,
+            text_x_start=game.x_right_button + 75,
+            text_y_start=45,
+        )
+             
+
+    if game.has_tokens == True:
+         draw_oustside_open(game)
+    else:
+         draw_outside_closed(game)
 def draw_intro_stage(game):
        
         if not game.lines_to_type: ## This guards against looping, could also place the line below when scene is changed

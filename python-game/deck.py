@@ -6,7 +6,7 @@ positions = ['Upright', 'Reversed']
 
 """ Variables for Copyright / Open Source Asset Switcher """
 
-copyright_asset_path = "assets/copyrightz"
+copyright_asset_path = "assets/copyright"
 backup_assets_path = "assets/riderWeightPublicDomain/convertedx2"
 current_asset_path = None
 current_card_back_path = None
