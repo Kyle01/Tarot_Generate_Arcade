@@ -1,6 +1,12 @@
-.DS_Store
-/__pycache__
-/.venv
-.env
+**/bin
+**/lib
+**/.venv
+**/pyvenv.cfg
+ 
+**/__pycache__/
+**/.pytest_cache/
+**/.env
+**/.DS_Store
 
-/assets/copyright
+
+python-game/assets/copyright
