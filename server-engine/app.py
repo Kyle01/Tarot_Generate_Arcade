@@ -32,6 +32,7 @@ def verify_authentication():
         if secret_hash != request_hash:
             abort(403)
         else:
+            print(("YOUR IN!"))
             return True
     except: 
         abort(403)
@@ -43,6 +44,7 @@ def get_db_connection():
 
 @app.route('/fortune', methods=['POST'])
 def fortune():
+    
     verify_authentication()
 
     data = request.get_json()
@@ -209,7 +211,7 @@ def token_status():
     """
     Return the current total_cost from the token_tracking table.
     """
-    # verify_authentication() 
+    verify_authentication() 
 
     try:
         conn = get_db_connection()
