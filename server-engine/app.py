@@ -209,7 +209,7 @@ def token_status():
     """
     Return the current total_cost from the token_tracking table.
     """
-    verify_authentication() 
+    # verify_authentication() 
 
     try:
         conn = get_db_connection()
