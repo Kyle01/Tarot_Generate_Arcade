@@ -43,16 +43,19 @@ def handle_mouse_press(game, x, y, _button, _modifiers, game_state):
 def mouse_press_outside(game, x, y, game_state):
     # print(f"Mouse clicked at ({x}, {y})")
     # print(f"game_state is {game.stage}")
+
+
     if game.x_right_button + 200 - game.button_clickbox_width // 2 <= x <= game.x_right_button + 200 + game.button_clickbox_width // 2 and \
             game.y_bottom_button <= y <= game.y_bottom_button - 50 + game.button_clickbox_height:
         
         game.sound_manager.play_sfx("button")
         game.close()
         return
-    if game.x_middle_button - game.button_clickbox_width <= x <= game.x_middle_button + game.button_clickbox_width and \
-            game.y_bottom_button <= y <= game.y_bottom_button + game.button_clickbox_height:
-        game.sound_manager.play_sfx("door")
-        game.stage = game_state.INTRO
+    if game.has_tokens:
+        if game.x_middle_button - game.button_clickbox_width <= x <= game.x_middle_button + game.button_clickbox_width and \
+                game.y_bottom_button <= y <= game.y_bottom_button + game.button_clickbox_height:
+            game.sound_manager.play_sfx("door")
+            game.stage = game_state.INTRO
 
 def mouse_press_intro(game, x, y, _game_state):
             button_positions = [

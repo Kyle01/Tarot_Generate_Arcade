@@ -65,6 +65,11 @@ def draw_title_stage(game):
 def draw_outside_stage(game):
 
     def draw_oustside_open(game):
+        game.outside_frame_center = arcade.load_texture(r"assets/original/AnimationFrames2.1/NolaHouse2.1.1.png")
+        game.outside_frame_left = arcade.load_texture(r"assets/original/AnimationFrames2.1/NolaHouse2.1.3.png")
+        game.outside_frame_right = arcade.load_texture(r"assets/original/AnimationFrames2.1/NolaHouse2.1.2.png")
+
+
         current_state = game.states[game.state_index]
         if current_state == "LEFT":
             
@@ -109,6 +114,11 @@ def draw_outside_stage(game):
         )
 
     def draw_outside_closed(game):
+        game.outside_frame_center = arcade.load_texture(r"assets/original/AnimationFrames2.1/house_closed_center.png")
+        game.outside_frame_left = arcade.load_texture(r"assets/original/AnimationFrames2.1/house_closed_left.png")
+        game.outside_frame_right = arcade.load_texture(r"assets/original/AnimationFrames2.1/house_closed_right.png")
+        menu_background = arcade.load_texture(r"assets/original/OptionMenuBackground.png")
+
         current_state = game.states[game.state_index]
         if current_state == "LEFT":
             
@@ -140,9 +150,34 @@ def draw_outside_stage(game):
             text_y_start=45,
         )
              
+        arcade.draw_texture_rectangle(
+        center_x=SCREEN_WIDTH // 2,
+        center_y=SCREEN_HEIGHT // 2-25,
+        width=SCREEN_WIDTH - 350,
+        height=SCREEN_HEIGHT - 700,
+        texture=menu_background
+    )
+        closed_text = "Sorry Cher, we are closed for now,\n\n check back on the 1st of the month"
+        
+        
+    #set_paragraph_typing is needed to set up what goes into typewriter_lines
+        if not game.lines_to_type: ## This guards against looping, could also place the line below when scene is changed
+            TEXT.set_paragraph_typing(game, closed_text)  ## We did this because this is in the game's on_draw function, which calls this function every frame
+
+
+        TEXT.typewriter_lines(game,
+           
+            center_x = (SCREEN_WIDTH // 2),  ## To achieve desired effect, we will start by starting x at the center,
+                                             ## then subtracting backwards half of each lines lenght to look dynamically centered.
+                                             ## Check the formula within TEXT.Typewriter_lines in text_utility.py
+            start_y=SCREEN_HEIGHT //2 ,
+            font_size=DEFAULT_FONT_SIZE,
+            line_height=DEFAULT_LINE_HEIGHT * 1.5,
+        )
 
     if game.has_tokens == True:
          draw_oustside_open(game)
+        #  game.has_tokens = False ##debug add this to test closed screen
     else:
          draw_outside_closed(game)
 def draw_intro_stage(game):
