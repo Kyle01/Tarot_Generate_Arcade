@@ -9,9 +9,7 @@ environment_variables = dotenv_values()
 
 class TarotBot:
     def __init__(self):
-        self.client = OpenAI(
-            api_key=environment_variables['OPENAI_API_KEY']
-        )
+        return
 
     # def generate_fortune(self, cards, intention):
     #     resp =  self.client.chat.completions.create(
