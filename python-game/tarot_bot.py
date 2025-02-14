@@ -2,6 +2,8 @@ from openai import OpenAI
 from dotenv import dotenv_values
 import textwrap
 import requests
+import os
+import hashlib
 
 environment_variables = dotenv_values()
 
@@ -98,11 +100,12 @@ class TarotBot:
 
     def api_call(self, game, cards, intention):
         """Send cards and intention to the Flask server to get a fortune"""
-
+        headers = TarotBot.generate_auth_headers()
         card_names = [card.name for card in cards]
         try:
             response = requests.post(
                 f"{game.request_url}fortune",
+                headers=headers,
                 json={"cards": card_names, "intention": intention}
             )
 
@@ -128,3 +131,20 @@ class TarotBot:
 
         # Wrap paragraphs if a valid fortune is returned
         game.fortune = self.wrap_fortune_paragraphs(game.fortune)
+
+    def generate_auth_headers():
+        """
+        Generates Token and Hash headers for secure API request.
+        """
+        token = "player_access"  # Could be any static string or randomized per request
+        secret_hash = os.getenv('SECRET_HASH')  # You can store this locally in the game too
+
+        hasher = hashlib.sha256()
+        hasher.update(f"{token}{secret_hash}".encode('utf-8'))
+        request_hash = hasher.hexdigest()
+
+        return {
+            "Token": token,
+            "Hash": request_hash,
+            "Content-Type": "application/json"
+    }
