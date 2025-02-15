@@ -8,5 +8,8 @@
 **/.env
 **/.DS_Store
 
+/python-game/dist
+/python-game/build 
+/python-game/game.spec
 
 python-game/assets/copyright
