@@ -90,7 +90,7 @@ class TarotDeck:
         
 
         if os.path.isdir(copyright_asset_path):
-                self.cards = cards = [
+                self.cards = [
     # Major Arcana
                 Card("The Fool", "major0_fool.1.png"),
                 Card("The Magician", "major1_magician.1.png"),

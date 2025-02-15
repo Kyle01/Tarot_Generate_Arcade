@@ -1,8 +1,7 @@
-from dotenv import dotenv_values
-from text_utility import wrap_text_paragraphs
 import requests
 import os
 import hashlib
+from text_utility import wrap_text_paragraphs
 
 def generate_auth_headers():
     """
