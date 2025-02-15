@@ -10,7 +10,7 @@ import update_manager
 from dotenv import load_dotenv
 from sound_manager import SoundManager
 from deck import TarotDeck
-from tarot_bot import TarotBot
+from fetch_utility import get_fortune, generate_auth_headers
 from enum import Enum
 import requests
 
@@ -49,7 +49,6 @@ class TarotGame(arcade.Window):
         """ Variables for reading generation"""
         self.request_url = "http://127.0.0.1:5000/" if os.environ.get("DEPLOY_MODE") == "dev" else "https://tarot-generate-arcade.onrender.com/"
         self.has_tokens = True
-        self.tarot_bot = TarotBot()
         self.intention = None
         self.drawn_cards = None
         self.fortune = None
@@ -229,7 +228,7 @@ class TarotGame(arcade.Window):
         self.loading_progress = 0.0
         self.api_call_complete = False
         api_thread = threading.Thread(
-            target=self.tarot_bot.api_call,
+            target=get_fortune,
             args=(self, self.drawn_cards, self.intention),
             daemon=True  # Set as a daemon thread so it exits when the game exits
         )
@@ -249,7 +248,7 @@ class TarotGame(arcade.Window):
         Fetches the total_cost from Flask API endpoint `/token_status`.
         """
 
-        headers = TarotBot.generate_auth_headers()
+        headers = generate_auth_headers()
         try:
             response = requests.get(f"{self.request_url}token_status", headers=headers)
             data = response.json()
@@ -270,8 +269,6 @@ class TarotGame(arcade.Window):
         except Exception as e:
             print(f"❌ Failed to fetch token cost from server: {e}")
             return None
-
-
 
 
 def main():
