@@ -47,7 +47,7 @@ class TarotGame(arcade.Window):
         self.stage = GameState.TITLE
 
         """ Variables for reading generation"""
-        self.request_url = "http://127.0.0.1:5000/" if os.environ.get("DEPLOY_MODE") == "dev" else "https://tarot-generate-arcade-ieyk.onrender.com/"
+        self.request_url = "http://127.0.0.1:5000/" if os.environ.get("DEPLOY_MODE") == "dev" else "https://tarot-generate-arcade.onrender.com/"
         self.has_tokens = True
         self.tarot_bot = TarotBot()
         self.intention = None

@@ -195,15 +195,17 @@ def log_user_request(ip, user_agent, path, method, payload, tokens_used, cost):
 @app.route('/reset_tokens')
 def reset_tokens():
     verify_authentication()
-    # conn = get_db_connection()
-    # cur = conn.cursor()
-    # query = """
-    #     SELECT *
-    #     FROM song_rankings
-    #     WHERE date::date = %s;
-
-    # """
-    # cur.execute(query, (formatted_date,))
+    conn = get_db_connection()
+    cur = conn.cursor()
+    query = """
+        UPDATE token_tracking
+        SET total_cost = 0
+        WHERE id = 1; 
+    """
+    cur.execute(query)
+    conn.commit()
+    cur.close()
+    conn.close()
     return "This endpoint will reset the monthly token count", 200
 
 @app.route('/token_status', methods=['GET'])
