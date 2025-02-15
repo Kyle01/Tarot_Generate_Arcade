@@ -3,6 +3,13 @@ import os
 import hashlib
 from text_utility import wrap_text_paragraphs
 
+def has_internet_connection():
+    try:
+        response = requests.get("https://health.aws.amazon.com/health/status")
+        return response.status_code == 200
+    except requests.exceptions.RequestException:
+        return False
+
 def generate_auth_headers():
     """
     Generates Token and Hash headers for secure API request.

@@ -12,7 +12,6 @@ from sound_manager import SoundManager
 from deck import TarotDeck
 from fetch_utility import get_fortune, generate_auth_headers
 from enum import Enum
-import requests
 
 load_dotenv()
 
