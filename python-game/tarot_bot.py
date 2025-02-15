@@ -1,4 +1,3 @@
-from openai import OpenAI
 from dotenv import dotenv_values
 import textwrap
 import requests
