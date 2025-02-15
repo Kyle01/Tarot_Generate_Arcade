@@ -1,11 +1,8 @@
 from dotenv import dotenv_values
-import textwrap
+from text_utility import wrap_text_paragraphs
 import requests
 import os
 import hashlib
-
-environment_variables = dotenv_values()
-
 
 def generate_auth_headers():
     """
@@ -23,22 +20,6 @@ def generate_auth_headers():
         "Hash": request_hash,
         "Content-Type": "application/json"
 }
-
-"""Split and wrap the fortune text into paragraphs."""
-def wrap_fortune_paragraphs(fortune):
-
-    paragraphs = fortune.split('\n')  # Split the fortune into paragraphs
-
-    # Handle wrapping logic
-    default_width = 40
-    last_paragraph_width = 55
-    last_index = len(paragraphs) - 1
-    wrapped_paragraphs = [
-        textwrap.fill(p.strip(), width=last_paragraph_width if i == last_index else default_width)
-        for i, p in enumerate(paragraphs) if p.strip()
-    ]
-
-    return wrapped_paragraphs
     
 def get_fortune(game, cards, intention):
     """Send cards and intention to the Flask server to get a fortune"""
@@ -72,6 +53,6 @@ def get_fortune(game, cards, intention):
     game.api_call_complete = True
 
     # Wrap paragraphs if a valid fortune is returned
-    game.fortune = wrap_fortune_paragraphs(game.fortune)
+    game.fortune = wrap_text_paragraphs(game.fortune)
 
 

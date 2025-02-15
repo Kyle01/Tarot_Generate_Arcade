@@ -216,3 +216,19 @@ def reset_typing_state(game):
     game.current_text = ""
     game.displayed_text = ""
     game.typing_complete = False
+
+def wrap_text_paragraphs(text):
+    """Split and wrap the text text into paragraphs."""
+
+    paragraphs = text.split('\n')  # Split the text into paragraphs
+
+    # Handle wrapping logic
+    default_width = 40
+    last_paragraph_width = 55
+    last_index = len(paragraphs) - 1
+    wrapped_paragraphs = [
+        textwrap.fill(p.strip(), width=last_paragraph_width if i == last_index else default_width)
+        for i, p in enumerate(paragraphs) if p.strip()
+    ]
+
+    return wrapped_paragraphs
