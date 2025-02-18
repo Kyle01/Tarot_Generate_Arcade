@@ -120,7 +120,7 @@ class TarotGame(arcade.Window):
         self.sound_manager.load_sfx("wind", r"assets/sound/mixkit-storm-wind-2411.wav")
 
         """ Variables for Options Menu"""
-
+        self.credits_open = False
         self.menu_open = False
         
 
@@ -179,24 +179,25 @@ class TarotGame(arcade.Window):
 
         if self.menu_open:
             draw_utility.draw_options_menu(self)
-            
+        if self.credits_open:
+            draw_utility.draw_credits_screen(self)
 
-        '''For Debugging Button Hit boxes'''
-        hitbox_x = self.x_right_button + 200
-        hitbox_y = (self.y_bottom_button +75 +  (self.button_clickbox_height)) // 2  - 5 # Middle of Y bounds
-        hitbox_width = self.button_clickbox_width
-        hitbox_height = self.button_clickbox_height
+        # '''For Debugging Button Hit boxes'''
+        # hitbox_x = self.x_right_button + 200
+        # hitbox_y = (self.y_bottom_button +75 +  (self.button_clickbox_height)) // 2  - 5 # Middle of Y bounds
+        # hitbox_width = self.button_clickbox_width
+        # hitbox_height = self.button_clickbox_height
 
 
         
-        arcade.draw_rectangle_outline(
-            center_x=hitbox_x,
-            center_y=hitbox_y,
-            width=hitbox_width,
-            height=hitbox_height,
-            color=arcade.color.RED,  # Red color for visibility
-            border_width=2
-        )
+        # arcade.draw_rectangle_outline(
+        #     center_x=hitbox_x,
+        #     center_y=hitbox_y,
+        #     width=hitbox_width,
+        #     height=hitbox_height,
+        #     color=arcade.color.RED,  # Red color for visibility
+        #     border_width=2
+        # )
     def on_mouse_press(self, x, y, _button, _modifiers):
            
         mouse_input.handle_mouse_press(self,x,y, _button, _modifiers, GameState)
