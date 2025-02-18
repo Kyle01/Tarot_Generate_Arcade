@@ -43,7 +43,7 @@ class TarotGame(arcade.Window):
 
     def __init__(self):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Voodoo Tarot GPT")
-        self.stage = GameState.TITLE
+        self.stage = GameState.OUTSIDE
 
         """ Variables for reading generation"""
         self.request_url = "http://127.0.0.1:5000/" if os.environ.get("DEPLOY_MODE") == "dev" else "https://tarot-generate-arcade.onrender.com/"
@@ -120,7 +120,7 @@ class TarotGame(arcade.Window):
         self.sound_manager.load_sfx("wind", r"assets/sound/mixkit-storm-wind-2411.wav")
 
         """ Variables for Options Menu"""
-
+        self.credits_open = False
         self.menu_open = False
         
 
@@ -179,13 +179,15 @@ class TarotGame(arcade.Window):
 
         if self.menu_open:
             draw_utility.draw_options_menu(self)
-            
+        if self.credits_open:
+            draw_utility.draw_credits_screen(self)
 
-        '''For Debugging Button Hit boxes'''
+        # '''For Debugging Button Hit boxes'''
         # hitbox_x = self.x_right_button + 200
-        # hitbox_y = self.y_bottom_button - 50 + (self.button_clickbox_height // 4)  # Center the y-coordinate
+        # hitbox_y = (self.y_bottom_button +75 +  (self.button_clickbox_height)) // 2  - 5 # Middle of Y bounds
         # hitbox_width = self.button_clickbox_width
-        # hitbox_height = self.button_clickbox_height // 2
+        # hitbox_height = self.button_clickbox_height
+
 
         
         # arcade.draw_rectangle_outline(

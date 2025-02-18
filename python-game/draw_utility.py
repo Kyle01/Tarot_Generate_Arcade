@@ -101,7 +101,18 @@ def draw_outside_stage(game):
             text_y_start=45,
         )
 
-   
+        
+        Button(
+                game=game,
+                name='credits',
+                copy="Credits",
+                x_center=game.x_right_button+200,
+                y_center= 125,
+                width=350 //2,
+                height=200 // 2,
+                text_x_start=game.x_right_button + 75,
+                text_y_start=115,
+            )
 
         Button(
             game=game,
@@ -217,7 +228,6 @@ def draw_intro_stage(game):
                 text_x_start=x-125,
                 text_y_start=y,
             )
-
 def draw_spread_stage(game):
         """ Render the card spread stage with the backs of the cards. """
         if game.reveal_active and game.current_revealed_card:
@@ -729,3 +739,129 @@ def draw_options_menu(game):
                              SCREEN_HEIGHT // 2 - 140, 
                              font_size=20, align="center")
     
+def draw_credits_screen(game):
+    """Draw the options menu with real UI elements like buttons, checkboxes, and volume controls."""
+
+    # Dark translucent background overlay
+    arcade.draw_lrtb_rectangle_filled(
+        0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 
+        (0, 0, 0, 200)  # Semi-transparent overlay
+    )
+
+    # Load UI textures
+    menu_background = arcade.load_texture(r"assets/original/OptionMenuBackground.png")
+    
+    # Draw menu background
+    arcade.draw_texture_rectangle(
+        center_x=SCREEN_WIDTH // 2,
+        center_y=SCREEN_HEIGHT // 2,
+        width=SCREEN_WIDTH - 200,
+        height=SCREEN_HEIGHT - 200,
+        texture=menu_background
+    )
+
+    # Section Titles
+    TEXT.draw_outlined_line("Credits", SCREEN_WIDTH // 2, SCREEN_HEIGHT - 250, font_size=24, align="center")
+
+    ## -------------------- CLOSE MENU BUTTON -------------------- ##
+    Button(
+        game=game,
+        name='close_menu',
+        copy="Close",
+        x_center=game.x_middle_button,
+        y_center=250,
+        width=195,  # Scaled down
+        height=115,  # Scaled down
+        text_x_start=game.x_middle_button-125,
+        text_y_start=245,
+    )
+
+    y_start = SCREEN_HEIGHT - 300  # "Developed By" starts at -300
+
+    # Developers
+    TEXT.draw_outlined_line(
+        "Developed By:",
+        SCREEN_WIDTH // 2,
+        y_start,
+        font_size=20,
+        align="center",
+        color=arcade.color.GOLD
+    )
+
+    TEXT.draw_outlined_line(
+        "Devin Reid (@DevinReid)",
+        SCREEN_WIDTH // 2,
+        y_start - 30,
+        font_size=16,
+        align="center"
+    )
+
+    TEXT.draw_outlined_line(
+        "Kyle McVeigh (@Kyle01)",
+        SCREEN_WIDTH // 2,
+        y_start - 60,
+        font_size=16,
+        align="center"
+    )
+
+    # Art & Assets
+    TEXT.draw_outlined_line(
+        "Art & Assets:",
+        SCREEN_WIDTH // 2,
+        y_start - 110,
+        font_size=20,
+        align="center",
+        color=arcade.color.GOLD
+    )
+
+    TEXT.draw_outlined_line(
+        "Base Card Art by chee-seekins (itch.io/tarot)",
+        SCREEN_WIDTH // 2,
+        y_start - 140,
+        font_size=16,
+        align="center"
+    )
+
+    TEXT.draw_outlined_line(
+        "Original Pixel Art by Devin Reid (Aseprite)",
+        SCREEN_WIDTH // 2,
+        y_start - 170,
+        font_size=16,
+        align="center"
+    )
+
+    # Audio
+    TEXT.draw_outlined_line(
+        "Audio Credits:",
+        SCREEN_WIDTH // 2,
+        y_start - 220,
+        font_size=20,
+        align="center",
+        color=arcade.color.GOLD
+    )
+
+    TEXT.draw_outlined_line(
+        "Sound FX: jarzarr, jdshertbert, Mixkit",
+        SCREEN_WIDTH // 2,
+        y_start - 250,
+        font_size=16,
+        align="center"
+    )
+
+    TEXT.draw_outlined_line(
+        "Music: alkarab (itch.io)",
+        SCREEN_WIDTH // 2,
+        y_start - 280,
+        font_size=16,
+        align="center"
+    )
+
+    # "Written in Python"
+    TEXT.draw_outlined_line(
+        "Written in Python with Python Arcade",
+        SCREEN_WIDTH // 2,
+        y_start - 330,
+        font_size=16,
+        align="center",
+        color=arcade.color.GOLD
+    )
