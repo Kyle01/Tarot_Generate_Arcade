@@ -43,7 +43,7 @@ class TarotGame(arcade.Window):
 
     def __init__(self):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Voodoo Tarot GPT")
-        self.stage = GameState.TITLE
+        self.stage = GameState.OUTSIDE
 
         """ Variables for reading generation"""
         self.request_url = "http://127.0.0.1:5000/" if os.environ.get("DEPLOY_MODE") == "dev" else "https://tarot-generate-arcade.onrender.com/"
@@ -182,20 +182,21 @@ class TarotGame(arcade.Window):
             
 
         '''For Debugging Button Hit boxes'''
-        # hitbox_x = self.x_right_button + 200
-        # hitbox_y = self.y_bottom_button - 50 + (self.button_clickbox_height // 4)  # Center the y-coordinate
-        # hitbox_width = self.button_clickbox_width
-        # hitbox_height = self.button_clickbox_height // 2
+        hitbox_x = self.x_right_button + 200
+        hitbox_y = (self.y_bottom_button +75 +  (self.button_clickbox_height)) // 2  - 5 # Middle of Y bounds
+        hitbox_width = self.button_clickbox_width
+        hitbox_height = self.button_clickbox_height
+
 
         
-        # arcade.draw_rectangle_outline(
-        #     center_x=hitbox_x,
-        #     center_y=hitbox_y,
-        #     width=hitbox_width,
-        #     height=hitbox_height,
-        #     color=arcade.color.RED,  # Red color for visibility
-        #     border_width=2
-        # )
+        arcade.draw_rectangle_outline(
+            center_x=hitbox_x,
+            center_y=hitbox_y,
+            width=hitbox_width,
+            height=hitbox_height,
+            color=arcade.color.RED,  # Red color for visibility
+            border_width=2
+        )
     def on_mouse_press(self, x, y, _button, _modifiers):
            
         mouse_input.handle_mouse_press(self,x,y, _button, _modifiers, GameState)

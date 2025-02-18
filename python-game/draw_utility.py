@@ -101,7 +101,18 @@ def draw_outside_stage(game):
             text_y_start=45,
         )
 
-   
+        
+        Button(
+                game=game,
+                name='credits',
+                copy="Credits",
+                x_center=game.x_right_button+200,
+                y_center= 125,
+                width=350 //2,
+                height=200 // 2,
+                text_x_start=game.x_right_button + 75,
+                text_y_start=115,
+            )
 
         Button(
             game=game,
