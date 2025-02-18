@@ -750,11 +750,7 @@ def draw_credits_screen(game):
 
     # Load UI textures
     menu_background = arcade.load_texture(r"assets/original/OptionMenuBackground.png")
-    checkbox_on = arcade.load_texture(r"assets/original/togglecheckboxyes.png")
-    checkbox_off = arcade.load_texture(r"assets/original/togglecheckboxno.png")
-    plus_button = arcade.load_texture(r"assets/original/Plus.png")
-    minus_button = arcade.load_texture(r"assets/original/minus.png")
-
+    
     # Draw menu background
     arcade.draw_texture_rectangle(
         center_x=SCREEN_WIDTH // 2,
@@ -765,7 +761,7 @@ def draw_credits_screen(game):
     )
 
     # Section Titles
-    TEXT.draw_outlined_line("Options", SCREEN_WIDTH // 2, SCREEN_HEIGHT - 250, font_size=24, align="center")
+    TEXT.draw_outlined_line("Credits", SCREEN_WIDTH // 2, SCREEN_HEIGHT - 250, font_size=24, align="center")
 
     ## -------------------- CLOSE MENU BUTTON -------------------- ##
     Button(
@@ -780,95 +776,92 @@ def draw_credits_screen(game):
         text_y_start=245,
     )
 
-    ## -------------------- MUSIC TOGGLE -------------------- ##
-    TEXT.draw_outlined_line("Toggle Music",
-                             SCREEN_WIDTH // 2 - 150, 
-                             SCREEN_HEIGHT // 2 + 140,
-                             font_size=20, align="center")
+    y_start = SCREEN_HEIGHT - 300  # "Developed By" starts at -300
 
-    # Checkbox for Music Toggle (Uses game.sound_manager.music_enabled)
-    arcade.draw_texture_rectangle(
-        center_x=SCREEN_WIDTH *.66 ,
-        center_y=SCREEN_HEIGHT // 2 + 150,
-        width=45,
-        height=45,
-        texture=checkbox_on if game.sound_manager.music_enabled else checkbox_off
+    # Developers
+    TEXT.draw_outlined_line(
+        "Developed By:",
+        SCREEN_WIDTH // 2,
+        y_start,
+        font_size=20,
+        align="center",
+        color=arcade.color.GOLD
     )
 
-    ## -------------------- MUSIC VOLUME -------------------- ##
-    TEXT.draw_outlined_line("Music Volume",
-                             SCREEN_WIDTH // 2-150, 
-                             SCREEN_HEIGHT // 2 + 50, 
-                             font_size=20, align="center")
-
-    # Decrease Music Volume (-)
-    arcade.draw_texture_rectangle(
-        center_x=SCREEN_WIDTH *.66  - 76,
-        center_y=SCREEN_HEIGHT // 2 + 60,
-        width=40,
-        height=40,
-        texture=minus_button
+    TEXT.draw_outlined_line(
+        "Devin Reid (@DevinReid)",
+        SCREEN_WIDTH // 2,
+        y_start - 30,
+        font_size=16,
+        align="center"
     )
 
-    # Increase Music Volume (+)
-    arcade.draw_texture_rectangle(
-        center_x=SCREEN_WIDTH *.66  + 76,
-        center_y=SCREEN_HEIGHT // 2 + 60,
-        width=40,
-        height=40,
-        texture=plus_button
+    TEXT.draw_outlined_line(
+        "Kyle McVeigh (@Kyle01)",
+        SCREEN_WIDTH // 2,
+        y_start - 60,
+        font_size=16,
+        align="center"
     )
 
-    # Display Current Music Volume
-    volume_text = f"{int(game.sound_manager.music_volume * 100)}%"
-    TEXT.draw_outlined_line(volume_text,
-                             SCREEN_WIDTH *.66 , 
-                             SCREEN_HEIGHT // 2 + 50, 
-                             font_size=20, align="center")
-    
-
-    ## -------------------- SFX TOGGLE -------------------- ##
-    TEXT.draw_outlined_line("Toggle SFX",
-                             SCREEN_WIDTH // 2 - 150,
-                               SCREEN_HEIGHT // 2 - 40,
-                                 font_size=20, align="center")
-
-    # Checkbox for SFX Toggle (Uses game.sound_manager.sfx_enabled)
-    arcade.draw_texture_rectangle(
-        center_x=SCREEN_WIDTH *.66 ,
-        center_y=SCREEN_HEIGHT // 2 - 30,
-        width=45,
-        height=45,
-        texture=checkbox_on if game.sound_manager.sfx_enabled else checkbox_off
+    # Art & Assets
+    TEXT.draw_outlined_line(
+        "Art & Assets:",
+        SCREEN_WIDTH // 2,
+        y_start - 110,
+        font_size=20,
+        align="center",
+        color=arcade.color.GOLD
     )
 
-    ## -------------------- SFX VOLUME -------------------- ##
-    TEXT.draw_outlined_line("SFX Volume",
-                             SCREEN_WIDTH // 2-150, 
-                             SCREEN_HEIGHT // 2 - 140, font_size=20, align="center")
-
-    # Decrease SFX Volume (-)
-    arcade.draw_texture_rectangle(
-        center_x=SCREEN_WIDTH *.66  - 76,
-        center_y=SCREEN_HEIGHT // 2 - 130,
-        width=40,
-        height=40,
-        texture=minus_button
+    TEXT.draw_outlined_line(
+        "Base Card Art by chee-seekins (itch.io/tarot)",
+        SCREEN_WIDTH // 2,
+        y_start - 140,
+        font_size=16,
+        align="center"
     )
 
-    # Increase SFX Volume (+)
-    arcade.draw_texture_rectangle(
-        center_x=SCREEN_WIDTH *.66 + 76,
-        center_y=SCREEN_HEIGHT // 2 - 130,
-        width=40,
-        height=40,
-        texture=plus_button
+    TEXT.draw_outlined_line(
+        "Original Pixel Art by Devin Reid (Aseprite)",
+        SCREEN_WIDTH // 2,
+        y_start - 170,
+        font_size=16,
+        align="center"
     )
 
-    # Display Current SFX Volume
-    sfx_volume_text = f"{int(game.sound_manager.sfx_volume * 100)}%"
-    TEXT.draw_outlined_line(sfx_volume_text,
-                             SCREEN_WIDTH *.66 , 
-                             SCREEN_HEIGHT // 2 - 140, 
-                             font_size=20, align="center")
-    
+    # Audio
+    TEXT.draw_outlined_line(
+        "Audio Credits:",
+        SCREEN_WIDTH // 2,
+        y_start - 220,
+        font_size=20,
+        align="center",
+        color=arcade.color.GOLD
+    )
+
+    TEXT.draw_outlined_line(
+        "Sound FX: jarzarr, jdshertbert, Mixkit",
+        SCREEN_WIDTH // 2,
+        y_start - 250,
+        font_size=16,
+        align="center"
+    )
+
+    TEXT.draw_outlined_line(
+        "Music: alkarab (itch.io)",
+        SCREEN_WIDTH // 2,
+        y_start - 280,
+        font_size=16,
+        align="center"
+    )
+
+    # "Written in Python"
+    TEXT.draw_outlined_line(
+        "Written in Python with Python Arcade",
+        SCREEN_WIDTH // 2,
+        y_start - 330,
+        font_size=16,
+        align="center",
+        color=arcade.color.GOLD
+    )
